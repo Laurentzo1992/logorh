@@ -1,0 +1,83 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Paramindemitems', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramindemitems', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramindemitems', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Paramindemitem')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Paramindemitems', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Paramindemitem'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Paramindemitem.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'ParamindemitemCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Paramindemitem', array($actionCheck=>false, 
+	
+	'Indemnité'=>'paramindemnite_id',
+	'Classification'=>'paramclassification_id',
+	'Type fonction'=>'paramtypefonction_id',
+	'Montant'=>'montant',
+	'Taux'=>'taux',
+	'Unite'=>'unite',
+	'Description'=>'description',
+	));
+	$tableData = array();  //  
+	foreach($paramindemitems as $paramindemitem){
+		$paramindemitem = $paramindemitem['Paramindemitem'];
+		
+		
+		$action = $this->Form->input('Paramindemitem.check.[]', array('type'=>'checkbox', 'class'=>'ParamindemitemCheckItem', 'value'=>$paramindemitem['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		(isset($paramindemnites[$paramindemitem['paramindemnite_id']]))?$paramindemnites[$paramindemitem['paramindemnite_id']]:'',
+		(isset($paramclassifications[$paramindemitem['paramclassification_id']]))?$paramclassifications[$paramindemitem['paramclassification_id']]:'',
+		(isset($paramtypefonctions[$paramindemitem['paramtypefonction_id']]))?$paramtypefonctions[$paramindemitem['paramtypefonction_id']]:'',
+		number_format($paramindemitem['montant'], 0,',', ' '),
+		$paramindemitem['taux'],
+		$paramindemitem['unite'],
+		$paramindemitem['description'],		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Paramindemitem', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

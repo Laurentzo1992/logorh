@@ -1,0 +1,53 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">Affectation ou mutation d'un agent</th></tr>
+	<tr><th class="color1">Contrat</th><th class="color2">Affectation/Mutation</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	   //echo $this->Form->input('Agaffectmutation.agcontrat_id', array('type'=>'select', 'options'=>$agdossiers,  'empty'=>'Selectionner', 'class'=>'azerty', 'label'=>'Agent (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agaffectmutation', array('type'=>'text','class'=>'azerty', 'disabled', 'label'=>'Num contrat', 'value'=>$agcontrats[$varcontrat], 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agaffectmutation', array('type'=>'text','class'=>'azerty', 'disabled', 'label'=>'Matricule', 'value'=>$varmat, 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agaffectmutation', array('type'=>'text','class'=>'azerty', 'disabled', 'label'=>'Nom & prénom(s)', 'value'=>$agdossiers[$vardossier], 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agaffectmutation.paramtypemvt_id', array('type'=>'select', 'options'=>$paramtypemvts,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Type mouvement', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('fichier', array('type'=>'file', 'label'=>'Fichier ', 'format'=>false,'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		
+	   echo $this->Form->input('Agaffectmutation.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agaffectmutation.id', array('type'=>'hidden'));
+	   echo $this->Form->input('Agaffectmutation.agcontrat_id', array('type'=>'hidden',));
+	   echo $this->Form->input('Agaffectmutation.agdossier_id', array('type'=>'hidden',));
+	   echo $this->Form->input('Agaffectmutation.matricule', array('type'=>'hidden',));
+	   echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	  echo '<table class="table trHover borderBottom">';
+	  echo $this->Form->input('Agaffectmutation.date_affectmut', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date affectation/mutation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	  echo $this->Form->input('Agaffectmutation.paramfonction_id', array('type'=>'select', 'options'=>$fonctions,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Fonction', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Agaffectmutation.paramtypefonction_id', array('type'=>'select', 'options'=>$nivrespons,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Niveau responsabilité', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Agaffectmutation.paramservice_id', array('type'=>'select', 'options'=>$services,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Service', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Agaffectmutation.paramdirection_id', array('type'=>'select', 'options'=>$directions,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Direction', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo '</table>';
+    ?>
+    </td>
+    </tr>
+	</table>
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

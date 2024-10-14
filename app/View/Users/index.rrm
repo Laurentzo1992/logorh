@@ -1,0 +1,29 @@
+<!-- Index and Loggin View for Users -->
+<?php
+
+if(!$loggedIn){
+	echo '<span class="banner">SONATUR - Gestion des Ressources Humaines & de la Paie</span>';
+	echo $this->Html->tag('div', null, array('id'=>'loginBox'));
+	echo $this->Form->create();
+	echo '<table>';
+	echo $this->Form->input('data[otherData][username]', array('type'=>'text', 'id'=>'login',          'format'=>false, 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</tr></td>'));
+	echo $this->Form->input('data[otherData][password]', array('type'=>'password', 'id'=>'password',   'format'=>false, 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</tr></td>'));
+	echo $this->Form->input('data[otherData][submit]', array('type'=>'submit', 'value'=>'Se connecter', 'format'=>false, 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</tr></td>'));	     
+	echo '</table>';
+	//echo '<br>';
+	echo $this->Form->end();
+	echo '<span class="forget">'; 
+	echo $this->Html->link('Mot de passe oublié',array('controller'=>'Users', 'view'=>'passwordinit'));
+	echo '</span>';
+	echo '</div>';
+}
+else
+{
+	echo $this->Html->tag('div', null, array('id'=>'background'));
+	
+	
+	
+	echo '</div>';
+	
+}
+?>

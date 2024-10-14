@@ -1,0 +1,55 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">CANDIDATURE</th></tr>
+	<tr><th class="color1">Infos personnels</th><th class="color2">Contacts / lieu de résidence</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	
+	   echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Recrucandidature.recrusession_id', array('type'=>'select', 'options'=>$recrusessions, 'empty'=>'Selectionner', 'label'=>'Session recrutement ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Recrucandidature.cand_nom', array('type'=>'text', 'class'=>'azerty uppercase', 'label'=>'Nom (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrucandidature.cand_prenom', array('type'=>'text', 'class'=>'azerty capitalize', 'label'=>'Prénom(s) (*)',  'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrucandidature.cand_date_naiss', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date naissance', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrucandidature.cand_lieu_naiss', array('type'=>'text', 'class'=>'azerty', 'label'=>'Lieu naissance', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrucandidature.cand_genre', array('type'=>'radio',  'options'=>array('M'=>'M','F'=>'F'), 'before'=>'<tr><td>Genre(*) </td><td>', 'between'=>'', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Recrucandidature.cand_porfil', array('type'=>'text', 'class'=>'azerty', 'label'=>'Lieu naissance', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   
+	   echo $this->Form->input('Recrucandidature.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Recrucandidature.id', array('type'=>'hidden'));
+
+	   
+	   
+	echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Recrucandidature.cand_telephone', array('type'=>'text', 'class'=>'azerty','label'=>'Téléphone', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Recrucandidature.cand_email', array('type'=>'text', 'class'=>'azerty lowercase','label'=>'Email', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+       echo $this->Form->input('Recrucandidature.cand_adresse', array('type'=>'textarea', 'label'=>'Adresse', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	 
+	echo '</table>';
+    ?>
+    </td>
+    </tr>
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

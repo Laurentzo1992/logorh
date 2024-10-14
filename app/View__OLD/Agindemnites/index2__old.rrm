@@ -1,0 +1,122 @@
+<!--Contrats Index-->
+<?php
+//print_r($eval);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	//$this->Session->write('return', $this->Html->getReturnUrl());
+	
+	echo '<table class="table trHover borderBottom">';
+	echo '<th style="background-color:#a2a6a8"  colspan="8">Formation : '.$theme.'</th>';
+	echo $this->Paginator->tableHeaders('Sessionparticipant', array( 
+	'Action(s)'=>'',
+	'Matricule'=>'participant_id',
+	'Nom'=>'participant_id',
+	'Prénom(s)'=>'participant_id',
+	'Téléphone'=>'participant_id',
+	'Presence'=>'presence',
+	
+	));
+	$tableData = array();  //  
+	foreach($sessionparticipants as $sessionparticipant){
+		$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+		$presence = $this->Form->input('Sessionparticipant.presence', array('type'=>'checkbox', 'checked'=>((bool)$sessionparticipant['presence']), 'disabled'=>'disabled', 'addHidden'=>false));;
+		$action = '';
+		
+		if($sessionparticipant['presence'] ==1)
+		{
+			//$action = $this->Form->input('Sessionparticipant.check.[]', array('type'=>'checkbox', 'class'=>'SessionparticipantCheckItem', 'value'=>$sessionparticipant['id'], 'addHidden'=>false));
+			if($accessLevel['edit']){
+				$action .= $this->Html->link(
+					'', 
+					array('controller'=>'Evaluationachauds', 'view'=>'edit',  'params'=>array('sessionpartid:' . $sessionparticipant['id'])), 
+					array('title'=>'Renseigner l\'évaluation d\'un participant', 'class'=>'icon new')
+				);
+			}
+			if($accessLevel['edit']){
+				$action .= $this->Html->link(
+					'', 
+					array('controller'=>'Evaluationachauds', 'view'=>'edit3', 'params'=>array('sessionpartid:' . $sessionparticipant['id'])), 
+					array('title'=>'Visualer l\'évaluation d\'un participant', 'class'=>'icon eye')
+				);
+			}
+			if($accessLevel['edit']){
+				$action .= ' ' . $this->Html->link(
+					'', 
+					array('controller'=>'Evaluationachauds', 'view'=>'edit2', 'params'=>array('sessionpartid:' . $sessionparticipant['id'])), 
+					array('title'=>'Modifier l\'évaluation d\'un participant', 'class'=>'icon edit')
+				);
+			}
+			if($accessLevel['del']){
+				$action .= ' ' . $this->Html->link(
+					'', 
+					array('controller'=>'Evaluationachauds', 'view'=>'del', 'params'=>array('sessionpartid:' . $sessionparticipant['id'])), 
+					array('title'=>'Suprimer', 'class'=>'icon trash'), 
+					'Supprimer client(s)?');
+			}
+		}
+		else
+		{
+			$action = '';
+		}
+		$tableData[] = array($action,
+		(isset($matricule[$sessionparticipant['participant_id']]))?$matricule[$sessionparticipant['participant_id']]:'',
+        (isset($nom[$sessionparticipant['participant_id']]))?$nom[$sessionparticipant['participant_id']]:'',
+        (isset($prenom[$sessionparticipant['participant_id']]))?$prenom[$sessionparticipant['participant_id']]:'',
+        (isset($telephone[$sessionparticipant['participant_id']]))?$telephone[$sessionparticipant['participant_id']]:'',
+        $presence,	
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Sessionparticipant', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+	/*if($sessionparticipantid && $nomsessionparticipant){
+		
+		echo '<div class="floatContent">';
+		
+		echo '<table class="table trHover borderBottom">';
+		echo $this->Paginator->tableHeaders('Sessionparticipant', array('Sessionparticipants'=>'nomcom'));
+		$tableData = array();
+		
+		foreach($sessionparticipants as $sessionparticipant){
+			$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+			
+			$tableData[] = array(htmlEntities($sessionparticipant['nomcom'], ENT_QUOTES | ENT_IGNORE, "UTF-8"));
+		}
+		
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '<tr><td colspan="4">';
+		echo $this->Paginator->numbers('Sessionparticipant', array(			
+				'before'=>'<div class="paginate">',
+				'after'=>'</div>',
+				'modulus'=>5,
+				'separator'=>'',
+				'tag'=>'span',
+				'ellipsis'=>'...',
+				'first'=>'<<',
+				'last'=>'>>',
+				'class'=>'',
+				'currentClass'=>'',
+				'counter'=>''
+			));
+		echo '</td></tr>';
+		echo '</table></div>';
+	}*/
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

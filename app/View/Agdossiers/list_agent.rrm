@@ -1,0 +1,147 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	});
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($typesal);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/*----*/
+
+	 $req_bul = "SELECT dos.ag_matricule as matricule,
+						dos.ag_nom  as nom,
+						dos.ag_prenom as prenom,
+						dos.ag_genre as  genre,
+						cat.libelle as  categorie,
+						ech.libelle as echelon,
+						dir.nom_direction as nom_direction					 
+		         FROM  agdossiers dos, 
+				       agcontrats con,
+				       agavencements avc, 
+					   paramclassifications cat,
+					   paramechelons ech,
+					   agaffectmutations aff,
+					   paramdirections dir
+			     WHERE dos.id = con.agdossier_id AND
+				      dos.id = avc.agdossier_id AND
+			          avc.paramclassification_id = cat.id   AND 
+			          avc.paramechelon_id  = ech.id AND 
+					  dos.id = aff.agdossier_id AND
+					  aff.paramdirection_id = dir.id AND
+					  con.statut = 1
+		         ORDER BY dos.ag_matricule ASC";
+	 
+	$resp_bul = $bdd->query($req_bul);
+	
+/**************************SQL***********************************/
+
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>';
+						
+							echo '<td colspan="10" align="center">
+							'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+							<h3><u>LISTE DES AGENTS PAR CATEGORIE / ECHELON / GENRE / DIRECTION </u></h3>
+							</td>';
+						
+					echo '<td colspan="2" align="right">
+						Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+				echo '</tr>';
+				
+				
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1"     id="example" class="display" style="width:100%">';
+					echo '<tr style="background-color:#808080;font-weight:bold;color:white;">';
+					    echo'<td align="left"><b>N°</b></td>';
+						echo'<td align="left"><b>Matr.</b></td>';
+						echo'<td align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Categorie </b></td>';
+						echo'<td align="left"><b>Echelon </b></td>';
+						echo'<td align="left"><b>Genre</b></td>';
+						echo'<td align="left"><b>Direction</b></td>';
+					echo '</tr>';
+		
+		
+		$i = 0;
+		while($rembulletin = $resp_bul->fetch())
+		{	
+			$i++;
+		
+			echo '<tr>';
+				echo'<td align="left">'.$i.'</td>';
+				echo'<td align="left">'.$rembulletin['matricule'].'</td>';
+				echo'<td align="left">'.$rembulletin['nom'].' '.$rembulletin['prenom'].'</td>';
+                echo'<td align="left">'.$rembulletin['categorie'].'</td>';
+				echo'<td align="left">'.$rembulletin['echelon'].'</td>';
+				echo'<td align="left">'.$rembulletin['genre'].'</td>';
+				echo'<td align="left">'.$rembulletin['nom_direction'].'</td>';
+				
+			echo '</tr>';
+				
+		}
+       
+		echo '</table>';
+		echo'<table width="100%" cellspacing="0" border="0">';	
+					
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DAFC<br><br><br><br><br><br></b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DG<br><br><br><br><br><br></b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dafc].'</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dg].'</b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" style="font-size:11px" colspan="2">'.$distinct_dafc.'</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" style="font-size:11px" colspan="2">'.$distinct_dg.'</td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

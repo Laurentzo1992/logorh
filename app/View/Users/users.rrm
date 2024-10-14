@@ -1,0 +1,128 @@
+
+<!--Users Index-->
+<?php
+
+$cleSecrete = "MaCleEstIncassable";
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Usergroups', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Usergroups', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Usergroups', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Usergroup')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Usergroups', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Usergroup'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom" style="width:350px;">';
+	$actionCheck = $this->Form->input('Usergroup.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'UsergroupCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Usergroup', array($actionCheck=>false, 'Les profils'=>'name'));
+	$tableData = array();
+	foreach($usergroups as $usergroup){
+		$usergroup = $usergroup['Usergroup'];
+		$name = $this->Html->linkReplaceParam(
+				$usergroup['name'], 
+				array('controller'=>'Users', 'view'=>'users', 'params'=>array('groupid:' . $usergroup['id'])), 
+				array('title'=>'Afficher utilisateurs', 'style'=>'display:block;text-align:left;width:250px;padding:5px;' . (($usergroup['id']==$groupid)?'border: 1px solid #cbcbcb':''))
+			);
+		$action = $this->Form->input('Usergroup.check.[]', array('type'=>'checkbox', 'class'=>'UsergroupCheckItem', 'value'=>$usergroup['id'], 'addHidden'=>false));
+		$tableData[] = array($action, $name);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Usergroup', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+	if($groupid){
+		echo '<div class="floatContent">';
+		$actionLink = '';
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Users', 'view'=>'search',), 
+			array('title'=>'Recherche', 'class'=>'icon search groupAction_1')
+		);
+		if($accessLevel['add']){
+			$actionLink .= $this->Html->link(
+				'', 
+				array('controller'=>'Users', 'view'=>'edit', 'params'=>array('groupid:' . $groupid)), 
+				array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+			);
+		}
+		if($accessLevel['edit']){
+			$actionLink .= $this->Html->link(
+				'', 
+				array('controller'=>'Users', 'view'=>'edit2', 'params'=>array('groupid:' . $groupid, 'id:')), 
+				array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'User')
+			);
+		}
+		if($accessLevel['del']){
+			$actionLink .= ' ' . $this->Html->link(
+				'', 
+				array('controller'=>'Users', 'view'=>'del', 'params'=>array('id:')), 
+				array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'User'));
+		}
+		echo "<div class=\"actionContent\">{$actionLink}</div>";
+		echo '<table class="table trHover borderBottom">';
+		$actionCheck = $this->Form->input('User.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'UserCheck', 'value'=>1, 'addHidden'=>false));
+		echo $this->Paginator->tableHeaders('User', array($actionCheck=>false, 'Nom et Prénoms'=>'name', 'Utilisateur'=>'username', 'Mot de passe'=>false, 'Email'=>'email'));
+		$tableData = array();
+		foreach($users as $user){
+			$user = $user['User'];
+			$action = $this->Form->input('User.check.[]', array('type'=>'checkbox', 'class'=>'UserCheckItem', 'value'=>$user['id'], 'addHidden'=>false));
+			$tableData[] = array($action, $user['name'], $user['username'], $user['hPassword'], $user['email']);
+		}
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '<tr><td colspan="4">';
+		echo $this->Paginator->numbers('User', array(			
+				'before'=>'<div class="paginate">',
+				'after'=>'</div>',
+				'modulus'=>5,
+				'separator'=>'',
+				'tag'=>'span',
+				'ellipsis'=>'...',
+				'first'=>'<<',
+				'last'=>'>>',
+				'class'=>'',
+				'currentClass'=>'',
+				'counter'=>''
+			));
+		echo '</td></tr>';
+		echo '</table></div>';
+	}
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

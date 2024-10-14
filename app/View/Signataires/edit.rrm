@@ -1,0 +1,63 @@
+<!--cpbs Edit-->
+<script type="text/javascript">
+   
+   $(document).ready(function() {
+    /*********************************************/
+	    $("#region").hide();
+	    $("#province").hide();
+	    $("#commune").hide();
+	    var tmp = '';
+		$("#pays").change(function() {
+			tmp = $("select#pays").val();
+			if(tmp == 'Burkina Faso')
+		    {
+				$("#region").show(1000);
+				$("#province").show(1000);
+				$("#commune").show(1000);
+		    }
+			if(tmp != 'Burkina Faso')
+		    {
+				$("#region").hide(1000);
+				$("#province").hide(1000);
+				$("#commune").hide(1000);
+		    }
+
+		});
+	/*********************************************/
+    });
+</script>
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">Signataire</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php 
+	  echo '<table class="table trHover borderBottom">';
+      echo $this->Form->input('Signataire.agdossier_id', array('type'=>'select', 'options'=>$agdossiers,  'empty'=>'Selectionner', 'label'=>'Nom & Prénom(s) (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	  echo $this->Form->input('Signataire.signature', array('type'=>'select', 'options'=>$paramfonctions,  'empty'=>'Selectionner', 'label'=>'Signature (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	  echo $this->Form->input('Signataire.distinction', array('type'=>'text', 'label'=>'Distinction', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Signataire.statut', array('type'=>'checkbox', 'value'=>1, 'label'=>'Statut', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Signataire.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Signataire.id', array('type'=>'hidden'));
+
+	echo '</table>';
+	 ?>
+	</td>
+	</tr>
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

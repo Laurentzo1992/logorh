@@ -1,0 +1,66 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Paramtypemvts', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramtypemvts', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramtypemvts', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Paramtypemvt')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Paramtypemvts', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Paramtypemvt'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Paramtypemvt.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'ParamtypemvtCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Paramtypemvt', array($actionCheck=>false, 'Libelle'=>'libelle',));
+	$tableData = array();  //  
+	foreach($paramtypemvts as $paramtypemvt){
+		$paramtypemvt = $paramtypemvt['Paramtypemvt'];
+		
+		
+		$action = $this->Form->input('Paramtypemvt.check.[]', array('type'=>'checkbox', 'class'=>'ParamtypemvtCheckItem', 'value'=>$paramtypemvt['id'], 'addHidden'=>false));
+		$tableData[] = array($action, $paramtypemvt['libelle'], );
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Paramtypemvt', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

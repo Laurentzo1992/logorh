@@ -1,0 +1,95 @@
+﻿<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				
+				
+			]
+		} );
+		
+	} );
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($personnels);
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$curDate = date("Y-m-d");
+//print_r($curDate);	
+$sql = "SELECT th.intitule as theme,
+               ba.nom_bailleur as bailleur,
+			   sf.montant as montant
+        FROM  bailleurs ba,   sessionformations sf, themes th
+		WHERE sf.bailleur_id = ba.id  and
+			  sf.theme_id = th.id and
+			  sf.date_debut BETWEEN '".$dateDebut."' AND '".$dateFin."'";
+ 
+$reponse = $bdd->query($sql);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','',''));
+	echo $this->Form->input('Comptabilite.dateDebut', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Comptabilite.dateFin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	//echo $this->Form->input('Comptabilite.theme', array('type'=>'select', 'options'=>$themes, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+		
+	echo $this->Form->input('Comptabilite.submit', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Comptabilite.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+   
+?>
+<table id="example" class="display" style="width:100%">
+        <thead style="background-color:#a2a6a8; color:#fff;">   
+		<tr>
+		    <th>Bailleur</th>
+			<th>Thème</th>
+			<th>Cout de vente de la formation</th>
+		</tr>
+        </thead>
+        <tbody>
+		    <tr>
+			    <?php
+				     $total = 0;
+					 $totalgen =0;
+					 while($donnees = $reponse->fetch())
+					 {
+						$totalgen = $totalgen + $donnees['montant'];
+				?>
+				<td><?php echo $donnees['bailleur']; ?></td>
+			    <td><?php echo $donnees['theme']; ?></td>
+                <td><?php echo $donnees['montant']; ?></td>
+		     </tr>
+			<?php		
+				}
+			?>
+       </tbody>
+	   <tfoot>
+	       <tr>
+			<td>COUT TOTAL</td>
+		  <td></td>
+			<td><?php echo number_format($totalgen, 0,',', ' '); ?></td>
+		   </tr>
+	   </tfoot>
+    </table>		
+<?php		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+

@@ -1,0 +1,96 @@
+<?php
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$sql = "SELECT  reg.paramregimemedico_id  as paramregimemedico_id,
+				SUM(reg.montant)  as montant,
+				reg.taux  as taux,
+				reg.unite  as unite,
+				SUM(reg.montant_rembourse) as montant_rembourse
+		FROM  affregimemedicos reg
+		WHERE reg.date_med BETWEEN '".$datedebut."' AND '".$datefin."'
+		GROUP BY reg.paramregimemedico_id";
+
+ 
+$reponse = $bdd->query($sql);
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+        
+		echo '<table width="100%" cellspacing="0" border="0">';
+		    
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+					    SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+					    </td>';
+					echo '<td colspan="10" align="center">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+					<h3><u>ETAT RECAPITULATIF DE REMBOURSEMENT DES FRAIS MEDICAUX</u></h3>
+					</td>';
+					echo '<td colspan="2" align="right">
+					    Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+			    echo '</tr>';
+				
+			
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+					
+		$i = 0;
+		$total_mnt = 0; $total_gen_mnt = 0;
+		$total_net = 0; $total_gen_net = 0;
+		echo '<table width="100%" cellspacing="0" border="1">';
+			echo '<thead>';
+				echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+					echo '<th style="width:3%" align="center"><b>N° ordre</b></th>';
+					echo '<th style="width:19%" align="center"><b>Désignations</b></th>';
+					echo '<th style="width:13%" align="center"><b>Montant</b></th>';
+					echo '<th style="width:13%" align="center"><b>Taux de remboursement</b></th>';
+					echo '<th style="width:13%" align="center"><b>Net à rembourser</b></th>';
+				echo '</tr>';
+			echo '</thead>';
+			echo '<tbody>';
+		while($donnees = $reponse->fetch())
+		{
+			$i++;
+			#---------------------
+			$total_mnt = $total_mnt + $donnees['montant'];
+			$total_net = $total_net + $donnees['montant_rembourse'];
+			echo'<tr>
+					<td style="width:13%" align="right">'.$i.'</td>
+					<td style="width:13%" align="right">'.$regimes[$donnees['paramregimemedico_id']].'</td>
+					<td style="width:13%" align="right">'.number_format($donnees['montant'], 0,',', ' ').'</td>
+					<td style="width:13%" align="right">'.$donnees['taux'].' '.$donnees['unite'].'</td>
+					<td style="width:13%" align="right">'.number_format($donnees['montant_rembourse'], 0,',', ' ').'</td>
+					</tr>';
+			#---------------------
+			
+			
+		}
+		echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:22%" align="right"><b>MONTANT TOTAL A REMBOURSER</b></th>';
+			echo '<th style="width:13%" align="right"><b>'.number_format($total_mnt, 0,',', ' ').'</b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b>'.number_format($total_net, 0,',', ' ').'</b></th>';
+		echo '</tr>';
+		echo '</tbody>';
+		
+		echo '</table>';
+		echo '<br>';
+		echo '</div>';
+		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

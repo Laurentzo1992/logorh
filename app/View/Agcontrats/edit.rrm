@@ -1,0 +1,82 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">INFORMATIONS CONTRACTUEL</th></tr>
+	<tr><th class="color1">Contrat</th><th class="color2"></th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	   //agdossiers
+	   echo $this->Form->input('Agcontrat.agdossier_id', array('type'=>'select', 'options'=>$agdossiers,  'empty'=>'Selectionner', 'class'=>'azerty', 'label'=>'Agent (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agcontrat.paramnatcontrat_id', array('type'=>'select', 'options'=>$paramnatcontrats,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Nature contrat', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agcontrat.num_contrat', array('type'=>'text','class'=>'azerty','label'=>'Numero contrat', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  
+	   echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	  echo '<table class="table trHover borderBottom">';
+	  
+	  echo $this->Form->input('Agcontrat.date_debut', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date début/embauche', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	  echo $this->Form->input('Agcontrat.date_fin', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date fin', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	  
+	echo '</table>';
+    ?>
+    </td>
+    </tr>
+	<tr><th class="color1">Mode de paiement</th><th class="color2">Cotisation social</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	  echo '<table class="table trHover borderBottom">';
+	  echo $this->Form->input('Agcontrat.parammodepaie_id', array('type'=>'select', 'options'=>$parammodepaies,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Mode de paiement', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Agcontrat.parambanque_id', array('type'=>'select', 'options'=>$parambanques,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Domiciliation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Agcontrat.num_comptebanq', array('type'=>'text','class'=>'azerty','label'=>'Numero de compte', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	 
+	echo '</table>';
+    ?>
+    </td>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Agcontrat.paramstructurecotsocial_id', array('type'=>'select', 'options'=>$paramstructurecotsocials,  'empty'=>'Selectionner','class'=>'azerty', 'label'=>'Structure cotisation social', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agcontrat.num_cotisation', array('type'=>'text', 'class'=>'azerty', 'label'=>'Numero', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agcontrat.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agcontrat.id', array('type'=>'hidden'));
+	   echo $this->Form->input('Agcontrat.matricule', array('type'=>'hidden'));
+
+	   echo '</table>';
+	 ?>
+	</td>
+    </tr>
+	<tr><th class="color2">Activer/Désactiver</th></tr>
+	<tr>
+	
+	<td class="vertical-align-top color2">
+	<?php
+	  echo '<table class="table trHover borderBottom">';
+	  echo $this->Form->input('Agcontrat.statut', array('type'=>'select', 'options'=>$statuts,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Statut', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	echo '</table>';
+    ?>
+    </td>
+    </tr>
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

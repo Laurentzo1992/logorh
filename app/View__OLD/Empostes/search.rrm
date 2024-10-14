@@ -1,0 +1,12 @@
+<?php
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	$filter = array();
+		$filter = array(
+			'Emposte.intitule'=>'Intitulé',
+		);
+	
+	echo $this->Paginator->filter('Emposte', $filter, null, array('view'=>'index'));
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

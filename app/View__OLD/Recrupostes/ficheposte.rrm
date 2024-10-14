@@ -1,0 +1,79 @@
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+		echo'<table width="100%" cellspacing="0" border="0">';
+				echo '<tr>';
+				    echo'<td align="left"><b>SONATUR<br>
+					03 BP 7222 OUAGA 03<br>
+					TEL: 50 30 17 73 / 74<br> 
+					</td>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+			        echo'<td align="left"></td>';
+				echo '</tr>';
+				
+		echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+		echo '<br>';
+		echo '<h2>A. POSTE</h2>';
+		echo'<table width="100%" cellspacing="0" border="0">';
+				
+				echo '<tr>';
+					echo'<td align="left">Titre du poste : </td>';
+					echo'<td align="left">'.$intitule.'</td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">Lieu d’affectation : </td>';
+					echo'<td align="left">'.$lieu_affectation.'</td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">Supérieur hiérarchique : : </td>';
+					echo'<td align="left">'.$superieur_hierar.'</td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">Date : </td>';
+					echo'<td align="left">'.date('d/m/Y',strtotime($date_poste)).'</td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">Date limite : </td>';
+					echo'<td align="left">'.date('d/m/Y',strtotime($date_limite)).'</td>';
+				echo '</tr>';
+				
+		echo '</table>';
+        echo '<h2>B. Principales attributions</h2>';		
+		echo '<p>'.$attribution.'</p>';
+		echo '<br>';
+		echo '<h2>C. Aptitudes et compétences requises</h2>';		
+		echo '<p>'.$competence.'</p>';
+		echo '<br>';
+		echo '<h2>D. Education et expériences</h2>';		
+		echo '<p>'.$education.'</p>';
+		echo '<br>';
+		echo '<h2>E. Autres compétences pertinentes</h2>';		
+		echo '<p>'.$autre_competence.'</p>';
+		echo '<br>';
+		echo '<h2>F. Exigence linguistique</h2>';		
+		echo '<p>'.$langue.'</p>';
+		echo '<br>';
+		echo '<h2>G. Durée de l\'engagement</h2>';		
+		echo '<p>'.$duree_eng.'</p>';
+		echo '<br>';
+		echo '<h2>H. Rémunération</h2>';		
+		echo '<p>'.$remuneration.'</p>';
+		echo '<br>';
+		echo '<h2>I. Dossier</h2>';		
+		echo '<p>'.$dossier.'</p>';
+		echo '<br>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

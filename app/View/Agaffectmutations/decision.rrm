@@ -1,0 +1,104 @@
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+			echo'<table style="font-size:14px;font-family:arial;line-height:20px" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+						echo'<td align="center"><b>
+						SOCIETE NATIONALE D’AMENAGEMENT<br>
+						DES TERRAINS URBAINS<br>
+						(SONATUR)<br>
+						------------<br>
+						S.E au capital de 3 000 000 000 F CFA<br>
+						Créée par Décret N°97-426/PRES/PM/MIHU<br>
+						du 13 octobre 1997<br>   
+						03 BP 7222 Ouagadougou 03<br>
+						Tél. : (226) 25 30 17 73 / 74<br>                 
+						Fax : (226) 25 31 87 19<br>
+						</b></td>';
+						echo'<td align="center"><b>
+						BURKINA FASO<br>
+						<i>Unité – Progrès - Justice<br></i>
+						</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+					   echo'<td colspan="2" align="center"><br><br>DECISION N°2019-____________DG.SONATUR<br>
+									  portant affectation d’un agent de la SONATUR<br><br></td>';
+					echo '</tr>';
+					
+			echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+			echo'<table style="font-size:18px;font-family:arial;line-height:22px" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+					   echo'<td colspan="2" align="center"><br><b><u>LE DIRECTEUR GENERAL</b></u><br><br></td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td colspan="2" align="left">Vu le Décret N°97-426/MIHU/MEF du 13 octobre 1997 
+                            Portant création de la SONATUR ;<br></td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td colspan="2" align="left">Vu le Décret N°2001-063/MIHU/MEF/MCIA du 20 février 2001
+                            Portant approbation des statuts de la SONATUR ;<br></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="2" align="left">Vu le Décret N° 2018-0754/PRES/PM/MUH du 17août 2018 
+                            Portant nomination d’un Directeur Général de la SONATUR ;<br>
+                            </td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="2" align="left">Vu le Statut du personnel de la SONATUR ;<br></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="2" align="left">Vu les nécessités de service ;<br></td>';
+					echo '</tr>';
+			echo'</table>';
+			echo'<table style="font-size:18px;font-family:arial;line-height:22px" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+					   echo'<td colspan="2" align="center"><br><b><u>D E C I D E</b></u><br><br></td>';
+					echo '</tr>';
+					echo '<tr style="text-align:justify;page-break-after: always;">';
+					    echo'<td colspan="2" align="left"><u><b>ARTICLE 1 : </b></u>Monsieur '.$agdossiers[$dossierID].', matricule '.$matricule.', 
+						'.$fonction.', précédemment Chef de la Cellule de Bobo est affecté
+						à la '.$directions[$direction].' de la SONATUR. <br><br></td>';
+					echo '</tr>';
+					echo '<tr style="text-align:justify;">';
+					    echo'<td colspan="2" align="left"><u><b>ARTICLE 2 : </b></u>Le Directeur Administrative Financière 
+						et Comptable est chargé de l’application de la présente décision qui prend effet à compter
+						de la date de signature.</td>';
+					echo '</tr>';
+			echo'</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+        echo'<table style="font-size:14px;font-family:arial;line-height:20px" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+					    echo'<td></td>';
+					    echo'<td align="right"><br><b>Ouagadougou, le '.date("d-m-Y").'</b><br><br></td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td align="left"><b><u>Ampliations :</b></u>
+						<br>-	Toutes Directions et tous Services SONATUR
+						<br>-	Cellule de Bobo                                                                                    
+						<br>-	Intéressé
+						<br>-	Dossier Intéressé                                                                             
+						</td>';
+					    echo'<td align="right"><br><b>Le Directeur Général</b><br><br><br><br><br><br></td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td></td>';
+					    echo'<td align="right"><u><b>Soabou DIALLO</b></u></td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td></td>';
+					    echo'<td align="right">Chevalier de l’Ordre de Mérite<br> Economie et Finances &nbsp;&nbsp;&nbsp;</td>';
+					echo '</tr>';
+			echo'</table>';
+		echo '</tfoot>';
+		echo '</table>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

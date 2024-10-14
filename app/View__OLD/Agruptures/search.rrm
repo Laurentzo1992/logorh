@@ -1,0 +1,13 @@
+<?php
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	$filter = array();
+		$filter = array(
+			'Agrupture.matricule'=>'Matricule',
+			'Agrupture.num_contrat'=>'N° contrat',
+		);
+	
+	echo $this->Paginator->filter('Agrupture', $filter, null, array('view'=>'index'));
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

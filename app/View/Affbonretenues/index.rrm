@@ -1,0 +1,93 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Affbonretenues', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbonretenues', 'view'=>'traitement',), 
+			array('title'=>'Traitement bon produits pharmaceutiques', 'class'=>'icon reload groupAction_1')
+		);
+	}
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbonretenues', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbonretenues', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Affbonretenue')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Affbonretenues', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Affbonretenue'));
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbontraites', 'view'=>'index', 'params'=>array('retid:')), 
+			array('title'=>'Modifier', 'class'=>'icon file groupAction', 'ref'=>'Affbonretenue')
+		);
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affbonretenue.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffbonretenueCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affbonretenue', array($actionCheck=>false, 
+	
+	'Matricule'=>'matricule',
+	'Nom & prénom(s)'=>'agdossier_id',
+	'Date prêt'=>'date_ret',
+	'Montant prêt'=>'montant_ret',
+	//'Statut'=>'statut',
+	));
+	$tableData = array();  //  
+	foreach($affbonretenues as $affbonretenue){
+		$affbonretenue = $affbonretenue['Affbonretenue'];
+		
+		
+		$action = $this->Form->input('Affbonretenue.check.[]', array('type'=>'checkbox', 'class'=>'AffbonretenueCheckItem', 'value'=>$affbonretenue['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+        $affbonretenue['matricule'],		
+		(isset($agdossiers[$affbonretenue['agdossier_id']]))?$agdossiers[$affbonretenue['agdossier_id']]:'',
+		$affbonretenue['date_ret'],
+		number_format($affbonretenue['montant_ret'], 0,',', ' '),
+       //(isset($statuts[$affbonretenue['statut']]))?$statuts[$affbonretenue['statut']]:'',			
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affbonretenue', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

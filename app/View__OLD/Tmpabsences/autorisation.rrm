@@ -1,0 +1,132 @@
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+        $absence = '';
+		if($dateAbsence != '1970-01-01'){$absence = date("d-m-Y",strtotime($dateAbsence));}
+		$debut = '';
+		$fin = '';
+		if($date_debut != '1970-01-01'){$debut = date("d-m-Y",strtotime($date_debut));}
+		if($date_fin != '1970-01-01'){$fin = date("d-m-Y",strtotime($date_fin));}
+		
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+			echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr>';
+						echo'<td align="center" rowspan="4">'. $this->Html->image('../../boot/img/sonaturLogo.jpg', array('width'=>'250','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+						echo'<td align="center">&nbsp;&nbsp;</td>';
+						echo'<td align="left">Manuel qualité</td>';
+						echo'<td align="center" rowspan="5">
+						      <table width="90%" cellspacing="0"border="1">
+						      <tr><td align="center" colspan="2">Code : Pr-RH-04/FO-01</td><tr>
+						      <tr><td align="center">Version : 00</td><td align="center">Page : 1/1</td><tr>
+						     </table>
+						</td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="center">&nbsp;&nbsp;</td>';
+						echo'<td align="left">Descriptif processus</td>';
+						
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="center">&nbsp;&nbsp;</td>';
+						echo'<td align="left">Procédure</td>';
+						
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="center">&nbsp;&nbsp;</td>';
+						echo'<td align="left">Instruction de travail</td>';
+						
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="center">Processus RH</td>';
+						echo'<td align="center">&nbsp;&nbsp;</td>';
+						echo'<td align="left">Formulaire</td>';
+						
+					echo '</tr>';
+			echo'</table>';	
+		echo '<thead>';
+		$autorisation = $this->Form->input('',array('type'=>'checkbox', 'checked'=>((bool)$autorisation), 'disabled'=>'disabled', 'addHidden'=>false));
+		$regulation = $this->Form->input('', array('type'=>'checkbox', 'checked'=>((bool)$regulation), 'disabled'=>'disabled', 'addHidden'=>false));
+		
+		echo '<tbody>';
+			echo'<table style="font-size:14px;font-family:arial;line-height:18px" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+					   echo'<td colspan="2" align="center"><br><b><u>FICHE D’AUTORISATION D’ABSENCE</b></u><br><br></td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td align="left">DEMANDE N0 2020/'.$numero.' </td>';
+						echo'<td align="left">'.$autorisation.' AUTORISATION D\'ABSENCE</td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td align="left"></td>';
+						echo'<td align="left">'.$regulation.' REGULARISATION D\'ABSENCE</td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td colspan="2" align="left"><b>Nom et prénom:</b> '.$agdossiers[$dossierID].'</td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td colspan="2" align="left"><b>Direction:</b> '.$directions[$direction].'</td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td colspan="2" align="left"><b>Service:</b> '.$services[$service].'</td>';
+					echo '</tr>';
+					echo '<tr>';
+					    echo'<td colspan="2" align="left"><b>Emploi/fonction :</b> '.$fonctions[$fonction].'</td>';
+					echo '</tr>';
+			echo'</table>';
+			echo'<h4 style="text-align:center"><u>Pour une absence d\'une journée ou d\'une demi-journée</u><br></h4>';
+			
+			$matin = $this->Form->input('',array('type'=>'checkbox', 'checked'=>((bool)$matin), 'disabled'=>'disabled', 'addHidden'=>false));
+		    $apresmidi = $this->Form->input('', array('type'=>'checkbox', 'checked'=>((bool)$apresmidi), 'disabled'=>'disabled', 'addHidden'=>false));
+		
+			echo'<table style="font-size:14px;font-family:arial;line-height:18px;border:solid 1px #000" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+					   echo'<td align="center"><br>Jour et date : '.$absence.'</td>';
+					   echo'<td align="center"></td>';
+					   echo'<td align="center"></td>';
+					echo '</tr>';
+					echo '<tr>';
+					   echo'<td align="center">Si 1/2 journée : <br><td>';  
+					   echo'<td align="center">Matin '.$matin.'<br></td>';
+					   echo'<td align="center">Après-midi '.$apresmidi.'<br></td>';
+					echo '</tr>';
+			echo'</table>';
+			echo'<h4 style="text-align:center"><u>Pour une absence supérieure à une journée</u></h4>';
+			echo'<p style="text-align:center">(1er et dernier jour ouvré de l\'absence)</p>';
+			echo'<table style="font-size:14px;font-family:arial;line-height:18px;" width="100%" cellspacing="0" border="1">';
+					echo '<tr>';
+					   echo'<td align="left">Nombre de jours demandés</td>';  
+					   echo'<td align="left">Date du début</td>';
+					   echo'<td align="left">Date de la fin</td>';
+					echo '</tr>';
+					echo '<tr>';
+					   echo'<td align="left">'.$nbrjour.'</td>';  
+					   echo'<td align="left">'.$debut.'</td>';
+					   echo'<td align="left">'.$fin.'</td>';
+					echo '</tr>';
+			echo'</table>';
+			echo'<p style="text-align:left"><b><u>Motifs de l’absence :</b></u> '.$typabsences[$tmptypabsenceID].'</p>';
+			
+		echo '</tbody>';
+		echo '<tfoot>';
+            echo'<table style="font-size:14px;font-family:arial;line-height:18px;" width="100%" cellspacing="0" border="1">';
+					echo '<tr>';
+					   echo'<td align="left">Date et Signature de l’intéressé(e)</td>';  
+					   echo'<td align="left">Visa du CSRH</td>';
+					   echo'<td align="left">Visa du supérieur hiérarchique</td>';
+					echo '</tr>';
+					echo '<tr>';
+					   echo'<td align="left"><br><br><br><br></td>';  
+					   echo'<td align="left"><br><br><br><br></td>';
+					   echo'<td align="left"><br><br><br><br></td>';
+					echo '</tr>';
+			echo'</table>';
+			echo'<p style="text-align:left"><b><i>NB. Sont déductibles du congé annuel, les absences accordées au-delà de la limite légale de 10 jours par an.</b></i></p>';
+			
+		echo '</tfoot>';
+		echo '</table>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

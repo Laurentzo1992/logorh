@@ -1,0 +1,219 @@
+<?php
+
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/logOneaFiche.png', array('width'=>'100','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+					echo'<td align="center" rowspan="2"><b>INVITATION A LA FORMATION</b></td>';
+					echo'<td align="center">Code : AFO-IS-06</td>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'100', 'alt'=>'CEMEAU')) . '</td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="center">Réf. : S5</td>';
+					echo'<td align="center">Version : n°04 du 14/03/2018</td>';
+					echo'<td align="center">Page 1 sur 1</td>';
+				echo '</tr>';
+		echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+		echo '<br>';
+		echo'<table width="100%" cellspacing="0" border="0">';
+				echo '<tr>';
+					echo'<td colspan="2"><br></td>';
+					echo'<td colspan="2" align="right">Ouagadougou, le '.date('d/m/Y').'</td>';
+					//echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="center"></td>';
+					echo'<td colspan="2"align="center"><br><b><u>INVITATION A LA FORMATION</u></b><br></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Thème</td>';
+					echo'<td colspan="3" align="left">:'.$theme.'</td>';
+				
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Durée	</td>';
+					echo'<td align="left">: '.$duree.'h</td>';
+					echo'<td align="center"></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Période	</td>';
+					echo'<td align="left">: '.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).' </td>';
+					echo'<td align="center"></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Heure des séances 	</td>';
+					echo'<td align="left">: '.$heureDebut.' à '.$heureFin.'</td>';
+					echo'<td align="center"></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Formateur</td>';
+					echo'<td align="left">'; 
+					/*-------------------------------------------*/
+					foreach($sessionformateurs as $sessionformateur)
+					{
+						echo ': '.$nomforma[$sessionformateur].' '.$prenomforma[$sessionformateur].'<br>';
+					}
+					/*-------------------------------------------*/
+					echo'</td>';
+					echo'<td align="center"></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Lieu </td>';
+					echo'<td align="left">: '.$lieu.' </td>';
+					echo'<td align="center"></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Responsable de session</td>';
+					echo'<td align="left">';
+				/*-------------------------------------------*/
+					foreach($sessionresponsables as $sessionresponsable)
+					{
+						echo ': '.$resp_nom[$sessionresponsable].' '.$resp_prenom[$sessionresponsable].'<br>';
+					}
+					/*-------------------------------------------*/
+					echo'</td>';
+					echo'<td align="center"></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="left">Financement</td>';
+					if(isset($bailleurID))
+					{
+						echo'<td align="left">: '.$bailleurs[$bailleurID].'</td>';
+					}
+					else
+					{
+						echo'<td align="left">: </td>';
+					}
+					echo'<td align="center"></td>';
+					echo'<td align="center"></td>';
+				echo '</tr>';
+		echo'</table>';
+		echo '<br><br>';
+		echo '<table width="100%" cellspacing="0" border="1">';
+				echo '<tr style="font-size:13px;font-family:Arial;background-color:#1C76AF;color:#fff;border-top:solid 1px #000">';
+				echo '<th align="center"><b>Ordre</b></th>';
+				echo '<th align="center"><b>N° mle</b></th>';
+				echo '<th align="center"><b>Noms & Prénoms</b></th>';
+				echo '<th align="center"><b>Direction</b></th>';
+				echo '<th align="center"><b>Téléphone</b></th>';
+				echo '</tr>';
+				
+				$i = 0;
+			
+				foreach($sessionparticipants as $sessionparticipant)
+				{
+					$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+					$i++;
+					if(isset($dir[$sessionparticipant['participant_id']]))
+					{
+						echo '<tr style="font-size:13px;font-family:Arial;">';
+							echo '<td align="left">'.$i.'</td>';
+							echo '<td align="left">'.$matricule[$sessionparticipant['participant_id']].'</td>';
+							echo '<td align="left">
+							'.$nom[$sessionparticipant['participant_id']].'
+							'.$prenom[$sessionparticipant['participant_id']].'
+							</td>';
+							if(isset($directions[$dir[$sessionparticipant['participant_id']]]))
+							{
+								echo '<td align="left">
+								'.$directions[$dir[$sessionparticipant['participant_id']]].'
+								</td>';
+							}
+							else
+							{
+								echo '<td align="left"></td>';
+							}
+							echo '<td align="left">'.$telephone[$sessionparticipant['participant_id']].'</td>';
+						   
+						echo '</tr>'; 
+					}
+					else
+					{
+						echo '<tr>';
+							echo '<td align="left">'.$i.'</td>';
+							echo '<td align="left">'.$matricule[$sessionparticipant['participant_id']].'</td>';
+							echo '<td align="left">
+							'.$nom[$sessionparticipant['participant_id']].'
+							'.$prenom[$sessionparticipant['participant_id']].'
+							</td>';
+							echo '<td align="left">
+							'.(isset($direction[$sessionparticipant['participant_id']]))?$direction[$sessionparticipant['participant_id']]:''.'
+							</td>';
+							echo '<td align="left">'.$telephone[$sessionparticipant['participant_id']].'</td>';
+
+						echo '</tr>'; 
+					}
+				}
+			echo '</table>';
+			
+			echo '<p align="justify" style="font-size:12px;font-family:Arial;line-height:30px;">
+			Les Directeurs sont chargés de libérer les agents afin qu’ils soient présents aux lieux, date et heure indiqués.
+			</p>';
+			
+			echo '<p align="justify" style="font-size:12px;font-family:Arial;line-height:30px;">
+			En cas d’indisponibilité à la date indiquée ci-dessus prière informer Monsieur NIKIEMA Mathurin Gombila (Tél. : 70 28 73 27 Email : nikiemamth@yahoo.fr) au moins vingt quatre (24) heures avant le début de la formation.
+			</p>';
+			echo '<br><br>';
+			echo '</tbody>';
+			echo '<tfoot>';
+			echo '<table width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+						echo '<td align="left"><b><u>Ampliations :</u></b></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td align="right"><b><u>Le Directeur du Centre des Métiers de l’Eau</u></b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left">-	Directions concernées </td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left">-	Formateur  </td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left">-	Intéressé (es) </td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left">-	SAC</td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td ></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					
+			echo '</table>';
+			echo '<br><br>';
+		
+			echo '</tfoot>';
+			echo '</table>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

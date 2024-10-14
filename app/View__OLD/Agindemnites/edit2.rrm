@@ -1,0 +1,41 @@
+
+<?php
+//print_r($indemnites);
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();	
+	$trs = array(true=>'tr1', false=>'th');
+	$toogle = false;
+	
+?>
+<table class="table">
+<tr></tr>
+<tr>
+<td class="vertical-align-top color2">
+<?php
+//paramindemnite_id    	base_montant 
+echo '<table class="tableHeight">';
+echo $this->Form->input('Agindemnite.agdossier_id', array('type'=>'text', 'value'=>$agdossiers[$dossier], 'disabled','cols'=>'45',  'label'=>'Nom &prénom(s) ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+echo $this->Form->input('Agindemnite.matricule', array('type'=>'text', 'value'=>$matricule, 'disabled','cols'=>'45',  'label'=>'Matricule', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+echo $this->Form->input('Agindemnite.agcontrat_id', array('type'=>'hidden',  ));
+echo $this->Form->input('Agindemnite', array('type'=>'text',  'value'=>$libelle,'class'=>'session', 'label'=>'Elément de salaire', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+echo $this->Form->input('Agindemnite.code_paramind', array('type'=>'hidden'));
+echo $this->Form->input('Agindemnite.base_montant', array('type'=>'text',  'class'=>'session', 'label'=>'Base/Montant', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+echo $this->Form->input('Agindemnite.observation', array('type'=>'textarea',   'label'=>'Observation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+
+echo $this->Form->input('Agindemnite.id', array('type'=>'hidden',));
+echo $this->Form->input('Agindemnite.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr "class="enregistrer"><td colspan="2" class="th">', 'after'=>'</td></tr>'));
+
+echo '</table>';
+?>
+</td>
+</tr>
+<?php
+?>
+</table>
+<?php
+echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

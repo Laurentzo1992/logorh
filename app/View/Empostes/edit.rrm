@@ -1,0 +1,18 @@
+<!--Empostes Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Emposte.intitule', array('type'=>'textarea', 'label'=>'Intitulé', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Emposte.employe_id', array('type'=>'select', 'options'=>$employes, 'empty'=>'Selectionner', 'label'=>'Emposte', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Emposte.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	
+	echo '</table>';
+	echo $this->Form->input('Emposte.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

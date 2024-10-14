@@ -1,0 +1,113 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ /*$(function() {
+	 $('#details input, #details select, #details textarea, #details radio, #details checkbox').attr('disabled','disabled');
+ });*/
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Tmpabsences', 'view'=>'search2',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Tmpabsences', 'view'=>'edit2', 'params'=>array('id:')), 
+			array('title'=>'Validation', 'class'=>'icon success groupAction', 'ref'=>'Tmpabsence')
+		);
+	}
+	
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Tmpabsence.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'TmpabsenceCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Tmpabsence', array($actionCheck=>false, 
+	'Action(s)'=>'',
+	'Nom & Prénom(s)'=>'agdossier_id',
+	'Motif'=>'tmptypabsence_id',
+	'Date absence'=>'date_absence',
+	'Matin'=>'matin',
+	'Aprés-midi'=>'apres_midi',
+	'Date début'=>'date_debut',
+	'Date fin'=>'date_fin',
+	'Nombre de jour(s)'=>'nbr_jour',
+	'Statut'=>'statut',
+	'Document'=>'fichier',
+	));
+	$tableData = array();  //  
+	foreach($tmpabsences as $tmpabsence){
+		$tmpabsence = $tmpabsence['Tmpabsence'];
+		
+		$img ='';
+		$actu = '';
+		
+		/*----------------------------------------------*/
+		if(isset($tmpabsence['fichier'])) 
+		{
+			$img = '<img src="/LOGORH/app/boot/img/pdf.gif" align="absmiddle" border="0" alt="" />';
+			$actu ='<a href="/LOGORH/app/boot/fichier_numeriques/autorisations_conges/'.$tmpabsence['fichier'].'" target="_blank">'.$img.'</a>';
+		
+		}
+		else
+		{
+			$img = '<img src="/LOGORH/app/boot/img/general.gif" align="absmiddle" border="0" alt="" />';
+		}
+		
+		$receiptCheckin = $this->Html->linkReplaceParam(
+		'', 
+		array('controller'=>'Tmpabsences', 'view'=>'autorisation', 'params'=>array('tmpabsenceid:'.$tmpabsence['id'])), 
+		array('title'=>'Générer l\'autorisation d\'abence', 'class'=>'icon print')
+			);
+		
+		$matin = $this->Form->input('Tmpabsence.matin', array('type'=>'checkbox', 'checked'=>((bool)$tmpabsence['matin']), 'disabled'=>'disabled', 'addHidden'=>false));
+		$apresmidi = $this->Form->input('Tmpabsence.apres_midi', array('type'=>'checkbox', 'checked'=>((bool)$tmpabsence['apres_midi']), 'disabled'=>'disabled', 'addHidden'=>false));
+		
+		
+		$action = $this->Form->input('Tmpabsence.check.[]', array('type'=>'checkbox', 'class'=>'TmpabsenceCheckItem', 'value'=>$tmpabsence['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		$receiptCheckin,
+		(isset($agdossiers[$tmpabsence['agdossier_id']]))?$agdossiers[$tmpabsence['agdossier_id']]:'',
+		(isset($typabsences[$tmpabsence['tmptypabsence_id']]))?$typabsences[$tmpabsence['tmptypabsence_id']]:'',
+		date("d-m-Y",strtotime($tmpabsence['date_absence'])),
+		$matin,
+		$apresmidi,
+		date("d-m-Y",strtotime($tmpabsence['date_debut'])),
+		date("d-m-Y",strtotime($tmpabsence['date_fin'])),
+		$tmpabsence['nbr_jour'],
+		$statut[$tmpabsence['statut']],
+		$actu,		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Tmpabsence', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

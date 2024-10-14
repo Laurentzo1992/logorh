@@ -1,0 +1,81 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Carbonifications', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carbonifications', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carbonifications', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Carbonification')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Carbonifications', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Carbonification'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Carbonification.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'CarbonificationCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Carbonification', array($actionCheck=>false,
+	
+	'Date'=>'date_dist',
+	'Matricule'=>'matricule',
+	'Nom & Prénom(s)'=>'agdossier_id',
+	'Intitulé distinction'=>'distinction',
+	'Date effet'=>'date_effet',
+	'Montant prime'=>'montant_prime',
+	
+	));
+	$tableData = array();  //  
+	foreach($carbonifications as $carbonification){
+		$carbonification = $carbonification['Carbonification'];
+		
+		$action = $this->Form->input('Carbonification.check.[]', array('type'=>'checkbox', 'class'=>'CarbonificationCheckItem', 'value'=>$carbonification['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		$carbonification['date_dist'],
+		$carbonification['matricule'],
+		(isset($agdossiers[$carbonification['agdossier_id']]))?$agdossiers[$carbonification['agdossier_id']]:'',
+		$carbonification['distinction'],
+		$carbonification['date_effet'],
+		$carbonification['montant_prime'],
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Carbonification', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

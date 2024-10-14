@@ -1,0 +1,741 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	});
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($typesal);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/*----*/
+    $req_bul = "SELECT DISTINCT bul.id as bull_Id,
+	                    dos.ag_matricule as matricule,
+						dos.ag_nom  as nom,
+						dos.ag_prenom as prenom,
+						dos.id as  ag_dossier,
+						cont.id as  agcontrat_id,
+						cont.id as contratid,
+						cont.num_comptebanq as num_compte					 
+		         FROM  rembulletins bul, agcontrats cont, agdossiers dos
+			     WHERE dos.id = cont.agdossier_id AND
+			          cont.id = bul.agcontrat_id   AND 
+			          bul.date_debut  = '".$date_debut."' AND
+				      bul.date_fin    = '".$date_fin."'   AND
+					  bul.paramtypesalaire_id = '".$typesal."'
+		         ORDER BY dos.ag_matricule ASC";
+	 
+	$resp_bul = $bdd->query($req_bul);
+	
+/**************************SQL***********************************/
+
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>';
+						if($typesal == 1)
+				        {
+							echo '<td colspan="10" align="center">
+							'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+							<h3><u>Etat général des salaires</u></h3>
+							</td>';
+						}elseif($typesal == 2)
+					    {
+							echo '<td colspan="10" align="center">
+							'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+							<h3><u>Etat général des gratifications '.date("Y").'</u></h3>
+							</td>';
+						}elseif($typesal == 3)
+					    {
+							echo '<td colspan="10" align="center">
+							'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+							<h3><u>Etat général des primes de bilan '.date("Y").'</u></h3>
+							</td>';
+						}elseif($typesal == 4)
+				        {
+							echo '<td colspan="10" align="center">
+							'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+							<h3><u>Etat général des salaires au prorata</u></h3>
+							</td>';
+						}
+						else{}
+					echo '<td colspan="2" align="right">
+						Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="14" align="left">';
+						echo '<p><b><u>Période : </u> </b> '.strftime("  %m/%Y ", strtotime($date_fin)).'</p>';
+					echo'</td>';
+				echo '</tr>';
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1"     id="example" class="display" style="width:100%">';
+					echo '<tr style="background-color:#808080;font-weight:bold;color:white;">';
+					    echo'<td align="left"><b>N°</b></td>';
+						echo'<td align="left"><b>Matr.</b></td>';
+						echo'<td align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Salaire base</b></td>';
+						echo'<td align="left"><b>Anciennete</b></td>';
+						echo'<td align="left"><b>Indemnités</b></td>';
+						echo'<td align="left"><b>H. sup</b></td>';
+						echo'<td align="left"><b>All. fam</b></td>';
+						/*==============2024================*/
+						echo'<td align="left"><b>Avoir</b></td>';
+						/*==============================*/
+						echo'<td align="left"><b>Brute</b></td>';
+						echo'<td align="left"><b>Net impos</b></td>';
+						echo'<td align="left"><b>IUTS</b></td>';
+						echo'<td align="left"><b>TPA</b></td>';
+						echo'<td align="left"><b>SS Salarié</b></td>';
+						echo'<td align="left"><b>SS Patron</b></td>';
+						echo'<td align="left"><b>Précompte</b></td>';
+						echo'<td align="left"><b>Net à payer</b></td>';
+						echo'<td align="left"><b>Retenue(1%)</b></td>';
+						echo'<td align="left"><b>Total Net à payer</b></td>';
+					echo '</tr>';
+		
+		$total_salbase = 0;
+		$total_alloc = 0;
+		$total_brute = 0;
+		
+		$total_cnss_sal = 0;
+		$total_cnss_pat = 0;
+		
+		
+		//$total_sspatron = 0;
+		$total_net_imp = 0;
+		
+		$total_heure = 0;
+		$total_ind = 0;
+		
+		$totaux_impot = 0;
+		//$total_cnss = 0;
+		$total_anc = 0;
+		#------------------------------------------------
+		$i = 0;
+		$totaux_brute_salnet = 0;
+		$total_tpa = 0;
+		$totaux_salnet = 0;
+		$niamey = 0;
+		$total_precompte = 0;
+		$mnt_total_cnss_sal = 0;
+		$mnt_total_cnss_pat = 0;
+		$total_iuts = 0;
+		$total_avoir = 0;
+		while($rembulletin = $resp_bul->fetch())
+		{	
+			$i++;
+			/*$rembulletin = $rembulletin['Rembulletin'];
+			$bull_Id = $rembulletin['ag_dossier'];*/
+			$bull_Id = $rembulletin['bull_Id'];
+			$sal_base = 0;
+			/*------------Salaire de base----------*/
+			/*$sql1 = "SELECT  DISTINCT item.code as code, 
+							 SUM(item.montant) as montant
+					 FROM  rembulitems item
+					 WHERE item.rembulletin_id = '".$bull_Id."' AND item.code IN (1,36,37,1007)";*/
+			#===================2024====================		 
+			$sql1 = "SELECT  DISTINCT item.code as code, 
+							 SUM(item.montant) as montant
+					 FROM  rembulitems item
+					 WHERE item.rembulletin_id = '".$bull_Id."' AND item.code = '1'";
+			 
+			$reponse1 = $bdd->query($sql1);
+			while($donnees1 = $reponse1->fetch())
+			{
+				$sal_base = $donnees1['montant'];
+				$total_salbase = $total_salbase + $sal_base;
+			
+			}
+				/*=================ALLOCATION FAMILLIALE==============*/
+				$req2 = "SELECT  DISTINCT item.montant as montant
+						 FROM    rembulitems item
+						 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+								item.code  = '8'";
+				$rep2 = $bdd->query($req2);
+				$alloc = 0;
+				while($data2 = $rep2->fetch())
+				{
+					$alloc = $data2['montant'];
+					$total_alloc = $total_alloc + $alloc;
+				}
+				/*=================SALLAIRE BRUT==============*/
+				/*$req3 = "SELECT DISTINCT SUM(item.montant) as montant
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."' AND
+						 item.avoir_ret = '1' AND 
+						 item.montant > 0  AND
+						 item.code != '500'";*/
+					/*-------*/
+				$req3 = "SELECT DISTINCT item.code as code, 
+							   item.designation as designation,
+							   item.base as base,
+							   item.montant as montant,
+							   item.montant2 as montant2,
+							   item.taux as taux,
+							   item.avoir_ret as avoir_ret
+						FROM  rembulitems item
+						WHERE item.rembulletin_id = '".$bull_Id."' AND
+							  item.avoir_ret = '1' AND 
+							  item.montant > 0  AND
+							  item.code != '500'
+						ORDER BY item.code ASC";	
+						 
+				$rep3 = $bdd->query($req3);
+				$brute = 0;
+				$brute_salnet = 0;
+				$cnss_sal = 0;
+				$cnss_pat = 0;
+				$tpa = 0;
+				
+				
+				$salaireBrute = 0;
+				while($data3 = $rep3->fetch())
+				{
+					$salaireBrute = $salaireBrute + $data3['montant'];
+					
+					$tmp_tpa = $salaireBrute * 0.03;
+					
+					$tpa = round($tmp_tpa);
+					$brute_salnet = $salaireBrute;
+					/*=================CNSS ou CARFO==============*/
+					$tmp = $cotisation[$rembulletin['agcontrat_id']];
+					if($typesal == 1)
+				    {
+						if($tmp == 1)
+						{
+							/*------------CNSS------------------*/
+							$alpha = 0;
+							$alpha = $data3['montant'];
+							if($alpha >= 800000){$brute = 800000;}else{$brute = $alpha;}
+							$total_brute = $total_brute + $brute;
+						}
+						elseif($tmp == 2)
+						{
+							/*------------CARFO------------------*/
+							$alpha = 0;
+							$alpha = $data3['montant'];
+							$brute = $alpha;
+							$total_brute = $total_brute + $brute;
+							/*---------------------------------*/
+						}else{}
+					}elseif($typesal == 2)
+					{
+						if($tmp == 1)
+						{
+							/*------------CNSS------------------*/
+							$alpha = 0;
+							$alpha = $data3['montant'];
+							$brute = $alpha;
+							$total_brute = $total_brute + $brute;
+						}
+						elseif($tmp == 2)
+						{
+							/*------------CARFO------------------*/
+							$alpha = 0;
+							$alpha = $data3['montant'];
+							$brute = $alpha;
+							$total_brute = $total_brute + $brute;
+							/*---------------------------------*/
+						}else{}
+						
+					}
+					else
+					{
+						if($tmp == 1)
+						{
+							/*------------CNSS------------------*/
+							$alpha = 0;
+							$alpha = $data3['montant'];
+							$brute = $alpha;
+							$total_brute = $total_brute + $brute;
+						}
+						elseif($tmp == 2)
+						{
+							/*------------CARFO------------------*/
+							$alpha = 0;
+							$alpha = $data3['montant'];
+							$brute = $alpha;
+							$total_brute = $total_brute + $brute;
+							/*---------------------------------*/
+						}else{}
+					}
+					
+					
+					
+				}
+				/*=================NET IMPOSABLE==============*/
+				$req4 = "SELECT DISTINCT item.montant as montant
+						FROM  rembulitems item
+						WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code  = '1001'";
+				$rep4 = $bdd->query($req4);
+				$netimposable = 0;
+				while($data4 = $rep4->fetch())
+				{
+					$netimposable = $data4['montant'];
+					$total_net_imp = $total_net_imp + $netimposable;
+				}
+				/*=================IUTS==============*/
+				$req5 = "SELECT DISTINCT item.montant as montant
+						FROM  rembulitems item
+						WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code  = '402'";
+				$rep5 = $bdd->query($req5);
+				$iuts = 0;
+				while($data5 = $rep5->fetch())
+				{
+					$iuts = $data5['montant'];
+					
+				}
+				/*=================Indemnité==============*/
+				$req6 = "SELECT DISTINCT SUM(item.montant) as indemnite
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code in (3,4,5,6,7,31,32,33,38)";
+				$rep6 = $bdd->query($req6);
+				$indemnite = 0;
+				
+				while($data6 = $rep6->fetch())
+				{
+					$indemnite = $data6['indemnite'];
+					$total_ind = $total_ind + $indemnite;
+				}
+				/*=================Précompte==============*/
+				$req7 = "SELECT DISTINCT SUM(item.montant) as precompte
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code in (29,98,1008,403)";
+				$rep7 = $bdd->query($req7);
+				$precompte = 0;
+				
+				while($data7 = $rep7->fetch())
+				{
+					$precompte = $data7['precompte'];
+					
+				}
+				/*=================Totaux impots ==============*/
+				$req8 = "SELECT item.montant as montant
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code = '501'";
+				$rep8 = $bdd->query($req8);
+				$impot = 0;
+				
+				while($data8 = $rep8->fetch())
+				{
+					$tmp_impot = $data8['montant'];
+					
+					$impot = round($tmp_impot);
+					
+					$totaux_impot = $totaux_impot + $impot;
+				}
+				/*================Total RETENUE==========*/
+				$sql2 = "SELECT DISTINCT item.code as code, 
+							   item.designation as designation,
+							   item.base as base,
+							   item.montant as montant,
+							   item.montant2 as montant2,
+							   item.taux as taux,
+							   item.avoir_ret as avoir_ret
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."' AND
+							  item.montant > 0  AND
+							  item.avoir_ret = '2' AND 
+							  item.code IN (10,23,29,98,400,402,403,1008)
+						 ORDER BY item.code ASC";
+				$reponse2 = $bdd->query($sql2);
+				$total_retenu = 0;
+				 while($donnees2 = $reponse2->fetch())
+				 {
+					 $total_retenu = $total_retenu + $donnees2['montant'];
+				 }
+				/*=================SALAIRE NET==========*/
+				$aghrymet = $brute_salnet - $impot;
+				
+				$salaireNet = round($aghrymet);
+				/*$sal_net = 0;
+				if($typesal == 1 && $donnees2['matricule'] == 139)
+				{
+					if($salaireNet > 2000000)
+					{
+						$sal_net = 2000000;
+					}
+					else
+					{
+						$sal_net = $salaireNet;
+					}
+				}
+				else
+				{
+				  $sal_net = $salaireNet;
+				}*/
+				
+				/*=================RETENUE==============*/
+				$req9 = "SELECT DISTINCT SUM(item.montant) as retenue
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.avoir_ret = 2";
+				$rep9 = $bdd->query($req9);
+				$retenue = 0;
+				while($data9 = $rep9->fetch())
+				{
+					$retenue = $data9['retenue'];
+				}
+				
+				/*=================HEURE SUP==============*/
+				$req10 = "SELECT DISTINCT item.montant as montant
+						 FROM    rembulitems item
+						 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+								item.code  = '12'";
+				$rep10 = $bdd->query($req10);
+				$heure_sup = 0;
+				while($data10 = $rep10->fetch())
+				{
+					$heure_sup = $data10['montant'];
+					$total_heure = $total_heure + $heure_sup;
+				}
+				
+				/*=================CNSS ou CARFO==============*/
+				
+				$tmp = $cotisation[$rembulletin['agcontrat_id']];
+				
+				if($typesal == 1 or $typesal == 4)
+				{
+					if($tmp == 1)
+					{
+						/*------------CNSS------------------*/
+						/**************/
+						$beta = 0;
+						$beta = $brute_salnet * 0.055;
+						if($beta >= 44000){$cnss_sal = 44000;}else{$cnss_sal = $beta;}
+						
+						/*----------*/
+						$sigma = 0;
+						$sigma = $brute_salnet * 0.16;
+						if($sigma >= 128000){$cnss_pat = 128000;}else{$cnss_pat = $sigma;}
+						
+						/*---------------------------------*/
+					}
+					elseif($tmp == 2)
+					{
+						/*------------CARFO------------------*/
+						$req13 = "SELECT item.montant as montant,
+										 item.base  as base 
+								 FROM    rembulitems item
+								 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+										item.code  = '401'";
+						$rep13 = $bdd->query($req13);
+						
+						while($data13 = $rep13->fetch())
+						{
+							$cnss_sal = $data13['montant'];
+							
+							$cnss_pat = $data13['base'] * 0.14;
+						}
+						/*---------------------------------*/
+					}else{}
+		        }
+				elseif($typesal == 2)
+				{
+					if($tmp == 1)
+					{
+						$sal_brut_normal = 0;
+						$sql_brute = "SELECT item.montant as brut_normal
+									FROM   rembulitems item,  
+										   rembulletins bul
+									WHERE  bul.id = item.rembulletin_id AND
+										   bul.ag_dossier = '".$rembulletin['ag_dossier']."' AND 
+										   bul.date_debut  = '".$date_debut."' AND
+										   bul.date_fin    = '".$date_fin."'   AND
+										   bul.paramtypesalaire_id = '1' AND 
+										   item.code = '500'";
+						$rep_brut = $bdd->query($sql_brute);
+						
+						while($data15 = $rep_brut->fetch())
+						{
+							$sal_brut_normal = $data15['brut_normal'];
+						}
+						
+						
+						if($sal_brut_normal >= 800000)
+						{
+							$cnss_sal = 0;
+							$total_cnss_sal = $total_cnss_sal + $cnss_sal;
+								
+							$cnss_pat = 0;
+							$total_cnss_pat = $total_cnss_pat + $cnss_pat;
+						}
+						else
+						{   
+					        $brute_utile = 800000 - $sal_brut_normal;
+							
+							/*------------CNSS------------------*/
+							
+							$beta = 0;
+							$beta = $brute_utile * 0.055;
+							$cnss_sal = $beta;
+							//if($beta >= 33000){$cnss_sal = 33000;}else{$cnss_sal = $beta;}
+							$total_cnss_sal = $total_cnss_sal + $cnss_sal;
+							/*----------*/
+							$sigma = 0;
+							$sigma = $brute_utile * 0.16;
+							$cnss_pat = $sigma;
+							//if($sigma >= 96000){$cnss_pat = 96000;}else{$cnss_pat = $sigma;}
+							$total_cnss_pat = $total_cnss_pat + $cnss_pat;
+							/*---------------*/
+							
+						}
+					}elseif($tmp == 2)
+					{
+						$cnss_sal = 0;
+						$total_cnss_sal = $total_cnss_sal + $cnss_sal;
+							
+						$cnss_pat = 0;
+						$total_cnss_pat = $total_cnss_pat + $cnss_pat;
+						
+					}else{}
+				}
+				else
+				{
+					if($tmp == 1)
+					{
+						$sal_brut_normal = 0;
+						$sql_brute = "SELECT item.montant as brut_normal
+									FROM   rembulitems item,  
+										   rembulletins bul
+									WHERE  bul.id = item.rembulletin_id AND
+										   bul.ag_dossier = '".$rembulletin['ag_dossier']."' AND 
+										   bul.date_debut  = '".$date_debut."' AND
+										   bul.date_fin    = '".$date_fin."'   AND
+										   bul.paramtypesalaire_id = '1' AND 
+										   item.code = '500'";
+						$rep_brut = $bdd->query($sql_brute);
+						
+						while($data15 = $rep_brut->fetch())
+						{
+							$sal_brut_normal = $data15['brut_normal'];
+						}
+						
+						
+						if($sal_brut_normal >= 800000)
+						{
+							$cnss_sal = 0;
+							$total_cnss_sal = $total_cnss_sal + $cnss_sal;
+								
+							$cnss_pat = 0;
+							$total_cnss_pat = $total_cnss_pat + $cnss_pat;
+						}
+						else
+						{   
+					        $brute_utile = 800000 - $sal_brut_normal;
+							
+							/*------------CNSS------------------*/
+							
+							$beta = 0;
+							//$beta = $brute_utile * 0.055;
+							$cnss_sal = $beta;
+							//if($beta >= 33000){$cnss_sal = 33000;}else{$cnss_sal = $beta;}
+							$total_cnss_sal = $total_cnss_sal + $cnss_sal;
+							/*----------*/
+							$sigma = 0;
+							//$sigma = $brute_utile * 0.16;
+							$cnss_pat = $sigma;
+							//if($sigma >= 96000){$cnss_pat = 96000;}else{$cnss_pat = $sigma;}
+							$total_cnss_pat = $total_cnss_pat + $cnss_pat;
+							/*---------------*/
+							
+						}
+					}elseif($tmp == 2)
+					{
+						$cnss_sal = 0;
+						$total_cnss_sal = $total_cnss_sal + $cnss_sal;
+							
+						$cnss_pat = 0;
+						$total_cnss_pat = $total_cnss_pat + $cnss_pat;
+						
+					}else{}
+				}
+				
+                /*				
+					$req11 = "SELECT DISTINCT item.montant as montant
+							 FROM    rembulitems item
+							 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+									item.code  = '".$code."'";
+					$rep11 = $bdd->query($req11);
+					$cnss = 0;
+					
+					while($data11 = $rep11->fetch())
+					{
+						$cnss = $data11['montant'];
+						$total_cnss = $total_cnss + $cnss;
+					}*/
+				/*=================Anciennete==============*/
+				$req12 = "SELECT item.montant as anciennete
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code  = '11'";
+				$rep12 = $bdd->query($req12);
+				$anc = 0;
+				
+				while($data12 = $rep12->fetch())
+				{
+					$anc = $data12['anciennete'];
+				}
+				/*================2024======================*/
+				/*=================Avoir ==============*/
+				$req_torodi = "SELECT SUM(item.montant) as avoir
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code in (35,36,37)";
+				$rep_torodi = $bdd->query($req_torodi);
+				$avoir = 0;
+				
+				while($data_torodi = $rep_torodi->fetch())
+				{
+					$avoir = $data_torodi['avoir'];
+				}
+				/*==========================================*/
+				#=================Cacule salaire brute 2024==================================
+				$gross_wages = $sal_base + $anc + $indemnite + $heure_sup + $alloc + $avoir;
+				# =========ancien salaire 2023 : brute $brute_salnet
+				#============================================================================
+				
+					echo '<tr>';
+				    echo'<td align="right">'.$i.'</td>';
+					echo'<td align="right">'.$rembulletin['matricule'].'</td>';
+					echo'<td align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+					echo'<td align="right">'.number_format($sal_base, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($anc, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($indemnite, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($heure_sup, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($alloc, 0,',', ' ').'</td>';
+				    /*===========2024============*/
+					echo'<td align="right">'.number_format($avoir, 0,',', ' ').'</td>';
+					/*=======================*/
+					#******
+					echo'<td align="right">'.number_format($gross_wages, 0,',', ' ').'</td>';
+					#******
+					echo'<td align="right">'.number_format($netimposable, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($iuts, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($tpa, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($cnss_sal, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($cnss_pat, 0,',', ' ').'</b></td>';
+					echo'<td align="right">'.number_format($precompte, 0,',', ' ').'</td>';
+					
+					echo'<td align="right">'.number_format($salaireNet, 0,',', ' ').'</td>';
+					#==============================RETENUE 1%===============================*/
+					$un_pourcent = ($salaireNet * 1) / 100;
+					$total_net_paye = $salaireNet - round($un_pourcent) - $precompte;
+					#==========================FIN RETENUE 1%===============================*/
+			
+					echo'<td align="right">'.number_format($un_pourcent, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($total_net_paye, 0,',', ' ').'</td>';
+				echo '</tr>';	
+				#=================Cacule des totaux===================
+				$totaux_salnet = $totaux_salnet + $salaireNet;
+				$niamey = $niamey + round($un_pourcent);
+				$total_precompte = $total_precompte + $precompte;
+				$totaux_brute_salnet = $totaux_brute_salnet + round($brute_salnet);
+				$total_tpa = $total_tpa + $tpa;
+				$mnt_total_cnss_sal = $mnt_total_cnss_sal + round($cnss_sal);
+		        $mnt_total_cnss_pat = $mnt_total_cnss_pat + round($cnss_pat);
+				$total_iuts = $total_iuts + round($iuts);
+				$total_anc = $total_anc + round($anc);
+				/*============2024==============*/
+				$total_avoir = $total_avoir + $avoir;
+				#=================Cacule salaire brute 2024==================================
+				$all_gross_wages = $total_salbase + $total_anc + $total_ind + $total_heure + $total_alloc + $total_avoir;
+				# =========ancien salaire 2023 : $totaux_brute_salnet
+				#==========================FIN CACULE TOTAUX===============================*/
+			
+		}
+        echo '<tr style="background-color:#808080;font-weight:bold">';
+			echo'<td align="right" colspan="3"><b>Totaux</b></td>';
+			echo'<td align="right">'.number_format($total_salbase, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_anc, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_ind, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_heure, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_alloc, 0,',', ' ').'</td>';
+			/*==============2024===========================================================*/
+			echo'<td align="right">'.number_format($total_avoir, 0,',', ' ').'</td>';
+			/*=============================================================================*/
+			#******
+			echo'<td align="right">'.number_format($all_gross_wages, 0,',', ' ').'</td>';
+			#******
+			echo'<td align="right">'.number_format($total_net_imp, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_iuts, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_tpa, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($mnt_total_cnss_sal, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($mnt_total_cnss_pat, 0,',', ' ').'</b></td>';
+			echo'<td align="right">'.number_format($total_precompte, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($totaux_salnet, 0,',', ' ').'</td>';
+			#---------------------TOTAL RETENUE 1%------------------------------------*/
+			
+			$total_net_paye_total = $totaux_salnet - $niamey - $total_precompte;
+			#---------------------FIN TOTAL RETENUE 1%------------------------------------*/
+			echo'<td align="right">'.number_format($niamey, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_net_paye_total, 0,',', ' ').'</td>';
+			/*---------------------FIN RETENUE 1%------------------------------------*/
+		echo '</tr>';
+		echo '</table>';
+		echo'<table width="100%" cellspacing="0" border="0">';	
+					
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DAFC<br><br><br><br><br><br></b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DG<br><br><br><br><br><br></b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dafc].'</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dg].'</b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" style="font-size:11px" colspan="2">'.$distinct_dafc.'</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" style="font-size:11px" colspan="2">'.$distinct_dg.'</td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

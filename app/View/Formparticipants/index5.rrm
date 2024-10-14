@@ -1,0 +1,64 @@
+<!--Contrats Index-->
+<?php
+//print_r($critere);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	// Connexion à la base de données
+	try  
+	{
+		$bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+	}
+	catch(Exception $e)
+	{
+		die('Erreur : '.$e->getMessage());
+	}
+	/*-----------------------*/
+	/**************************Req 1***********************************/	
+	$sql = "SELECT ev.objspecifique_id as activite,  SUM(ev.note) as note
+	FROM evaluationafroids ev, sessionparticipants sp
+	WHERE ev.sessionparticipant_id = sp.id and 
+	 sp.sessionformation_id= '".$sessionid."' 
+	GROUP BY ev.objspecifique_id";
+	
+	$reponse = $bdd->query($sql);
+	$participantTab = array();
+	$total = 0;
+		
+		$reponse = $bdd->query($sql);
+		while($donnees = $reponse->fetch())
+		{
+			$participantTab[] = array($donnees['activite'],$donnees['note']); 
+		   
+		}	
+
+        $z = sizeof($participantTab);
+	
+	?>
+	<table  class="table small">
+	<tr><th class="color2"><?php echo 'Formation : '.$theme; ?>	</th></tr>
+	<tr>
+	<td class="vertical-align-top color2">
+	<?php
+    echo '<table class="table trHover borderBottom">';
+	for ($i = 0; $i < $z; $i++)
+	{
+        echo '<tr><td>'.$objspecifiques[$participantTab[$i][0]].'</td><td>'.round($participantTab[$i][1] / $z,2).'</td></tr>';
+        $total = $total + ($participantTab[$i][1] / $z);
+	}
+    if(($total / $z) >= $critere)
+    {		
+		echo '<tr style="background-color:green; color:white"><td>MOYENNE GENERALE</td><td>'.round($total / $z,2).'</td></tr>';
+    }
+	else
+	{
+		echo '<tr style="background-color:red; color:white"><td>MOYENNE GENERALE</td><td>'.round($total / $z,2).'</td></tr>';
+	}
+	echo '</table>';
+	?>
+	</td>
+    </tr>
+    </table>
+<?php	
+}else{
+	echo $tdis->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

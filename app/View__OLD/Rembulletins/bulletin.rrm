@@ -1,0 +1,308 @@
+<?php
+//print_r($taux);
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+
+$curDate = date("Y-m-d");
+//print_r($curDate);	
+$sql1 = "SELECT DISTINCT item.code as code, 
+               item.designation as designation,
+			   item.base as base,
+			   item.montant as montant,
+			   item.montant2 as montant2,
+			   item.taux as taux,
+			   item.avoir_ret as avoir_ret
+        FROM  rembulitems item
+		WHERE item.rembulletin_id = '".$bull_Id."' AND
+		      item.avoir_ret = '1' AND 
+			  item.montant > 0  AND
+			  item.code != '500'
+		ORDER BY item.code ASC";
+ 
+$reponse1 = $bdd->query($sql1);
+/*++++++++++++++++++++++++++++++++++++++*/
+$sql2 = "";
+if($cotisation == 1)
+{
+	$sql2 = "SELECT DISTINCT item.code as code, 
+				   item.designation as designation,
+				   item.base as base,
+				   item.montant as montant,
+				   item.montant2 as montant2,
+				   item.taux as taux,
+				   item.avoir_ret as avoir_ret
+			 FROM  rembulitems item
+			 WHERE item.rembulletin_id = '".$bull_Id."' AND
+				  item.montant > 0  AND
+				  item.avoir_ret = '2' AND 
+				  item.code IN (10,23,29,98,400,402,1008)
+			 ORDER BY item.code ASC";
+}
+elseif($cotisation == 2)
+{
+	$sql2 = "SELECT DISTINCT item.code as code, 
+				   item.designation as designation,
+				   item.base as base,
+				   item.montant as montant,
+				   item.montant2 as montant2,
+				   item.taux as taux,
+				   item.avoir_ret as avoir_ret
+			 FROM  rembulitems item
+			 WHERE item.rembulletin_id = '".$bull_Id."' AND
+				  item.montant > 0  AND
+				  item.avoir_ret = '2' AND 
+				  item.code IN (10,23,29,98,401,402,1008)
+			 ORDER BY item.code ASC";
+}
+else{$sql2 = "";}
+$reponse2 = $bdd->query($sql2);
+/*--------------------------------*/
+$sql3 = "SELECT DISTINCT item.code as code, 
+				   item.designation as designation,
+				   item.base as base,
+				   item.montant as montant,
+				   item.montant2 as montant2,
+				   item.taux as taux,
+				   item.avoir_ret as avoir_ret
+			 FROM  rembulitems item
+			 WHERE item.rembulletin_id = '".$bull_Id."' AND
+				   item.avoir_ret = '2' AND 
+				  item.code IN (1000,1001,501,98,29,1008)
+			 ORDER BY item.code ASC";
+ 
+$reponse3 = $bdd->query($sql3);
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+		echo'<table width="100%" cellspacing="0" border="0">';
+				echo '<tr>';
+				    echo'<td align="left"><b>SONATUR<br>
+					03 BP 7222 OUAGA 03<br>
+					TEL: 25 30 17 73 / 74<br> 
+					</td>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+			       echo'<td align="left"><b><u><h2>BULLETIN DE PAIE</h2></u></b>
+						<table width="70%" cellspacing="0" border="0">
+							<tr>
+								<td><b>Période du :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_debut)).'</td>
+							</tr>
+							<tr>
+								<td><b>au :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_fin)).'</td>
+							</tr>
+						</table>
+					 </td>';
+				echo '</tr>';
+				
+		echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+		echo '<br>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr style="background-color:#808080;font-weight:bold">';
+					echo'<td align="left"><b>Matricule</b></td>';
+					echo'<td colspan="3" align="left"><b>Nom & Prénom(s)</b></td>';
+					echo'<td align="left"><b>Catégorie</b></td>';
+					echo'<td align="left"><b>Echelon</b></td>';
+					echo'<td align="left"><b>Charge</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">'.$matricule.'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+					echo'<td align="left">'.$paramclassifications[$classificationid].'</td>';
+					echo'<td align="left">'.$paramechelons[$paramechelonid].'</td>';
+					echo'<td align="left">'.$charge[$ag_dossier].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="2"align="left"><b>N° CNSS</b></td>';
+					echo'<td colspan="2" align="left"><b>Affectation</b></td>';
+					echo'<td colspan="3"align="left"><b>Fonction</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="2"align="left">'.$num_cotisation.'</td>';
+					echo'<td colspan="2" align="left">'.$directions[$directionid].'</td>';
+					echo'<td colspan="3"align="left">'.$fonctions[$fonctionid].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="1"align="left"><b>Mode paiement</b></td>';
+					echo'<td colspan="1" align="left"><b>N° de compte</b></td>';
+					echo'<td colspan="2" align="left"><b>Domiciliation</b></td>';
+					echo'<td colspan="3" align="left"><b>Intitulé du compte</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="1"align="left">'.$parammodepaies[$modepaieid].'</td>';
+					echo'<td colspan="1" align="left">'.$comptebanq.'</td>';
+					echo'<td colspan="2" align="left">'.$parambanques[$banqueid].'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+				echo '</tr>';
+		echo '</table>';	
+		echo '<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#808080;">';
+						echo '<td><b>Code</b></td>';
+						echo '<td><b>Désignation élément de salaire</b></td>';
+						echo '<td><b>Base</b></td>';
+						echo '<td><b>Taux</b></td>';
+						echo '<td><b>Avoirs</b></td>';
+						echo '<td><b>Retenues</b></td>';
+					echo '</tr>';
+					/***********AVOIR**************************************/
+					$total_avoir = 0;
+					 while($donnees1 = $reponse1->fetch())
+					 {
+						$total_avoir = $total_avoir + $donnees1['montant'];
+						echo '<tr>';
+						echo '<td  align="left">'.sprintf('%03d', $donnees1['code']).'</td>';
+						echo '<td  align="left">'.$donnees1['designation'].'</td>';
+						echo '<td  align="right">'.number_format($donnees1['base'], 0,',', ' ').'</td>';
+						echo '<td  align="right">'.$donnees1['taux'].'</td>';
+						echo '<td  align="right">'.number_format($donnees1['montant'], 0,',', ' ').'</td>';
+						echo '<td></td>';
+						echo '</tr>'; 
+				     }
+					 /***********AVOIR**************************************/
+					$total_retenu = 0;
+					 while($donnees2 = $reponse2->fetch())
+					 {
+						$total_retenu = $total_retenu + $donnees2['montant'];
+						echo '<tr>';
+						echo '<td  align="left">'.sprintf('%03d', $donnees2['code']).'</td>';
+						echo '<td  align="left">'.$donnees2['designation'].'</td>';
+						echo '<td  align="right">'.number_format($donnees2['base'], 0,',', ' ').'</td>';
+						echo '<td  align="right">'.$donnees2['taux'].'</td>';
+						echo '<td></td>';
+						echo '<td  align="right">'.number_format($donnees2['montant'], 0,',', ' ').'</td>';
+						
+						echo '</tr>'; 
+				     }
+					 /*----------------------------*/
+					 echo '<tr>';
+						echo '<td  align="left" colspan="4">Totaux</td>';
+						echo '<td  align="right">'.number_format($total_avoir, 0,',', ' ').'</td>';
+						echo '<td  align="right">'.number_format($total_retenu, 0,',', ' ').'</td>';
+						
+					 echo '</tr>'; 
+		echo'</table>';
+		echo'<table width="100%" cellspacing="0" border="1">';	
+					echo '<tr style="background-color:#808080;font-weight:bold">';
+						echo '<td align="right">Salaire imposable</td>';
+						echo '<td align="right">Net imposable</td>';
+						echo '<td align="right">Salaire brut</td>';
+						echo '<td align="right">Salaire net</td>';
+						echo '<td align="right">Précompte</td>';
+						echo '<td align="right">Net à payer</td>';
+					echo '</tr>';
+					$sal_imposable = 0;
+					$sal_netImp = 0;
+					$impot = 0;
+					$precompte = 0;
+					$salaire_net = 0;
+					$net_payer = 0;
+					while($donnees3 = $reponse3->fetch())
+					{
+						 if($donnees3['code'] == 1000){$sal_imposable = $donnees3['montant'];}
+						 if($donnees3['code'] == 1001){$sal_netImp = $donnees3['montant'];}
+						 if($donnees3['code'] == 501){$impot = $donnees3['montant'];}
+						 if($donnees3['code'] == 29){$precompte = $precompte + $donnees3['montant'];}
+						 if($donnees3['code'] == 98){$precompte = $precompte + $donnees3['montant'];}
+						 if($donnees3['code'] == 1008){$precompte = $precompte + $donnees3['montant'];}
+						 
+					}
+					
+					$salaire_net = $total_avoir - $impot;
+					$net_payer = $salaire_net - $precompte;
+					
+					$sal_net =0;
+					$net = 0;
+					
+					if($matricule == 126)
+					{
+						if($salaire_net > 2000000)
+						{
+							$sal_net = 2000000;
+						}
+						else
+						{
+							$sal_net = $salaire_net;
+						}
+					}
+					else
+					{
+					  $sal_net = $salaire_net;
+					}
+					
+					if($matricule == 126)
+					{
+						if($net_payer > 2000000)
+						{
+							$net = 2000000;
+						}
+						else
+						{
+							$net = $net_payer;
+						}
+					}
+					else
+					{
+					  $net = $net_payer;
+					}
+					
+					echo '<tr>';
+						echo '<td align="right">'.number_format($sal_imposable, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($sal_netImp, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($total_avoir, 0,',', ' ').'</td>';
+						
+						echo '<td align="right">'.number_format($sal_net, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($precompte, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($net, 0,',', ' ').'</td>';
+					echo '</tr>';
+		echo '</table>';
+					
+				echo'<table width="100%" cellspacing="0" border="0">';	
+					echo '<tr border="0">';
+						echo '<td align="right" colspan="2"><br><br><br></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><br><br><br></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>Signature de l\'employé</b></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"><b>DAFC</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><br><br><br><br><br><br><br></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><br><br><br><br><br><br><br></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b></b></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><b>'.$agdossiers[$signature].'</b></td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

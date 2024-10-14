@@ -1,0 +1,159 @@
+<?php
+
+///print_r($comptabilites);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    /*-----------------------Evaluation----------------------------*/
+	$qualite = 0;
+	$pertinence = 0; 
+	$efficacite = 0; 
+	$prestation = 0; 
+	$atteinte = 0; 
+	$condition = 0;
+	$count = 0;
+	$moygen =0;
+	foreach($evaluations as $evaluation)
+	{
+		$count++;
+		
+		$evaluation = $evaluation['Evaluationachaud'];
+		
+		$qualite    = (int)$evaluation['qualite_contenue'];
+		$pertinence = (int)$evaluation['pertinence_besoin_pro'];
+		$efficacite = (int)$evaluation['efficacite_methode'];
+		$prestation = (int)$evaluation['qualite_prestation'];
+		$atteinte   = (int)$evaluation['atteinte_objectif'];
+		$condition  = (int)$evaluation['qualite_condition'];		
+		
+	}
+	$moygen = $qualite + $pertinence + $efficacite + $prestation + $atteinte + $condition;
+	$taux = ((($moygen/6) * 2.5) * 100) / 10;
+	/*---------------------COmptabilité----------------------------------------*/
+	    $frmission = 0;
+		$fgen   = 0;
+		$total = 0;
+		foreach($comptabilites as $comptabilite){
+				$comptabilite = $comptabilite['Comptabilite'];
+				$frmission = $frmission + $comptabilite['frais_mission'];
+				$fgen      = $fgen  + $comptabilite['frais_generaux'];
+		}
+	echo'<table width="100%" cellspacing="0" border="0">';
+	echo '<thead>';
+	echo'<table width="100%" cellspacing="0" border="1">';
+			echo '<tr>';
+				echo'<td align="center">'. $this->Html->image('../../boot/img/logOneaFiche.png', array('width'=>'100','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+				echo'<td align="center" rowspan="2"><b>RAPPORT SYNTHETIQUE DE FORMATION</b></td>';
+				echo'<td align="center">Code : AFO-IS-14</td>';
+				echo'<td align="center">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'100', 'alt'=>'CEMEAU')) . '</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo'<td align="center">Réf. : S9</td>';
+				echo'<td align="center">Version : n°02 du 10/07/2018</td>';
+				echo'<td align="center">Page 1 sur 1</td>';
+			echo '</tr>';
+	echo'</table>';
+	echo '<thead>';
+	echo '<tbody>';
+	echo '<br>';
+	echo'<table width="100%" cellspacing="0" border="1">';
+			
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Titre de la formation :</td>';
+				echo'<td  align="left">'.$theme.'</td>';
+			
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Domaine :</td>';
+				echo'<td  align="left">'.$domaine.'</td>';
+			
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Code :</td>';
+				echo'<td  align="left">'.$codesage.'</td>';
+			
+			echo '</tr>';
+			
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Objectif général :</td>';
+				echo'<td colspan="3" align="left">'.$ogjgen.'</td>';
+			
+			echo '</tr>';
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Objectif spécifiques :</td>';
+				echo'<td  align="left">';
+				/*-------------------------------------------*/
+				$i = 0;
+					foreach($objspecifiques as $objspecifique)
+					{  $objspecifique = $objspecifique['Objspecifique'];
+					   $i++;
+						echo $i.' - '.$objspecifique['intitule'].'<br>';
+					}
+					/*-------------------------------------------*/
+				echo'</td>';
+			
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Période, année et lieu :</td>';
+				echo'<td  align="left"> '.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).' '.$lieu.'</td>';
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Client :</td>';
+				echo'<td  align="left">'.$client[$clientID].'</td>';
+				
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Participants invités :</td>';
+				echo'<td align="left">'.$nbrpart.'</td>';
+				
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Participants présents :</td>';
+				echo'<td align="left">'.$partpresent.'</td>';
+				
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Taux de satisfaction des participants :</td>';
+				echo'<td align="left">'.round($taux,2) .' %</td>';
+				
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Formateurs :</td>';
+				echo'<td align="left">';
+				/*-------------------------------------------*/
+					foreach($sessionformateurs as $sessionformateur)
+					{
+						echo ''.$nomforma[$sessionformateur].' '.$prenomforma[$sessionformateur].'<br>';
+					}
+					/*-------------------------------------------*/
+				echo'</td>';
+				
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Note d\'évaluation du formateur :</td>';
+				echo'<td align="left">'.round($prestation * 2.5,2) .' / 10</td>';
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Frais de formation/vacation :</td>';
+				echo'<td align="left"></td>';
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Frais généraux :</td>';
+				echo'<td align="left">'.number_format($fgen, 0,',', ' ').' F CFA</td>';
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Frais de mission et transport formateur :</td>';
+				echo'<td align="left"></td>';
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left">Frais de mission participant :</td>';
+				echo'<td align="left">'.number_format($frmission, 0,',', ' ').' F CFA</td>';
+			echo '</tr>';
+	echo'</table>';
+	echo '<br><br>';
+	    echo '</tbody>';
+		echo '<tfoot>';
+	    echo '</tfoot>';
+		echo '</table>';
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,78 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','','',''));
+	echo $this->Form->input('Rembulletin.datedebut', array('type'=>'mouton', 'before'=>'<tr><td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Rembulletin.datefin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Rembulletin.valider', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Rembulletin.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Tmpabsences', 'view'=>'search3',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Tmpabsences', 'view'=>'absence'), 
+			array('title'=>'effectif du personnel', 'class'=>'icon print groupAction_1')
+		);
+	}
+
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Tmpabsence.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'TmpabsenceCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Tmpabsence', array(
+	'Matricule(s)'=>'ag_matricule',
+	'Reference'=>'numero',
+	'Nom & Prénom(s)'=>'agdossier_id',
+	'Motif'=>'tmptypabsence_id',
+	'Date absence'=>'date_absence',
+
+
+
+	));
+	$tableData = array();  //  
+	foreach($tmpabsences as $tmpabsence){
+		$tmpabsence = $tmpabsence['Tmpabsence'];
+	
+		$action = $this->Form->input('Tmpabsence.check.[]', array('type'=>'checkbox', 'class'=>'TmpabsenceCheckItem', 'value'=>$tmpabsence['id'], 'addHidden'=>false));
+		$tableData[] = array( 
+		(isset($agdmatri[$tmpabsence['agdossier_id']]))?$agdmatri[$tmpabsence['agdossier_id']]:'',
+		$tmpabsence['numero'],
+		(isset($agdossiers[$tmpabsence['agdossier_id']]))?$agdossiers[$tmpabsence['agdossier_id']]:'',
+		(isset($typabsences[$tmpabsence['tmptypabsence_id']]))?$typabsences[$tmpabsence['tmptypabsence_id']]:'',
+		date("d-m-Y",strtotime($tmpabsence['date_absence'])),
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Tmpabsence', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

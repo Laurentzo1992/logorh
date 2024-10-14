@@ -1,0 +1,93 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    echo '<table style="margin-left:10px;" class="table trHover borderBottom">';
+	echo '<tr><th>Nom & prénom(s) : '.$agdossiers[$agdossier_id].'</th>
+	          <th>Montant prets : '.number_format($montant_pret, 0,',', ' ').'</th></tr>';
+	echo '</table>';
+	echo '<br>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	/*$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Afftraites', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);*/
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affprets', 'view'=>'modiftraite', 'params'=>array('pretid:'.$pretid)), 
+			array('title'=>'Modification traite mensuel', 'class'=>'icon edit groupAction_1')
+		);
+	}
+	/*if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Afftraites', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Afftraite')
+		);
+	}*/
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Afftraites', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Afftraite'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Afftraite.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AfftraiteCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Afftraite', array($actionCheck=>false,
+	//'Montant prét'=>'affpret_id',
+	//'Nom & Prénom(s)'=>'agdossier_id',
+	'Periode remboursement'=>'date_traite',
+	'Montant traite'=>'montant_traite',
+	'Statut'=>'statut',
+	
+	));
+	$tableData = array();  //  
+	foreach($afftraites as $afftraite){
+		$afftraite = $afftraite['Afftraite'];
+		$img ='';
+		if($afftraite['statut'] == 'Encours')
+		{
+			$img = '<img src="/LOGORH/app/boot/img/error.png" align="absmiddle" border="0" alt="" />';
+		}
+		else
+		{
+			$img = '<img src="/LOGORH/app/boot/img/success.png" align="absmiddle" border="0" alt="" />';
+		}
+		
+		$action = $this->Form->input('Afftraite.check.[]', array('type'=>'checkbox', 'class'=>'AfftraiteCheckItem', 'value'=>$afftraite['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		
+		//(isset($affprets[$afftraite['affpret_id']]))?$affprets[$afftraite['affpret_id']]:'', 
+		//(isset($agdossiers[$afftraite['agdossier_id']]))?$agdossiers[$afftraite['agdossier_id']]:'', 
+		date("m-Y",strtotime($afftraite['date_traite'])), 
+		number_format($afftraite['montant_traite'], 0,',', ' '), 
+		$img,
+		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Afftraite', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

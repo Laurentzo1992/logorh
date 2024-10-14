@@ -1,0 +1,67 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">AGENT</th></tr>
+	<tr><th class="color1">Infos personnels</th><th class="color2">Contacts / lieu de résidence</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	
+	   echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Agdossier.ag_matricule', array('type'=>'text', 'class'=>'azerty', 'label'=>'Matricule paye(*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_matricule_pro', array('type'=>'text', 'class'=>'azerty', 'label'=>'Matricule pro', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_nom', array('type'=>'text', 'class'=>'azerty', 'label'=>'Nom (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_prenom', array('type'=>'text', 'class'=>'azerty', 'label'=>'Prénom(s) (*)',  'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_date_naiss', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date naissance', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_lieu_naiss', array('type'=>'text', 'class'=>'azerty', 'label'=>'Lieu naissance', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   
+	   echo $this->Form->input('Agdossier.ag_genre', array('type'=>'radio',  'options'=>array('M'=>'M','F'=>'F'), 'before'=>'<tr><td>Genre(*) </td><td>', 'between'=>'', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agdossier.ag_sitmatri', array('type'=>'select', 'options'=>$matrimoniales,  'empty'=>'Selectionner',  'class'=>'azerty', 'label'=>'Situation matrimoniale', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_charge', array('type'=>'text', 'class'=>'azerty', 'label'=>'Nombre de pers. à charge ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   
+	   echo $this->Form->input('Agdossier.ag_qualification', array('type'=>'select', 'options'=>$paramclassifications,  'empty'=>'Selectionner',  'class'=>'azerty', 'label'=>'Niveau d\'étude', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_diplome', array('type'=>'text', 'class'=>'azerty',  'label'=>'Diplome', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   
+	   //echo $this->Form->input('Agdossier.pa_service_id', array('type'=>'select', 'options'=>$services,  'empty'=>'Selectionner',  'class'=>'azerty','label'=>'Service', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	 
+	echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Agdossier.ag_telephone', array('type'=>'text', 'class'=>'azerty','label'=>'Téléphone', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agdossier.ag_email', array('type'=>'text', 'class'=>'azerty lowercase','label'=>'Email', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+       echo $this->Form->input('Agdossier.ag_adresse', array('type'=>'textarea', 'label'=>'Adresse', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Agdossier.ag_ville', array('type'=>'select', 'options'=>array('Ouagadougou'=>'Ouagadougou','Bobo-Dioulasso'=>'Bobo-Dioulasso'),  'empty'=>'Selectionner',    'class'=>'azerty', 'label'=>'Ville ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   //echo $this->Form->input('Agdossier.pa_pays', array('type'=>'text','readonly','value'=>'Burkina Faso', 'options'=>$countries,  'empty'=>'Selectionner','label'=>'Pays',  'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+       //echo $this->Form->input('Agdossier.pa_statut', array('type'=>'hidden', 'value'=>1, ));
+       
+	   echo $this->Form->input('Agdossier.ag_nom_conjoint', array('type'=>'text', 'class'=>'azerty','label'=>'Nom conjoint(e)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agdossier.ag_prenom_conjoint', array('type'=>'text', 'class'=>'azerty','label'=>'Prénom(s) conjoint(e)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   
+	   echo $this->Form->input('Agdossier.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Agdossier.id', array('type'=>'hidden'));
+
+	echo '</table>';
+    ?>
+    </td>
+    </tr>
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

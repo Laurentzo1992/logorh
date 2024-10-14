@@ -1,0 +1,59 @@
+<!--Formcharges Edit-->
+
+<?php
+//
+//print_r($participants);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	echo '<tr><th>Session formation</th>
+	          <th>Participant</th>
+			  <th>Frais mission</th>
+			  <th>Frais transport</th>
+			  <th>Frais restauration</th>
+			  <th>Frais kit formation</th>
+			  <th>Frais inscription</th>
+			  <th>Frais généraux</th>
+		  </tr>';
+	
+	$tableData = array();
+	$ids = '';
+	$i = 0;
+	foreach($formparticipants as $formparticipant){
+			$formparticipant = $formparticipant['Formparticipant'];
+			$i++; 
+		$ids .=  $this->Form->input($i .'.Formcharge.id', array('type'=>'hidden'));
+		$arr = array();
+		$arr = array(
+		    $this->Form->input($i .'.Formcharge', array('type'=>'textarea', 'disabled', 'value'=>$theme)),
+			$this->Form->input($i .'.Formcharge', array('type'=>'textarea', 'disabled', 'value'=>$agdossiers[$formparticipant['agdossier_id']])),
+			//$this->Form->input($i .'.Formcharge', array('type'=>'textarea', 'value'=>$formparticipant['participant_id'])),
+			
+			$this->Form->input($i .'.Formcharge.frais_mission', array('type'=>'text')),
+			$this->Form->input($i .'.Formcharge.frais_transport', array('type'=>'text')),
+			$this->Form->input($i .'.Formcharge.frais_restauration', array('type'=>'text')),
+			$this->Form->input($i .'.Formcharge.frais_kitfor', array('type'=>'text')),
+			$this->Form->input($i .'.Formcharge.frais_inscription', array('type'=>'text')),
+			$this->Form->input($i .'.Formcharge.frais_generaux', array('type'=>'text')),
+			
+			$this->Form->input($i .'.Formcharge.formation_id', array('type'=>'hidden', 'value'=>$formationid)),
+			$this->Form->input($i .'.Formcharge.agdossier_id', array('type'=>'hidden',      'value'=>$formparticipant['agdossier_id'])),
+			$this->Form->input($i .'.Formcharge.formpartid', array('type'=>'hidden',      'value'=>$formparticipant['id'])),
+			
+			);
+		
+		$tableData[] = $arr;
+		
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '</table>';
+	echo $ids;
+	echo '<table>';
+	echo $this->Form->input('Formcharge.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td><td></td></tr>'));
+	echo '</table><br/><br/>';
+
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

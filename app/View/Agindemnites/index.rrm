@@ -1,0 +1,96 @@
+<!--Contrats Index-->
+<?php
+//print_r($agindemnites);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo '<table style="margin-left:10px;" class="table trHover borderBottom">';
+	echo '<tr><th>Nom & prénom(s) : '.$agdossiers[$dossier].'</th></tr>';
+	echo '</table>';
+	echo '<br>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agindemnites', 'view'=>'edit', 'params'=>array('varcontrat:'.$contratid)), 
+			array('title'=>'Ajouter ou editer les éléments de salaire', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agindemnites', 'view'=>'edit2', 'params'=>array('varcontrat:'.$contratid,'id:')), 
+			array('title'=>'Renseigner la base  ou le montant', 'class'=>'icon edit groupAction', 'ref'=>'Agindemnite')
+		);
+	}
+	
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Agindemnite.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AgindemniteCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Agindemnite', array($actionCheck=>false, 
+	'libelle'=>'code_paramind',
+	'Type'=>'code_paramind',
+	'Avoir/Retenu'=>'code_paramind',
+	'Base/montant'=>'base_montant',
+	'Unité'=>'',
+	'Observation'=>'observation',
+	));
+	$tableData = array();  //  
+	foreach($agindemnites as $agindemnite){
+		$agindemnite = $agindemnite['Agindemnite'];
+		$action = '';
+		$base_montant ='';
+		if($agindemnite['code_paramind'] == 31 ||
+		   $agindemnite['code_paramind'] == 32 ||
+		   $agindemnite['code_paramind'] == 33 ||
+		   $agindemnite['code_paramind'] == 35 ||
+		   $agindemnite['code_paramind'] == 36 ||
+		   $agindemnite['code_paramind'] == 37 ||
+		   $agindemnite['code_paramind'] == 1008 ||
+		   $agindemnite['code_paramind'] == 23 ||
+		   $agindemnite['code_paramind'] == 8 ||
+		   $agindemnite['code_paramind'] == 10 ||
+		   $agindemnite['code_paramind'] == 12 ||
+		   $agindemnite['code_paramind'] == 401 ||
+		   $agindemnite['code_paramind'] == 403)
+		    {
+				$action = $this->Form->input('Agindemnite.check.[]', array('type'=>'checkbox', 'class'=>'AgindemniteCheckItem', 'value'=>$agindemnite['id'], 'addHidden'=>false));
+		        $base_montant = number_format($agindemnite['base_montant'], 0,',', ' ');
+			}
+			else
+			{
+				$action = '';
+				$base_montant = '<img src="/LOGORH/app/boot/img/error.png" align="absmiddle" border="0" alt="" />';
+			}
+		
+		$tableData[] = array($action,
+        (isset($paramindemnites[$agindemnite['code_paramind']]))?$paramindemnites[$agindemnite['code_paramind']]:'',
+	    (isset($paramtypinds[$type[$agindemnite['code_paramind']]]))?$paramtypinds[$type[$agindemnite['code_paramind']]]:'',
+	    (isset($paramavoirets[$avoiret[$agindemnite['code_paramind']]]))?$paramavoirets[$avoiret[$agindemnite['code_paramind']]]:'',
+	    $base_montant,
+		'F CFA',
+        $agindemnite['observation']
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Agindemnite', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

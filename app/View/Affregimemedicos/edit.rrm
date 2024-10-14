@@ -1,0 +1,21 @@
+<!--Affregimemedicos Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Affregimemedico.date_med', array('type'=>'mouton', 'label'=>'Date', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affregimemedico.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & Prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affregimemedico.paramregimemedico_id', array('type'=>'select', 'options'=>$regimes, 'empty'=>'Selectionner', 'label'=>'Intitulé', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affregimemedico.montant', array('type'=>'text', 'label'=>'Montant', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affregimemedico.paramsrtucsanitaire_id', array('type'=>'select', 'options'=>$srtucsanitaires, 'empty'=>'Selectionner', 'label'=>'Structure sanitaire', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Affregimemedico.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	
+	echo '</table>';
+	echo $this->Form->input('Affregimemedico.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

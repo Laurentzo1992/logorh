@@ -1,0 +1,122 @@
+<?php
+//print_r($cotisation);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+$curDate = date("Y-m-d");
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+/*-----------------------------------------------*/
+    
+	
+/*----------------------------------------------------------*/
+	
+	$requete2 = "SELECT dos.ag_matricule as matricule,
+						dos.ag_nom  as nom,
+						dos.ag_prenom as prenom,
+						bon.annee as annee,
+						bon.dotation as dot,
+						bon.dotation_restant as rest_dot
+						
+		         FROM   affbondotations bon, agdossiers dos
+				 
+			     WHERE  dos.id = bon.agdossier_id
+				 
+				 ORDER BY dos.ag_matricule ASC";
+	 
+	$reponse2 = $bdd->query($requete2);
+	
+/*---------------------------------------------------*/
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>';
+					echo '<td colspan="6" align="center">';
+						echo '<p><b><u>Suivie pharmacie</u></b></p>';
+					echo'</td>';
+					echo '<td colspan="6" align="right">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '
+					 </td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="14" align="left">';
+						echo '<p><b><u>Période : </u> </b> '.strftime("  %m/%Y ", strtotime($curDate)).'</p>';
+						
+					echo'</td>';
+				echo '</tr>';
+			
+		echo '</table>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#c9c9c9;font-weight:bold">';
+					    echo'<td align="left"><b>N°</b></td>';
+						echo'<td align="left"><b>Matricule</b></td>';
+						echo'<td align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Annee</b></td>';
+						echo'<td align="left"><b>Montant de la dotation</b></td>';
+						echo'<td align="left"><b>Restant</b></td>';
+					echo '</tr>';
+		
+		$i = 0;
+		while($donnees2 = $reponse2->fetch())
+		{	
+			$i++;
+			//print_r($i);
+	
+				echo '<tr>';
+				    echo'<td align="right">'.$i.'</td>';
+					echo'<td align="left">'.$donnees2['matricule'].'</td>';
+					echo'<td align="left">'.$donnees2['nom'].' '.$donnees2['prenom'].'</td>';
+					echo'<td align="left">'.$donnees2['annee'].'</td>';
+					echo'<td align="left">'.$donnees2['dot'].'</td>';
+					echo'<td align="left">'.$donnees2['rest_dot'].'</td>';
+				echo '</tr>';
+				
+		}
+		echo '</table>';
+			echo'<table width="100%" cellspacing="0" border="0">';
+			
+					
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DAFC<br><br><br><br><br><br></b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><br><br><br><br><br></b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dafc].'</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" style="font-size:11px" colspan="2">'.$distinct_dafc.'</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" style="font-size:11px" colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,141 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	} );
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($cotisation);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/*----*/
+    $req_bul = "SELECT DISTINCT 
+						co.agdossier_id as agdossier_id,
+						co.matricule  as matricule,
+						co.date_debut as date_debut,
+						co.date_fin as   date_fin,
+						co.montant_alloc as montant_alloc,
+						co.destination  as destination					 
+		         FROM  affconges co
+			     WHERE co.date_debut BETWEEN '".$date_debut."' AND '".$date_fin."'
+		         ORDER BY co.date_debut ASC";
+	 
+	$resp_bul = $bdd->query($req_bul);
+	
+/**************************SQL***********************************/
+
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>';
+						
+						echo '<td colspan="10" align="center">
+							'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+							<h3><u>Etat général des allocations de congé</u></h3>
+							</td>';
+						
+					echo '<td colspan="2" align="right">
+						Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="14" align="left">';
+						echo '<p><b><u>Période : </u> </b> '.strftime("  %m/%Y ", strtotime($date_fin)).'</p>';
+					echo'</td>';
+				echo '</tr>';
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1"     id="example" class="display" style="width:100%">';
+					echo '<tr style="background-color:#808080;font-weight:bold;color:white;">';
+					    echo'<td align="left"><b>N°</b></td>';
+						echo'<td align="left"><b>Matr.</b></td>';
+						echo'<td align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Date début</b></td>';
+						echo'<td align="left"><b>Date fin</b></td>';
+						echo'<td align="left"><b>Montant allocation</b></td>';
+						echo'<td align="left"><b>Destination</b></td>';
+					echo '</tr>';
+		$totaux= 0;
+	
+		$i = 0;
+		while($rembulletin = $resp_bul->fetch())
+		{	
+			$i++;
+			echo '<tr>';
+				echo'<td align="right">'.$i.'</td>';
+				echo'<td align="right">'.$rembulletin['matricule'].'</td>';
+				echo'<td align="left">'.$agdossiers[$rembulletin['agdossier_id']].'</td>';
+				echo'<td align="right">'.$rembulletin['date_debut'].'</td>';
+				echo'<td align="right">'.$rembulletin['date_fin'].'</td>';
+				echo'<td align="right">'.number_format($rembulletin['montant_alloc'], 0,',', ' ').'</td>';
+				echo'<td align="right">'.$rembulletin['destination'].'</td>';
+			echo '</tr>';
+			
+			$totaux= $totaux + $rembulletin['montant_alloc'];
+				
+		}
+        echo '<tr style="background-color:#808080;font-weight:bold">';
+			echo'<td align="right" colspan="5"><b>Totaux</b></td>';
+			echo'<td align="right">'.number_format($totaux, 0,',', ' ').'</td>';
+			echo'<td align="right"></td>';
+		echo '</tr>';
+		echo '</table>';
+		echo'<table width="100%" cellspacing="0" border="0">';	
+					
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DAFC<br><br><br><br><br><br></b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DG<br><br><br><br><br><br></b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dafc].'</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dg].'</b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" style="font-size:11px" colspan="2">'.$distinct_dafc.'</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" style="font-size:11px" colspan="2">'.$distinct_dg.'</td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,116 @@
+<!--Contrats Index-->
+<?php
+//print_r($sessionparticipants);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	//$this->Session->write('return', $this->Html->getReturnUrl());
+	/*echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Sessionparticipants', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Sessionparticipants', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Sessionparticipants', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Sessionparticipant')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Sessionparticipants', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Sessionparticipant'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";*/
+	echo '<table class="table trHover borderBottom">';
+	echo '<th style="background-color:#a2a6a8"  colspan="8">Formation : '.$theme.'</th>';
+	$actionCheck = $this->Form->input('Sessionparticipant.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'SessionparticipantCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Sessionparticipant', array(
+	
+	'Matricule'=>'participant_id',
+	'Nom'=>'participant_id',
+	'Prénom(s)'=>'participant_id',
+	'Téléphone'=>'participant_id',
+	'Moyenne générale'=>'moyen_gen',
+	
+	));
+	$tableData = array();  //  
+	foreach($sessionparticipants as $sessionparticipant){
+		$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+		
+		if($sessionparticipant['presence'] == 1)
+		{
+			$tableData[] = array(
+			
+			(isset($matricule[$sessionparticipant['participant_id']]))?$matricule[$sessionparticipant['participant_id']]:'',
+			(isset($nom[$sessionparticipant['participant_id']]))?$nom[$sessionparticipant['participant_id']]:'',
+			(isset($prenom[$sessionparticipant['participant_id']]))?$prenom[$sessionparticipant['participant_id']]:'',
+			(isset($telephone[$sessionparticipant['participant_id']]))?$telephone[$sessionparticipant['participant_id']]:'',
+			$sessionparticipant['moyen_gen'],	
+			);
+		}
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Sessionparticipant', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+	/*if($sessionparticipantid && $nomsessionparticipant){
+		
+		echo '<div class="floatContent">';
+		
+		echo '<table class="table trHover borderBottom">';
+		echo $this->Paginator->tableHeaders('Sessionparticipant', array('Sessionparticipants'=>'nomcom'));
+		$tableData = array();
+		
+		foreach($sessionparticipants as $sessionparticipant){
+			$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+			
+			$tableData[] = array(htmlEntities($sessionparticipant['nomcom'], ENT_QUOTES | ENT_IGNORE, "UTF-8"));
+		}
+		
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '<tr><td colspan="4">';
+		echo $this->Paginator->numbers('Sessionparticipant', array(			
+				'before'=>'<div class="paginate">',
+				'after'=>'</div>',
+				'modulus'=>5,
+				'separator'=>'',
+				'tag'=>'span',
+				'ellipsis'=>'...',
+				'first'=>'<<',
+				'last'=>'>>',
+				'class'=>'',
+				'currentClass'=>'',
+				'counter'=>''
+			));
+		echo '</td></tr>';
+		echo '</table></div>';
+	}*/
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

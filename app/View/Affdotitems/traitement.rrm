@@ -1,0 +1,69 @@
+<!--Affbondotations Edit-->
+
+<?php
+//print_r($affbonpharmas); 
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th style="text-align:center;background-color:#dd1616;">Pret</th><th style="text-align:center;background-color:#dd1616;">Traite</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	
+	    echo '<table class="table trHover borderBottom">';
+	    echo $this->Form->input('Affbondotation.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affbondotation.date_debut', array('type'=>'mouton',  'label'=>'Date début', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affbondotation.date_fin', array('type'=>'mouton',  'label'=>'Date fin', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+		echo $this->Form->input('Affbondotation.valider', array('type'=>'submit', 'value'=>'...', 'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));
+	   
+		echo $this->Form->input('Affbondotation.dotation', array('type'=>'text', 'label'=>'Montant dotation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affbondotation.montant', array('type'=>'text', 'label'=>'Montant bon', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affbondotation.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affbondotation.id', array('type'=>'hidden'));
+	    echo '</table>';
+	?>
+	</td>
+	<td class="vertical-align-top color2" width="600">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+			$tableData = array();
+			     $i = 0;
+				foreach($affbonpharmas  as $affbonpharma)
+				{
+					$i++;
+					$affbonpharma = $affbonpharma['Affbonpharma'];
+				    $tableData[] = array(
+						$this->Form->input('Affbondotation.'.$i.'.numero_bon',array('type'=>'text', 'value'=>$affbonpharma['numero_bon'],  'label'=>'N° bon : ',)),
+					    $this->Form->input('Affbondotation.'.$i.'.date_bon',array('type'=>'text', 'value'=>$affbonpharma['date_bon'],  'label'=>'Date bon : ',)),
+					    $this->Form->input('Affbondotation.'.$i.'.montant_bon',array('type'=>'text', 'value'=>$affbonpharma['montant_bon'],  'label'=>'Montant bon : ',)),
+					    $this->Form->input('Affbondotation.'.$i.'.parampharmacie_id',array('type'=>'text', 'value'=>$parampharmacies[$affbonpharma['parampharmacie_id']],  'label'=>'Pharmacie : ',)),
+					    
+					);
+				}
+				
+				echo $this->Html->tableCells($tableData, array('class'=>'tr2'), array('class'=>'tr1'));
+			echo '</table>'; 
+	?>
+    </td>
+    </tr>
+    </table>
+<?php
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+
+<script type="text/javascript">
+$(".dateSelect").focus(function(){
+	new JsDatePick({
+		useMode:2,
+		target:$(this).attr("id"),
+		cellColorScheme:"aqua",
+		dateFormat:"%m-%Y"
+	});
+});
+</script>

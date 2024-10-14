@@ -1,0 +1,280 @@
+<?php
+//print_r($bailleur);
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    if(isset($soustraitantID) && ($soustraitantID != 0))
+	{
+		foreach($sessionparticipants as $sessionparticipant)
+		{
+			$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+			/*------*/
+			if($sessionparticipant['presence'] == 1)
+			{
+				echo $this->Html->tag('div', null, array('class'=>'certif2'));
+					echo'<table width="100%" cellspacing="0" border="0">';
+						echo '<tr>';
+							echo'<td align="left">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'120', 'alt'=>'CEMEAU')) . '</td>';
+							echo'<td align="left">'. $this->Html->image('../../boot/img/logoONEA.png', array('width'=>'100','height'=>'120', 'alt'=>'ONEA')) . '</td>';
+							echo'<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+							echo'<td align="right">'. $this->Html->image('../../boot/fichier_numeriques/logos/'.$soustraitant.'', array('width'=>'200px', 'height'=>'120', 'alt'=>'Sous-traitant')) . '</td>';
+							echo'<td align="right">'. $this->Html->image('../../boot/fichier_numeriques/logos/'.$bailleur.'', array('height'=>'120', 'alt'=>'Financement')) . '</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5 "align="center"><br><br><br></td>';
+						echo '</tr>';
+						echo '<tr style="background-color:#1C76AF;color:#000;">';
+							echo'<td colspan="5 "align="center"><b><h1>ATTESTATION DE FORMATION</h1></b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5 "align="center"><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5 "align="justify" style="padding:10px">
+							Je soussigné, Monsieur ZOMA Cheick Omar W. Eric, Directeur du Centre des Métiers de l’Eau (CEMEAU)
+							de l’Office National de l’Eau et de l’assainissement (ONEA), 
+							atteste que '.$civilites[$titre[$sessionparticipant['participant_id']]].' 
+							'.$nom[$sessionparticipant['participant_id']].' 
+							   '.$prenom[$sessionparticipant['participant_id']].' 
+							a participé et satisfait aux exigences de la formation sur 
+							le thème: '.$theme.', 
+							organisée  en partenariat avec IRC 
+							du '.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).' à 
+							'.$lieu.'.
+							
+							</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5"align="center"><br><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="3" align="left">En foi de quoi, 
+							la présente attestation lui est délivrée pour servir et
+							valoir ce que de droit.</td>';
+							echo'<td colspan="2"></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5" align="center"><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5" align="center">Fait à Ouagadougou, le '.date('d/m/Y').'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5"align="center"><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5" align="center">Le Directeur du Centre des Métiers de l’Eau</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5"align="center"><br><br><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5" align="center"><b><u>'.$pr_prenom.' '.$pr_nom.'</u></b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="5"align="center"><i> '.$pr_distinct.' </i></td>';
+						echo '</tr>';
+						/*echo '<tr>';
+							
+							echo'<td colspan="4" align="center"><span style="color:#00adef;border:3px solid #00adef;
+							font-size:22px;font-family:Comic;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ATTESTATION  DE  FORMATION&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span></td>';
+							echo'<td></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br><b>Je soussigné, Chef de Département du Centre des Métiers de l’Eau
+							 <br>atteste que :
+							</b></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br><b>'.$civilites[$titre[$sessionparticipant['participant_id']]].' 
+							'.$nom[$sessionparticipant['participant_id']].' 
+							   '.$prenom[$sessionparticipant['participant_id']].'
+							</b></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:14px;font-family:Arial;"">
+							<br><b>a participé et satisfait aux exigences de la formation sur le thème :<br>
+							</b></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:14px;font-family:Arial;">
+							<br><b>'.$theme.'</b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:14px;font-family:Arial;">
+							<br><b> Du '.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).' '.$lieu.'</b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2"></td>';
+							echo'<td align="right" style="font-size:12px;font-family:Arial;"><br>Ouagadougou, </td>';
+							echo'<td align="left" style="font-size:12px;font-family:Arial;"><br> le '.date('d/m/Y').'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="left" colspan="2" style="font-size:13px;font-family:Arial;">
+							<br><b>En foi de quoi, la présente attestation lui est<br>     
+							délivrée pour servir et valoir ce que de droit.</b>
+							</td>';
+							//echo'<td></td>';
+							echo'<td></td>';
+							echo'<td align="center" style="font-size:12px;font-family:Arial;">
+							<br><b><i>Le Chef de Département du CEMEAU</i></b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td><br><br><br></td>';
+							echo'<td><br><br><br></td>';
+							echo'<td><br><br><br></td>';
+							echo'<td><br><br><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td align="center" style="font-size:12px;font-family:Arial;">
+							<b><u>Nom et prénom(s)</u></b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td align="center" style="font-size:12px;font-family:Arial;">
+							<i>Distinction honorifique)</i></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="3" align="left" style="font-size:12px;font-family:Arial;">
+							'. $this->Html->image('../../boot/img/agrement.png', array('width'=>'417','height'=>'46', 'alt'=>'CEMEAU')) . '
+							</td>';
+							echo'<td></td>';
+							
+						echo '</tr>';*/			
+					echo'</table>';
+				echo '</div>';		    
+				echo '<p style="page-break-after:always;"></p>';	
+	        }else{}
+	
+		}   
+	}
+    else
+	{
+		foreach($sessionparticipants as $sessionparticipant)
+		{
+			$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+			/*------*/
+			if($sessionparticipant['presence'] == 1)
+			{
+				echo $this->Html->tag('div', null, array('class'=>'certif'));
+					echo'<table width="100%" cellspacing="0" border="0">';
+						echo '<tr>';
+							echo'<td align="left">'. $this->Html->image('../../boot/img/logoONEA.png', array('width'=>'100','height'=>'120', 'alt'=>'ONEA')) . '</td>';
+							echo'<td align="center" style="color:#00adef;
+							font-size:26px;font-family:Arial;padding-left:200px;"><b>Centre des métiers de l’eau<br>(CEMEAU)</b></td>';
+							echo'<td align="right" style="color:#00adef;font-size:10px;font-family:Arial;""></td>';
+							echo'<td align="right">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'120', 'alt'=>'CEMEAU')) . '</td>';
+						echo '</tr>';
+							
+							echo'<td colspan="4" align="center"><span style="color:#00adef;border:3px solid #00adef;
+							font-size:22px;font-family:Comic;"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ATTESTATION  DE  FORMATION&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></span></td>';
+							echo'<td></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br><b>Je soussigné, Directeur du Centre des Métiers de l’Eau (CEMEAU)
+							 <br>atteste que :
+							</b></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br><b>'.$civilites[$titre[$sessionparticipant['participant_id']]].' 
+							'.$nom[$sessionparticipant['participant_id']].' 
+							   '.$prenom[$sessionparticipant['participant_id']].'
+							</b></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:14px;font-family:Arial;"">
+							<br><b>a participé et satisfait aux exigences de la formation sur le thème :<br>
+							</b></td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:14px;font-family:Arial;">
+							<br><b>'.$theme.'</b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:18px;font-family:Arial;">
+							<br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="4" align="center" style="font-size:14px;font-family:Arial;">
+							<br><b> Du '.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).' '.$lieu.'</b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2"></td>';
+							echo'<td align="right" style="font-size:12px;font-family:Arial;"><br>Ouagadougou, </td>';
+							echo'<td align="left" style="font-size:12px;font-family:Arial;"><br> le '.date('d/m/Y').'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="left" colspan="2" style="font-size:13px;font-family:Arial;">
+							<br><b>En foi de quoi, la présente attestation lui est<br>     
+							délivrée pour servir et valoir ce que de droit.</b>
+							</td>';
+							//echo'<td></td>';
+							echo'<td></td>';
+							echo'<td align="center" style="font-size:12px;font-family:Arial;">
+							<br><b><i>Le Directeur du Centre des Métiers de l’Eau</i></b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td><br><br><br></td>';
+							echo'<td><br><br><br></td>';
+							echo'<td><br><br><br></td>';
+							echo'<td><br><br><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td align="center" style="font-size:12px;font-family:Arial;">
+							<b><u>'.$pr_prenom.' '.$pr_nom.'</u></b></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td></td>';
+							echo'<td align="center" style="font-size:12px;font-family:Arial;">
+							<i> '.$pr_distinct.' </i></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="3" align="left" style="font-size:12px;font-family:Arial;"></td>';
+							echo'<td></td>';
+							
+						echo '</tr>';			
+					echo'</table>';
+				echo '</div>';		    
+				echo '<p style="page-break-after:always;"></p>';
+            }else{}				
+	
+	
+		}   
+	}		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

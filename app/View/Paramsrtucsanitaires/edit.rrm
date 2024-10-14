@@ -1,0 +1,20 @@
+<!--Paramsrtucsanitaires Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Paramsrtucsanitaire.nom_structure', array('type'=>'text', 'label'=>'Nom structure sanitaire (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Paramsrtucsanitaire.telephone', array('type'=>'text', 'label'=>'Téléphone', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Paramsrtucsanitaire.adresse', array('type'=>'textarea', 'label'=>'Adresse', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Paramsrtucsanitaire.type_structure', array('type'=>'select', 'options'=>$types, 'empty'=>'Selectionner', 'label'=>'Type structure', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		
+		   echo $this->Form->input('Paramsrtucsanitaire.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	        
+	echo '</table>';
+	echo $this->Form->input('Paramsrtucsanitaire.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,85 @@
+<!--Formcharges Index-->
+<?php
+//print_r($count);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+		echo '<div class="floatContent">';
+		$actionLink = '';
+		
+			if($accessLevel['add']){
+				$actionLink .= $this->Html->link(
+					'', 
+					array('controller'=>'Formcharges', 'view'=>'edit', 'params'=>array('formationid:'.$formationid)), 
+					array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+				);
+			}
+			if($accessLevel['edit']){
+				$actionLink .= $this->Html->link(
+					'', 
+					array('controller'=>'Formcharges', 'view'=>'edit2', 'params'=>array('id:')), 
+					array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Formcharge')
+				);
+			}
+			
+			if($accessLevel['del']){
+				$actionLink .= ' ' . $this->Html->link(
+					'', 
+					array('controller'=>'Formcharges', 'view'=>'del', 'params'=>array('id:')), 
+					array('title'=>'Supprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Formcharge')
+					);
+			}
+			/*""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""*/
+		
+		echo "<div class=\"actionContent\">{$actionLink}</div>";
+		echo '<table class="table trHover borderBottom">';
+		$actionCheck = $this->Form->input('Formcharge.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'FormchargeCheck', 'value'=>1, 'addHidden'=>false));
+		
+		echo $this->Paginator->tableHeaders('Formcharge', array($actionCheck=>false, 
+		'Formation'=>'formation_id',
+		'Participant'=>'agdossier_id',
+		'Frais missions'=>'frais_mission',
+		'Frais transport'=>'frais_transport',
+		'Frais restauration'=>'frais_restauration',
+		'Frais kit formation'=>'frais_kitfor',
+		'Frais inscription'=>'frais_inscription',
+		'Frais généraux'=>'frais_generaux',
+		));
+		
+		$tableData = array();
+		foreach($fromcharges as $fromcharge){
+			
+			$fromcharge = $fromcharge['Formcharge'];
+			$action = $this->Form->input('Formcharge.check.[]', array('type'=>'checkbox', 'class'=>'FormchargeCheckItem', 'value'=>$fromcharge['id'], 'addHidden'=>false));
+			$tableData[] = array($action,
+			(isset($theme))?$theme:'',
+			(isset($agdossiers[$fromcharge['agdossier_id']]))?$agdossiers[$fromcharge['agdossier_id']]:'',
+			number_format($fromcharge['frais_mission'], 0,',', ' '),
+			number_format($fromcharge['frais_transport'], 0,',', ' '),
+			number_format($fromcharge['frais_restauration'], 0,',', ' '),
+			number_format($fromcharge['frais_kitfor'], 0,',', ' '),
+			number_format($fromcharge['frais_inscription'], 0,',', ' '),
+			number_format($fromcharge['frais_generaux'], 0,',', ' '),
+			);
+		}
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '<tr><td colspan="3">';
+		echo $this->Paginator->numbers('Formcharge', array(			
+				'before'=>'<div class="paginate">',
+				'after'=>'</div>',
+				'modulus'=>5,
+				'separator'=>'',
+				'tag'=>'span',
+				'ellipsis'=>'...',
+				'first'=>'<<',
+				'last'=>'>>',
+				'class'=>'',
+				'currentClass'=>'',
+				'counter'=>''
+			));
+		echo '</td></tr>';
+		echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

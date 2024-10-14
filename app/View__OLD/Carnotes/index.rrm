@@ -1,0 +1,76 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Carnotes', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carnotes', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carnotes', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Carnote')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Carnotes', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Carnote'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Carnote.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'CarnoteCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Carnote', array($actionCheck=>false, 
+	'Note minimum'=>'note_min',
+	'Note maximum'=>'note_max',
+	'Appréciation'=>'appreciation',
+	));
+	$tableData = array();  //  
+	foreach($carnotes as $carnote){
+		$carnote = $carnote['Carnote'];
+		
+		
+		$action = $this->Form->input('Carnote.check.[]', array('type'=>'checkbox', 'class'=>'CarnoteCheckItem', 'value'=>$carnote['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		
+		$carnote['note_min'],
+		$carnote['note_max'],
+		$carnote['appreciation'],
+				
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Carnote', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

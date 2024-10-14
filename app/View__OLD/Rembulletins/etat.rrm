@@ -1,0 +1,118 @@
+<?php
+// Connexion à la base de données
+/*try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$curDate = date("Y-m-d");
+	
+$sql = "SELECT bul.ag_dossier as dossier_id, 
+               bul.matricule as matricule,
+			   bul.date_debut  as debut,
+			   bul.date_fin  as fin,
+			   bul.paramtypesalaire_id   as typesal,
+			   item.rembulletin_id as bulletinid
+			   item.code as code,
+			   item.designation  as designation,
+			   item.base as base,
+			   item.taux as taux,
+			   item.montant as montant
+        FROM  rembulletins  bul, rembulitems item
+		WHERE bul.id = item.rembulletin_id   AND 
+		      bul.date_debut  = '".$datedebut."' AND 
+			  bul.date_fin  = '".$datefin."'";
+ 
+$reponse = $bdd->query($sql);
+//print_r($salaires);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+        
+		echo '<table width="100%" cellspacing="0" border="0">';
+		    foreach($plans as $plan)
+		    {
+				
+				echo '<tr>';
+					echo'<td>
+					    '. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+					    </td>';
+					echo '<td colspan="12" align="center">
+					<span style="margin-left:30px;">Ouagadougou, le '.date('d/m/Y').'</span>
+					<h3><u>Etat général des salaires</u></h3>
+					</td>';
+					echo '<td>
+					    <p align="center" style="font-size:11px;margin-bottom:80px;">
+						    BURKINA FASO<br>
+					         ----------<br>
+					       Unité-Progrès-Justice<br>
+					    </p>
+					   </td>';
+			    echo '</tr>';
+				
+			}
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+		
+		
+	echo '<table cellspacing="0" border="1">';
+		
+		echo '<thead>';
+			echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+			echo '<th align="center"><b>Matricule</b></th>';
+			echo '<th align="center"><b>Nom et Prénoms</b></th>';
+			echo '<th align="center"><b>Salaire base</b></th>';
+			echo '<th align="center"><b>Indemnités</b></th>';
+			echo '<th align="center"><b>H Sup</b></th>';
+			echo '<th align="center"><b>All. Fam</b></th>';
+			echo '<th align="center"><b>Brut</b></th>';
+			echo '<th align="center"><b>Net Impos</b></th>';
+			echo '<th align="center"><b>IUTS</b></th>';
+			echo '<th align="center"><b>TPA</b></th>';
+			echo '<th align="center"><b>SS Salarié</b></th>';
+			echo '<th align="center"><b>SS Patron</b></th>';
+			echo '<th align="center"><b>Précompte</b></th>';
+			echo '<th align="center"><b>Salaire Net</b></th>';
+			echo '</tr>';
+		echo '</thead>';	
+			
+		echo '<tbody>';
+			
+		     
+		    while($donnees = $reponse->fetch())
+			{
+				$base = 0;
+				if($donnees['code'] == 1){$base = $donnees['montant'];}
+				
+				echo '<tr>
+			        <td></td>
+                    <td></td>
+				    <td>'.$base.'</td>
+				    <td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					
+				 </tr>';
+				
+			}
+			
+		echo '</tbody>';
+		
+		echo '</table>';
+		echo '</div>';
+		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

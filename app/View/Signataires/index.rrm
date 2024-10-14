@@ -1,0 +1,114 @@
+<!--Contrats Index-->
+<?php
+//print_r($signataires);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Signataires', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Signataires', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Signataires', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Signataire')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Signataires', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Signataire'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Signataire.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'SignataireCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Signataire', array($actionCheck=>false, 
+	
+	'Matricule'=>'matricule',
+	'Nom & Prénom(s)'=>'agdossier_id',
+	'Signature'=>'signature',
+	'Distinction'=>'distinction',
+	'Statut'=>'statut',
+	));
+	$tableData = array();  //  
+	foreach($signataires as $signataire){
+		$signataire = $signataire['Signataire'];
+		
+		$statut = $this->Form->input('Signataire.statut', array('type'=>'checkbox', 'checked'=>((bool)$signataire['statut']), 'disabled'=>'disabled', 'addHidden'=>false));
+		
+		$action = $this->Form->input('Signataire.check.[]', array('type'=>'checkbox', 'class'=>'SignataireCheckItem', 'value'=>$signataire['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		
+		$signataire['matricule'],
+		(isset($agdossiers[$signataire['agdossier_id']]))?$agdossiers[$signataire['agdossier_id']]:'',
+		(isset($paramfonctions[$signataire['signature']]))?$paramfonctions[$signataire['signature']]:'',
+        $signataire['distinction'],
+		$statut		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Signataire', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+	/*if($signataireid && $nomsignataire){
+		
+		echo '<div class="floatContent">';
+		
+		echo '<table class="table trHover borderBottom">';
+		echo $this->Paginator->tableHeaders('Signataire', array('Signataires'=>'nomcom'));
+		$tableData = array();
+		
+		foreach($signataires as $signataire){
+			$signataire = $signataire['Signataire'];
+			
+			$tableData[] = array(htmlEntities($signataire['nomcom'], ENT_QUOTES | ENT_IGNORE, "UTF-8"));
+		}
+		
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '<tr><td colspan="4">';
+		echo $this->Paginator->numbers('Signataire', array(			
+				'before'=>'<div class="paginate">',
+				'after'=>'</div>',
+				'modulus'=>5,
+				'separator'=>'',
+				'tag'=>'span',
+				'ellipsis'=>'...',
+				'first'=>'<<',
+				'last'=>'>>',
+				'class'=>'',
+				'currentClass'=>'',
+				'counter'=>''
+			));
+		echo '</td></tr>';
+		echo '</table></div>';
+	}*/
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,79 @@
+<!--Contrats Index-->
+<?php
+//print_r($dossiers);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Paramsalbasegrats', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramsalbasegrats', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramsalbasegrats', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Paramsalbasegrat')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Paramsalbasegrats', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Paramsalbasegrat'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Paramsalbasegrat.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'ParamsalbasegratCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Paramsalbasegrat', array($actionCheck=>false, 
+	
+	'Matricule'=>'matricule',
+	'Nom & prénom'=>'agdossier_id',
+	'Salaire de base gratification'=>'salaire_base_grat',
+	
+	
+	));
+	$tableData = array();  //  
+	foreach($paramsalbasegrats as $paramsalbasegrat){
+		$paramsalbasegrat = $paramsalbasegrat['Paramsalbasegrat'];
+		
+		
+		$action = $this->Form->input('Paramsalbasegrat.check.[]', array('type'=>'checkbox', 'class'=>'ParamsalbasegratCheckItem', 'value'=>$paramsalbasegrat['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+        $paramsalbasegrat['matricule'],		
+		(isset($agdossiers[$paramsalbasegrat['agdossier_id']]))?$agdossiers[$paramsalbasegrat['agdossier_id']]:'',	
+		number_format($paramsalbasegrat['salaire_base_grat'], 0,',', ' '),
+		
+       
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Paramsalbasegrat', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

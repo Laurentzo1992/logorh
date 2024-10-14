@@ -1,0 +1,16 @@
+<!--Plans Edit-->
+
+<?php
+//print_r($msg);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('fichiercsv', array('type'=>'file', 'label'=>'Fichier des agents', 'format'=>false,'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+            echo $this->Form->input('Participant.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	echo '</table>';
+	echo $this->Form->input('Participant.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

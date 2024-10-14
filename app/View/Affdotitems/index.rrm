@@ -1,0 +1,71 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Affdotitems', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affdotitems', 'view'=>'edit', 'params'=>array('agdossier_id:'.$agdossier_id, 'dotverre_id:'.$dotverre_id, 'dotation_restant:'.$dotation_restant, 'id:')), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Affdotitems', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Affdotitem'));
+	}
+	
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affdotitem.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffdotitemCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affdotitem', array(
+	$actionCheck=>false,
+	'Dossier'=>'agdossier_id',
+	'Date '=>'date_item',
+	'Libelle'=>'libelle',
+	'Montant'=>'montant',));
+	$tableData = array();  //  
+	foreach($affdotitems as $affdotitem){
+		$affdotitem = $affdotitem['Affdotitem'];
+		
+		
+		$action = $this->Form->input('Affdotitem.check.[]', array('type'=>'checkbox', 'class'=>'AffdotitemCheckItem', 'value'=>$affdotitem['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+        $agdossiers[$affdotitem['agdossier_id']], 
+        $affdotitem['date_item'],
+        $affdotitem['libelle'],
+        number_format($affdotitem['montant'], 0,',', ' '), 		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affdotitem', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

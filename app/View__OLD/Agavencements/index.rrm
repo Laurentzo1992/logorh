@@ -1,0 +1,94 @@
+<!--Contrats Index-->
+<?php
+//print_r($agavencements);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo '<table style="margin-left:10px;" class="table trHover borderBottom">';
+	echo '<tr><th>Nom & prénom(s) : '.$agdossiers[$dossier].'</th></tr>';
+	echo '</table>';
+	echo '<br>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	/*$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Agavencements', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);*/
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agavencements', 'view'=>'edit', 'params'=>array('varcontrat:'.$varcontrat)), 
+			array('title'=>'Effectuer une affectation ou mutation', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agavencements', 'view'=>'edit2', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Agavencement')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Agavencements', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Agavencement'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Agavencement.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AgavencementCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Agavencement', array($actionCheck=>false, 
+	
+	'Matricule'=>'matricule',
+	'Nom & prénom'=>'agdossier_id',
+	'Num contrat'=>'agcontrat_id',
+	'Date'=>'date_av',
+	'Classification'=>'paramclassification_id',
+	'Echélon'=>'paramechelon_id',
+	'Ancienneté'=>'anciennete',
+	'Date retraite'=>'date_retraite',
+	'Date alerte'=>'date_alerte',
+	
+	
+	
+	));
+	$tableData = array();  //  
+	foreach($agavencements as $agavencement){
+		$agavencement = $agavencement['Agavencement'];
+		
+		
+		$action = $this->Form->input('Agavencement.check.[]', array('type'=>'checkbox', 'class'=>'AgavencementCheckItem', 'value'=>$agavencement['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+        $agavencement['matricule'],		
+		(isset($agdossiers[$agavencement['agdossier_id']]))?$agdossiers[$agavencement['agdossier_id']]:'',	
+		(isset($agcontrats[$agavencement['agcontrat_id']]))?$agcontrats[$agavencement['agcontrat_id']]:'',	
+		date("d-m-Y",strtotime($agavencement['date_av'])),
+		(isset($paramclassifications[$agavencement['paramclassification_id']]))?$paramclassifications[$agavencement['paramclassification_id']]:'',
+	    (isset($paramechelons[$agavencement['paramechelon_id']]))?$paramechelons[$agavencement['paramechelon_id']]:'',
+	    $agavencement['anciennete'],	
+		date("d-m-Y",strtotime($agavencement['date_retraite'])),
+		date("d-m-Y",strtotime($agavencement['date_alerte'])),
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Agavencement', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

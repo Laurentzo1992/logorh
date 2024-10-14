@@ -1,0 +1,19 @@
+<!--Paramregimemedicos Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Paramregimemedico.libelle', array('type'=>'textarea', 'label'=>'Libelle (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramregimemedico.valeur', array('type'=>'text', 'label'=>'Valeur', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramregimemedico.unite', array('type'=>'text', 'label'=>'Unite', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Paramregimemedico.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	
+	echo '</table>';
+	echo $this->Form->input('Paramregimemedico.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

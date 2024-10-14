@@ -1,0 +1,85 @@
+﻿<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	} );
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($personnels);
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$curDate = date("Y-m-d");
+//print_r($curDate);	
+$sql = "SELECT d.nom_direction as direction,
+               d.sigle as sigle,
+               s.nom_service as service
+        FROM   paramdirections d,  	paramservices s
+		WHERE d.id = s.paramdirection_id
+		ORDER BY d.id DESC";
+ 
+$reponse = $bdd->query($sql);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+   /*
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','',''));
+	echo $this->Form->input('Formation.dateDebut', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Formation.dateFin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+		
+	echo $this->Form->input('Formation.submit', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Formation.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+   */
+?>
+<table id="example" class="display" style="width:100%">
+        <thead style="background-color:#a2a6a8; color:#fff;">   
+		<tr>
+			<th>DIRECTION</th>
+			<th>SERVICE</th>
+			
+		</tr>
+        </thead>
+        <tbody>
+		    
+			    <?php
+				     
+					 while($donnees = $reponse->fetch())
+					 {
+						//$total = $total + $donnees['nbr'];
+				?>
+				<tr>
+					<td><?php echo $donnees['direction']; ?> ( <?php echo $donnees['sigle']; ?> )</td>
+					<td><?php echo $donnees['service']; ?></td>
+			    </tr>
+			<?php		
+				}
+			?>
+       </tbody>
+    </table>		
+<?php		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+

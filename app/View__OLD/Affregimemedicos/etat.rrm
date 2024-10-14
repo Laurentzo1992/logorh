@@ -1,0 +1,169 @@
+<?php
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$sql = "SELECT ag.id as agid,
+               ag.ag_nom as nom, 
+			   ag.ag_prenom as prenom
+        FROM   agdossiers  ag";
+
+ 
+              $reponse = $bdd->query($sql);
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+        
+		echo '<table width="100%" cellspacing="0" border="0">';
+		    
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+					    SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+					    </td>';
+					echo '<td colspan="10" align="center">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+					<h3><u>ETAT DE REMBOURSEMENT DES FRAIS MEDICAUX</u></h3>
+					</td>';
+					echo '<td colspan="2" align="right">
+					    Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+			    echo '</tr>';
+				
+			
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+		//echo '<br>'.$donnees['direction'].'<br>';
+					
+					
+		$i = 0;
+		$total_mnt = 0; $total_gen_mnt = 0;
+		$total_net = 0; $total_gen_net = 0;
+		echo '<table width="100%" cellspacing="0" border="1">';
+			echo '<thead>';
+				echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+					echo '<th style="width:3%" align="center"><b>N° ordre</b></th>';
+					echo '<th style="width:19%" align="center"><b>Nom et Prénoms</b></th>';
+					echo '<th style="width:13%" align="center"><b>Montant</b></th>';
+					echo '<th style="width:13%" align="center"><b>Taux de remboursement</b></th>';
+					echo '<th style="width:13%" align="center"><b>Net à rembourser</b></th>';
+					echo '<th style="width:13%" align="center"><b>Désignations</b></th>';
+					echo '<th style="width:13%" align="center"><b>CIB/Emargement</b></th>';
+					echo '<th style="width:13%" align="center"><b>Structure sanitaire</b></th>';
+				echo '</tr>';
+			echo '</thead>';
+			echo '<tbody>';
+		while($donnees = $reponse->fetch())
+		{
+			
+			$sql2 = "SELECT count(reg.id)  as nbr,
+			                reg.agdossier_id as agentid
+					 FROM  affregimemedicos reg 
+					 WHERE reg.agdossier_id = '".$donnees['agid']."' and
+						   reg.date_med BETWEEN '".$datedebut."' AND '".$datefin."'";
+			$reponse2 = $bdd->query($sql2);
+			$cpt = 0;
+            $agentid = '';	
+            			
+			while($donnees2 = $reponse2->fetch())
+			{
+				$cpt = $donnees2['nbr'];
+				$agentid = $donnees2['agentid'];
+			
+				
+				/*----------------------------------------*/
+				if($cpt > 0)
+				{
+					$i++;	
+					
+							
+							/*===========================================*/
+							$req1 = "SELECT reg.date_med  as date_med,
+											reg.agdossier_id   as agdossier_id,
+											reg.paramregimemedico_id  as paramregimemedico_id,
+											reg.montant  as montant,
+											reg.taux  as taux,
+											reg.unite  as unite,
+											reg.paramsrtucsanitaire_id as paramsrtucsanitaire_id,
+											reg.montant_rembourse as montant_rembourse
+									 FROM  affregimemedicos reg, agdossiers  ag
+									 WHERE reg.agdossier_id = ag.id and
+										   reg.agdossier_id = '".$agentid."' and
+							   reg.date_med BETWEEN '".$datedebut."' AND '".$datefin."'";
+							$rep = $bdd->query($req1);
+							echo'<tr>';
+									echo'<td style="width:3%">'.$i.'</td>';
+									echo'<td style="width:19%">'.$nomprenoms[$agentid].'</td>';
+									echo'<td colspan="6">';
+										echo '<table width="100%" cellspacing="0" border="1">';
+											
+											while($data = $rep->fetch())
+											{   
+										        $total_mnt = $total_mnt + $data['montant'];
+												$total_net = $total_net + $data['montant_rembourse'];
+												echo'<tr>
+														<td style="width:13%" align="right">'.number_format($data['montant'], 0,',', ' ').'</td>
+														<td style="width:13%" align="right">'.$data['taux'].' '.$data['unite'].'</td>
+														<td style="width:13%" align="right">'.number_format($data['montant_rembourse'], 0,',', ' ').'</td>
+														<td style="width:13%" align="right">'.$regimes[$data['paramregimemedico_id']].'</td>
+														<td style="width:13%" align="right"><br><br></td>
+														<td style="width:13%" align="right">'.$srtucsanitaires[$data['paramsrtucsanitaire_id']].'</td>
+													</tr>';
+											}
+											$total_gen_mnt = $total_gen_mnt + $total_mnt;
+											$total_gen_net = $total_gen_net + $total_net;
+									echo '</table>';
+								echo'</td>';
+							echo'</tr>';
+							echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+								echo '<td style="width:3%" align="right"><b></b></td>';
+								echo '<td style="width:19%" align="right"><b></b></td>';
+								echo '<td style="width:13%" align="right"><b>'.number_format($total_mnt, 0,',', ' ').'</b></th>';
+								echo '<td style="width:13%" align="right"><b></b></td>';
+								echo '<td style="width:13%" align="right"><b>'.number_format($total_net, 0,',', ' ').'</b></th>';
+								echo '<td style="width:13%" align="right"><b></b></td>';
+								echo '<td style="width:13%" align="right"><b></b></td>';
+								echo '<td style="width:13%" align="right"><b></b></td>';
+							echo '</tr>';
+								
+				}
+		    }
+			
+		}
+		
+		echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+			echo '<th style="width:22%" colspan="2" align="right"><b>TOTAL GENERAL</b></th>';
+			echo '<th style="width:13%" align="right"><b>'.number_format($total_gen_mnt, 0,',', ' ').'</b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b>'.number_format($total_gen_net, 0,',', ' ').'</b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+		echo '</tr>';
+		echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+			echo '<th style="width:22%" colspan="2" align="right"><b>MONTANT A REMBOURSER</b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b>'.number_format($total_gen_net, 0,',', ' ').'</b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+			echo '<th style="width:13%" align="right"><b></b></th>';
+		echo '</tr>';
+		echo '</tbody>';
+		
+		echo '</table>';
+		echo '<br>';
+		echo '</div>';
+		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

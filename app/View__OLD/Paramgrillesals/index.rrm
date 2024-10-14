@@ -1,0 +1,77 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Paramgrillesals', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramgrillesals', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramgrillesals', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Paramgrillesal')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Paramgrillesals', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Paramgrillesal'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Paramgrillesal.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'ParamgrillesalCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Paramgrillesal', array($actionCheck=>false, 
+	
+	'Classification'=>'paramclassification_id',
+	'Echelon'=>'paramechelon_id',
+	'Salaire de base normale'=>'salaire',
+	
+	));
+	$tableData = array();  //  
+	foreach($paramgrillesals as $paramgrillesal){
+		$paramgrillesal = $paramgrillesal['Paramgrillesal'];
+		
+		
+		$action = $this->Form->input('Paramgrillesal.check.[]', array('type'=>'checkbox', 'class'=>'ParamgrillesalCheckItem', 'value'=>$paramgrillesal['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		(isset($paramclassifications[$paramgrillesal['paramclassification_id']]))?$paramclassifications[$paramgrillesal['paramclassification_id']]:'',
+		(isset($paramechelons[$paramgrillesal['paramechelon_id']]))?$paramechelons[$paramgrillesal['paramechelon_id']]:'',
+		number_format($paramgrillesal['salaire'], 0,',', ' '),
+       	
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Paramgrillesal', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

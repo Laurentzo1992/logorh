@@ -1,0 +1,18 @@
+<!--Carretraites Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Carretraite', array('type'=>'text', 'value'=>$nom.' '.$prenom, 'label'=>'Nom & Prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Carretraite.agdossier_id', array('type'=>'hidden', 'value'=>$agdossierID));
+			echo $this->Form->input('Carretraite.date_retraite', array('type'=>'mouton', 'label'=>'Date de départ à la retraite', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Carretraite.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	
+	echo '</table>';
+	echo $this->Form->input('Carretraite.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

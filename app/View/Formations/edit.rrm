@@ -1,0 +1,28 @@
+<!--Paramavoirets Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Formation.formdenomination_id', array('type'=>'select', 'options'=>$denominations,  'empty'=>'Selectionner', 'label'=>'Dénomination (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.theme', array('type'=>'textarea', 'label'=>'Intitulé du thème (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.objectif', array('type'=>'textarea', 'label'=>'Objectif(s) (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.poste', array('type'=>'textarea', 'label'=>'Postes concernés (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.nbr_participant', array('type'=>'text', 'label'=>'Nombre de participants (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.modalite', array('type'=>'textarea', 'label'=>'Modalité (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.duree', array('type'=>'text', 'label'=>'Durée (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.lieu', array('type'=>'text', 'label'=>'Lieu (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.annee', array('type'=>'text', 'label'=>'Année (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.parambudget_id', array('type'=>'select', 'options'=>$budgets,  'empty'=>'Selectionner', 'label'=>'Budget (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.cout', array('type'=>'text', 'label'=>'Cout (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Formation.statut', array('type'=>'select', 'options'=>$statuts,  'empty'=>'Selectionner', 'label'=>'Statut (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Formation.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	
+	echo '</table>';
+	echo $this->Form->input('Formation.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

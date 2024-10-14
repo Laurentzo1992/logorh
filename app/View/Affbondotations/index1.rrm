@@ -1,0 +1,71 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','','',''));
+	echo $this->Form->input('Affbondotation.datedebut', array('type'=>'mouton', 'before'=>'<tr><td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Affbondotation.datefin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Affbondotation.valider', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Affbondotation.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	
+	if($accessLevel['edit']){
+	$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbondotations', 'view'=>'etatpharmacie'), 
+			array('title'=>'effectif du personnel', 'class'=>'icon print groupAction_1')
+		);
+	}
+	
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affbondotation.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffbondotationCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affbondotation', array(
+	$actionCheck=>false,
+	'Matricule'=>'matricule',
+	'Dossier'=>'agdossier_id',
+	'Année'=>'annee',
+	'Montant dotation'=>'dotation',
+	'Montant restant'=>'dotation_restant',));
+	$tableData = array();  //  
+	foreach($affbondotations as $affbondotation){
+		$affbondotation = $affbondotation['Affbondotation'];
+		
+		
+		$action = $this->Form->input('Affbondotation.check.[]', array('type'=>'checkbox', 'class'=>'AffbondotationCheckItem', 'value'=>$affbondotation['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		$affbondotation['matricule'],
+        $agdossiers[$affbondotation['agdossier_id']], 
+        $affbondotation['annee'],
+        number_format($affbondotation['dotation'], 0,',', ' '), 
+        number_format($affbondotation['dotation_restant'], 0,',', ' '), 		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affbondotation', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

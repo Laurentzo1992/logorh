@@ -1,0 +1,603 @@
+<?php
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+//print_r($rembulletins);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    if($typesal == 2)
+	{
+		
+		foreach($rembulletins as $rembulletin)
+		{   
+			$rembulletin = $rembulletin['Rembulletin'];
+		
+			echo'<table width="100%" cellspacing="0" border="0">';
+			echo '<thead>';
+			echo'<table width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+						echo'<td align="left"><b>SONATUR<br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73 / 74<br> 
+						</td>';
+						echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+						echo'<td align="left"><b><u><h2>BULLETIN DE PAIE</h2></u></b>
+						<table width="70%" cellspacing="0" border="0">
+							<tr>
+								<td><b>Période du :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_debut)).'</td>
+							</tr>
+							<tr>
+								<td><b>au :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_fin)).'</td>
+							</tr>
+						</table>
+					 </td>';
+					echo '</tr>';
+					
+			echo'</table>';
+			echo '<thead>';
+			echo '<tbody>';
+			echo '<br>';
+			echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#808080">';
+						echo'<td align="left"><b>Matricule</b></td>';
+						echo'<td colspan="3" align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Catégorie</b></td>';
+						echo'<td align="left"><b>Echelon</b></td>';
+						echo'<td align="left"><b>Charge</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left">'.$rembulletin['matricule'].'</td>';
+						echo'<td colspan="3" align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+						echo'<td align="left">'.$classid[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td align="left">'.$echeid[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td align="left">'.$charges[$rembulletin['ag_dossier']].'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo'<td colspan="2"align="left"><b>N° CNSS</b></td>';
+						echo'<td colspan="2" align="left"><b>Affectation</b></td>';
+						echo'<td colspan="3"align="left"><b>Fonction</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="2"align="left">'.$cotisations[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td colspan="2" align="left">'.$directions[$directid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="3"align="left">'.$fonctions[$fonctid[$rembulletin['agcontrat_id']]].'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo'<td colspan="1"align="left"><b>Mode paiement</b></td>';
+						echo'<td colspan="1" align="left"><b>N° de compte</b></td>';
+						echo'<td colspan="2" align="left"><b>Domiciliation</b></td>';
+						echo'<td colspan="3" align="left"><b>Intitulé du compte</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="1"align="left">'.$parammodepaies[$modepaieid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="1" align="left">'.$numcomptebanq[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td colspan="2" align="left">'.$parambanques[$banqid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="3" align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+					echo '</tr>';
+			echo '</table>';
+			//print_r($rembulletin);
+			
+			echo '<table width="100%" cellspacing="0" border="1">';
+						echo '<tr style="background-color:#808080;">';
+							echo '<td><b>Code</b></td>';
+							echo '<td><b>Désignation élément de salaire</b></td>';
+							echo '<td><b>Base</b></td>';
+							echo '<td><b>Taux</b></td>';
+							echo '<td><b>Avoirs</b></td>';
+							echo '<td><b>Retenues</b></td>';
+						echo '</tr>';
+						$total_avoir = 0;
+						$total_ret = 0;
+						$salaire_net = 0;
+						$net = 0;
+						$salbrut = 0;
+						$salImp = 0;
+						$precompte = 0;
+						foreach($rembulletin['Rembulitem'] as $rembulitem)
+						{
+							//echo $rembulitem['designation']; 
+							
+							if($rembulitem['code'] == 500)
+							{
+								$salbrut = $rembulitem['montant'];
+							}
+							elseif($element['code'] == 8)
+							{
+								
+							}
+							elseif($element['code'] == 401)
+							{
+								
+							}
+							elseif($rembulitem['code'] == 1001)
+							{
+								$salImp = $rembulitem['montant'];
+							}
+							else
+							{
+								if($rembulitem['avoir_ret'] == 1)
+								{
+									$total_avoir = $total_avoir + $rembulitem['montant'];
+									echo '<tr>';
+									echo '<td  align="left">'.sprintf('%03d', $rembulitem['code']).'</td>';
+									echo '<td  align="left">'.$rembulitem['designation'].'</td>';
+									echo '<td  align="right">'.number_format($rembulitem['base'], 0,',', ' ').'</td>';
+									echo '<td  align="right">'.$rembulitem['taux'].'</td>';
+									echo '<td  align="right">'.number_format($rembulitem['montant'], 0,',', ' ').'</td>';
+									echo '<td></td>';
+									echo '</tr>'; 
+								}
+								else
+								{
+									$total_ret = $total_ret + $rembulitem['montant'];
+									echo '<tr align="right">';
+									echo '<td align="left">'.sprintf('%03d', $rembulitem['code']).'</td>';
+									echo '<td align="left">'.$rembulitem['designation'].'</td>';
+									echo '<td align="right">'.number_format($rembulitem['base'], 0,',', ' ').'</td>';
+									echo '<td align="right">'.$rembulitem['taux'].'</td>';
+									echo '<td align="right"></td>';
+									echo '<td align="right">'.number_format($rembulitem['montant'], 0,',', ' ').'</td>';
+									echo '</tr>';
+								}
+							}
+							/*----Precompte-------*/
+							if($rembulitem['code'] == 98)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							if($rembulitem['code'] == 13)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							if($rembulitem['code'] == 29)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							/*----------------------------*/
+						}
+						echo '<tr>';
+							echo '<td colspan="4" style="background-color:#808080;">Totaux</td>';
+							echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+							echo '<td align="right">'.number_format($total_ret, 0,',', ' ').'</td>';
+						echo '</tr>';
+						echo '<tr style="background-color:#808080;">';
+							echo '<td>Net imposable</td>';
+							echo '<td>Salaire Brut</td>';
+							echo '<td>Salaire Net</td>';
+							echo '<td>Précompte</td>';
+							echo '<td colspan="2">Net à payer</td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo '<td align="right">'.number_format($salImp, 0,',', ' ').'</td>';
+							echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+							//$salaire_net = ($salbrut - $total_ret) + $precompte;
+							//$salaire_net = $salbrut;
+							$net = $salbrut - $total_ret;
+							echo '<td align="right">'.number_format($net, 0,',', ' ').'</td>';
+							echo '<td align="right">0</td>';
+							//$net = $salbrut - $total_ret;
+							
+							echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+						echo '</tr>';
+					echo '</table>';
+					echo'<table width="100%" cellspacing="0" border="0">';	
+						echo '<tr border="0">';
+							echo '<td align="right" colspan="2"><br><br></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right" colspan="2"><br><br></td>';
+						echo '</tr>';
+						echo '<tr border="0" class="breakAfter">';
+							echo '<td align="left" colspan="2"><b>Signature de l\'employé</b></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right" colspan="2"><b>Visa et Cachet</b></td>';
+						echo '</tr>';
+			echo '</table>';
+			echo '</tbody>';
+			echo '<tfoot>';
+
+			echo '</tfoot>';
+			echo '</table   class="breakAfter">';
+			echo '<p class="breakAfter"></p>';
+			//echo '<span class="breakAfter"></span>';
+		}	
+	}
+	elseif($typesal == 3)
+	{
+		
+		foreach($rembulletins as $rembulletin)
+		{   
+			$rembulletin = $rembulletin['Rembulletin'];
+			$taux = $rembulletin['taux_prime'];
+			echo'<table width="100%" cellspacing="0" border="0">';
+			echo '<thead>';
+			echo'<table width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+						echo'<td align="left"><b>SONATUR<br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73 / 74<br> 
+						</td>';
+						echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+						echo'<td align="left"><b><u><h2>BULLETIN DE PAIE</h2></u></b>
+						<table width="70%" cellspacing="0" border="0">
+							<tr>
+								<td><b>Période du :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_debut)).'</td>
+							</tr>
+							<tr>
+								<td><b>au :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_fin)).'</td>
+							</tr>
+						</table>
+					 </td>';
+					echo '</tr>';
+					
+			echo'</table>';
+			echo '<thead>';
+			echo '<tbody>';
+			echo '<br>';
+			echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#808080">';
+						echo'<td align="left"><b>Matricule</b></td>';
+						echo'<td colspan="3" align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Catégorie</b></td>';
+						echo'<td align="left"><b>Echelon</b></td>';
+						echo'<td align="left"><b>Charge</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left">'.$rembulletin['matricule'].'</td>';
+						echo'<td colspan="3" align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+						echo'<td align="left">'.$classid[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td align="left">'.$echeid[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td align="left">'.$charges[$rembulletin['ag_dossier']].'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo'<td colspan="2"align="left"><b>N° CNSS</b></td>';
+						echo'<td colspan="2" align="left"><b>Affectation</b></td>';
+						echo'<td colspan="3"align="left"><b>Fonction</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="2"align="left">'.$cotisations[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td colspan="2" align="left">'.$directions[$directid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="3"align="left">'.$fonctions[$fonctid[$rembulletin['agcontrat_id']]].'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo'<td colspan="1"align="left"><b>Mode paiement</b></td>';
+						echo'<td colspan="1" align="left"><b>N° de compte</b></td>';
+						echo'<td colspan="2" align="left"><b>Domiciliation</b></td>';
+						echo'<td colspan="3" align="left"><b>Intitulé du compte</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="1"align="left">'.$parammodepaies[$modepaieid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="1" align="left">'.$numcomptebanq[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td colspan="2" align="left">'.$parambanques[$banqid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="3" align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+					echo '</tr>';
+			echo '</table>';
+			//print_r($rembulletin);
+			
+			echo '<table width="100%" cellspacing="0" border="1">';
+						echo '<tr style="background-color:#808080;">';
+							echo '<td><b>Code</b></td>';
+							echo '<td><b>Désignation élément de salaire</b></td>';
+							echo '<td><b>Base</b></td>';
+							echo '<td><b>Taux</b></td>';
+							echo '<td><b>Avoirs</b></td>';
+							echo '<td><b>Retenues</b></td>';
+						echo '</tr>';
+						$total_avoir = 0;
+						$total_ret = 0;
+						$salaire_net = 0;
+						$net = 0;
+						$salbrut = 0;
+						$salImp = 0;
+						$precompte = 0;
+						foreach($rembulletin['Rembulitem'] as $rembulitem)
+						{
+							//echo $rembulitem['designation']; 
+							
+							if($rembulitem['code'] == 500)
+							{
+								$salbrut = $rembulitem['montant'];
+							}
+							elseif($rembulitem['code'] == 1001)
+							{
+								$salImp = $rembulitem['montant'];
+							}
+							else
+							{
+								if($rembulitem['avoir_ret'] == 1)
+								{
+									$total_avoir = $total_avoir + $rembulitem['montant'];
+									echo '<tr>';
+									echo '<td  align="left">'.sprintf('%03d', $rembulitem['code']).'</td>';
+									echo '<td  align="left">'.$rembulitem['designation'].'</td>';
+									echo '<td  align="right">'.number_format($rembulitem['base'], 0,',', ' ').'</td>';
+									echo '<td  align="right">'.$rembulitem['taux'].'</td>';
+									echo '<td  align="right">'.number_format($rembulitem['montant'], 0,',', ' ').'</td>';
+									echo '<td></td>';
+									echo '</tr>'; 
+								}
+								else
+								{
+									$total_ret = $total_ret + $rembulitem['montant'];
+									echo '<tr align="right">';
+									echo '<td align="left">'.sprintf('%03d', $rembulitem['code']).'</td>';
+									echo '<td align="left">'.$rembulitem['designation'].'</td>';
+									echo '<td align="right">'.number_format($rembulitem['base'], 0,',', ' ').'</td>';
+									echo '<td align="right">'.$rembulitem['taux'].'</td>';
+									echo '<td align="right"></td>';
+									echo '<td align="right">'.number_format($rembulitem['montant'], 0,',', ' ').'</td>';
+									echo '</tr>';
+								}
+							}
+							/*----Precompte-------*/
+							if($rembulitem['code'] == 98)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							if($rembulitem['code'] == 13)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							if($rembulitem['code'] == 29)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							/*----------------------------*/
+						}
+						echo '<tr>';
+							echo '<td colspan="4" style="background-color:#808080;">Totaux</td>';
+							echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+							echo '<td align="right">'.number_format($total_ret, 0,',', ' ').'</td>';
+						echo '</tr>';
+						echo '<tr style="background-color:#808080;">';
+							echo '<td>Net imposable</td>';
+							echo '<td>Salaire Brut</td>';
+							echo '<td>Salaire Net</td>';
+							echo '<td>Précompte</td>';
+							echo '<td colspan="2">Net à payer</td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo '<td align="right">'.number_format($salImp, 0,',', ' ').'</td>';
+							echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+							//$salaire_net = ($salbrut - $total_ret) + $precompte;
+							//$salaire_net = $salbrut  * ($taux/100);
+							$net = ($salbrut - $total_ret) * ($taux/100);
+							echo '<td align="right">'.number_format($net, 0,',', ' ').'</td>';
+							echo '<td align="right">0</td>';
+							//$net = $salbrut - $total_ret;
+							//$net = $salbrut  * ($taux/100);
+							echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+						echo '</tr>';
+					echo '</table>';
+					echo'<table width="100%" cellspacing="0" border="0">';	
+						echo '<tr border="0">';
+							echo '<td align="right" colspan="2"><br><br></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right" colspan="2"><br><br></td>';
+						echo '</tr>';
+						echo '<tr border="0" class="breakAfter">';
+							echo '<td align="left" colspan="2"><b>Signature de l\'employé</b></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right" colspan="2"><b>Visa et Cachet</b></td>';
+						echo '</tr>';
+			echo '</table>';
+			echo '</tbody>';
+			echo '<tfoot>';
+
+			echo '</tfoot>';
+			echo '</table>';
+			echo '<p class="breakAfter"></p>';
+			//echo '<span class="breakAfter"></span>';
+			
+		}
+	}
+	else
+	{
+		
+		foreach($rembulletins as $rembulletin)
+		{   
+			$rembulletin = $rembulletin['Rembulletin'];
+			
+			echo'<table width="100%" cellspacing="0" border="0">';
+			echo '<thead>';
+			echo'<table width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+						echo'<td align="left"><b>SONATUR<br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73 / 74<br> 
+						</td>';
+						echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+						echo'<td align="left"><b><u><h2>BULLETIN DE PAIE</h2></u></b>
+						<table width="85%" cellspacing="0" border="0">
+							<tr>
+								<td><b>Période du :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_debut)).'</td>
+							</tr>
+							<tr>
+								<td><b>au :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_fin)).'</td>
+							</tr>
+						</table>
+					 </td>';
+					echo '</tr>';
+					
+			echo'</table>';
+			echo '<thead>';
+			echo '<tbody>';
+			echo '<br>';
+			echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#808080">';
+						echo'<td align="left"><b>Matricule</b></td>';
+						echo'<td colspan="3" align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Catégorie</b></td>';
+						echo'<td align="left"><b>Echelon</b></td>';
+						echo'<td align="left"><b>Charge</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left">'.$rembulletin['matricule'].'</td>';
+						echo'<td colspan="3" align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+						echo'<td align="left">'.$classid[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td align="left">'.$echeid[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td align="left">'.$charges[$rembulletin['ag_dossier']].'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo'<td colspan="2"align="left"><b>N° CNSS</b></td>';
+						echo'<td colspan="2" align="left"><b>Affectation</b></td>';
+						echo'<td colspan="3"align="left"><b>Fonction</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="2"align="left">'.$cotisations[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td colspan="2" align="left">'.$directions[$directid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="3"align="left">'.$fonctions[$fonctid[$rembulletin['agcontrat_id']]].'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo'<td colspan="1"align="left"><b>Mode paiement</b></td>';
+						echo'<td colspan="1" align="left"><b>N° de compte</b></td>';
+						echo'<td colspan="2" align="left"><b>Domiciliation</b></td>';
+						echo'<td colspan="3" align="left"><b>Intitulé du compte</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td colspan="1"align="left">'.$parammodepaies[$modepaieid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="1" align="left">'.$numcomptebanq[$rembulletin['agcontrat_id']].'</td>';
+						echo'<td colspan="2" align="left">'.$parambanques[$banqid[$rembulletin['agcontrat_id']]].'</td>';
+						echo'<td colspan="3" align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+					echo '</tr>';
+			echo '</table>';
+			//print_r($rembulletin);
+			
+			echo '<table width="100%" cellspacing="0" border="1">';
+						echo '<tr style="background-color:#808080;">';
+							echo '<td><b>Code</b></td>';
+							echo '<td><b>Désignation élément de salaire</b></td>';
+							echo '<td><b>Base</b></td>';
+							echo '<td><b>Taux</b></td>';
+							echo '<td><b>Avoirs</b></td>';
+							echo '<td><b>Retenues</b></td>';
+						echo '</tr>';
+						$total_avoir = 0;
+						$total_ret = 0;
+						$salaire_net = 0;
+						$net = 0;
+						$salbrut = 0;
+						$salImp = 0;
+						$precompte = 0;
+						foreach($rembulletin['Rembulitem'] as $rembulitem)
+						{
+							//echo $rembulitem['designation']; 
+							
+							if($rembulitem['code'] == 500)
+							{
+								$salbrut = $rembulitem['montant'];
+							}
+							elseif($rembulitem['code'] == 1001)
+							{
+								$salImp = $rembulitem['montant'];
+							}
+							else
+							{
+								if($rembulitem['avoir_ret'] == 1)
+								{
+									$total_avoir = $total_avoir + $rembulitem['montant'];
+									echo '<tr>';
+									echo '<td  align="left">'.sprintf('%03d', $rembulitem['code']).'</td>';
+									echo '<td  align="left">'.$rembulitem['designation'].'</td>';
+									echo '<td  align="right">'.number_format($rembulitem['base'], 0,',', ' ').'</td>';
+									echo '<td  align="right">'.$rembulitem['taux'].'</td>';
+									echo '<td  align="right">'.number_format($rembulitem['montant'], 0,',', ' ').'</td>';
+									echo '<td></td>';
+									echo '</tr>'; 
+								}
+								else
+								{
+									$total_ret = $total_ret + $rembulitem['montant'];
+									echo '<tr align="right">';
+									echo '<td align="left">'.sprintf('%03d', $rembulitem['code']).'</td>';
+									echo '<td align="left">'.$rembulitem['designation'].'</td>';
+									echo '<td align="right">'.number_format($rembulitem['base'], 0,',', ' ').'</td>';
+									echo '<td align="right">'.$rembulitem['taux'].'</td>';
+									echo '<td align="right"></td>';
+									echo '<td align="right">'.number_format($rembulitem['montant'], 0,',', ' ').'</td>';
+									echo '</tr>';
+								}
+							}
+							/*----Precompte-------*/
+							if($rembulitem['code'] == 98)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							if($rembulitem['code'] == 13)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							if($rembulitem['code'] == 29)
+							{
+								$precompte = $precompte + $rembulitem['montant'];
+							}
+							/*----------------------------*/
+						}
+						echo '<tr>';
+							echo '<td colspan="4" style="background-color:#808080;">Totaux</td>';
+							echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+							echo '<td align="right">'.number_format($total_ret, 0,',', ' ').'</td>';
+						echo '</tr>';
+						echo '<tr style="background-color:#808080;">';
+							echo '<td>Net imposable</td>';
+							echo '<td>Salaire Brut</td>';
+							echo '<td>Salaire Net</td>';
+							echo '<td>Précompte</td>';
+							echo '<td colspan="2">Net à payer</td>';
+						echo '</tr>';
+						
+						echo '<tr>';
+							echo '<td align="right">'.number_format($salImp, 0,',', ' ').'</td>';
+							echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+							$salaire_net = ($salbrut - $total_ret) + $precompte;
+							echo '<td align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+							echo '<td align="right">'.number_format($precompte, 0,',', ' ').'</td>';
+							$net = $salbrut - $total_ret;
+							echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+						echo '</tr>';
+					echo '</table>';
+					echo'<table width="100%" cellspacing="0" border="0">';	
+						echo '<tr border="0">';
+							echo '<td align="right" colspan="2"><br><br></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right" colspan="2"><br><br></td>';
+						echo '</tr>';
+						echo '<tr border="0">';
+							echo '<td align="left" colspan="2"><b>Signature de l\'employé</b></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right"></td>';
+							echo '<td align="right" colspan="2"><b>Visa et Cachet</b></td>';
+						echo '</tr>';
+			echo '</table>';
+			echo '</tbody>';
+			echo '<tfoot>';
+
+			echo '</tfoot>';
+			echo '</table>';
+			echo '<p class="breakAfter"></p>';
+			//echo '<span ></span>';
+		}
+	}
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

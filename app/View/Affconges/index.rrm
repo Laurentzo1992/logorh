@@ -1,0 +1,105 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ /*$(function() {
+	 $('#details input, #details select, #details textarea, #details radio, #details checkbox').attr('disabled','disabled');
+ });*/
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+//print_r($bull);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Affconges', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affconges', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affconges', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Affconge')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Affconges', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Affconge'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affconge.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffcongeCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affconge', array($actionCheck=>false, 
+	''=>'',
+	'Nom & Prénom(S)'=>'agdossier_id',
+	'Matricule'=>'matricule',
+	'Date début congé'=>'date_debut',
+	'Date fin congé'=>'date_fin',
+	'Montant allocation'=>'montant_alloc',
+	'Destination'=>'destination',
+	
+	
+	));
+	$tableData = array();  //  
+	foreach($affconges as $affconge){
+		$affconge = $affconge['Affconge'];
+		
+		/*---------------------------------------*/
+		$receiptCheckin = $this->Html->linkReplaceParam(
+			'', 
+		array('controller'=>'Affconges', 'view'=>'bulletin', 'params'=>array('congeid:'.$affconge['id'])), 
+		array('title'=>'Imprimer bulletin allocation congé', 'class'=>'icon print')
+			);
+		
+		/*---------------------------------------*/
+		
+		$action = $this->Form->input('Affconge.check.[]', array('type'=>'checkbox', 'class'=>'AffcongeCheckItem', 'value'=>$affconge['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		$receiptCheckin,
+		(isset($agdossiers[$affconge['agdossier_id']]))?$agdossiers[$affconge['agdossier_id']]:'',	
+		$affconge['matricule'],	
+		date("d-m-Y",strtotime($affconge['date_debut'])),
+        date("d-m-Y",strtotime($affconge['date_fin'])),
+		number_format($affconge['montant_alloc'], 0,',', ' '),
+		$affconge['destination'],
+       
+			
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affconge', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

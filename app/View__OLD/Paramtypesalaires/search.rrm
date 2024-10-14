@@ -1,0 +1,13 @@
+<?php
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	$filter = array();
+		$filter = array(
+			'Paramtypesalaire.libelle'=>'Libelle',
+			
+		);
+	
+	echo $this->Paginator->filter('Paramtypesalaire', $filter, null, array('view'=>'index'));
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

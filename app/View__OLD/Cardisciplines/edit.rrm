@@ -1,0 +1,19 @@
+<!--Cardisciplines Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Cardiscipline.date_disc', array('type'=>'mouton', 'label'=>'Date', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Cardiscipline.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Cardiscipline.cartypediscipline_id', array('type'=>'select', 'options'=>$typedisciplines, 'empty'=>'Selectionner', 'label'=>'Type discipline', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Cardiscipline.motif', array('type'=>'textarea', 'label'=>'Motif', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Cardiscipline.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	        
+	echo '</table>';
+	echo $this->Form->input('Cardiscipline.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

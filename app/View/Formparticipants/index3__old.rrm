@@ -1,0 +1,55 @@
+<!--Contrats Index-->
+<?php
+//print_r($count);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	//$tdis->Session->write('return', $tdis->Html->getReturnUrl());
+	$moyI = 0; $moyII = 0; $moyIII = 0; 
+	$moyIV = 0; $moyV = 0; $moyVI = 0; 
+	$moygen = 0;
+	/*------------------------------------*/
+	$sumI = 0; $sumII = 0; $sumIII = 0; 
+	$sumIV = 0; $sumV = 0; $sumVI = 0;
+	$count = 0;
+	foreach($evaluations as $evaluation)
+	{
+		$count++;
+		
+		$evaluation = $evaluation['Evaluationachaud'];
+		
+		$sumI = $sumI + $evaluation['qualite_contenue'];
+		$sumII = $sumII + $evaluation['pertinence_besoin_pro'];
+		$sumIII = $sumIII + $evaluation['efficacite_methode'];
+		$sumIV = $sumIV + $evaluation['qualite_prestation'];
+		$sumV = $sumV + $evaluation['atteinte_objectif'];
+		$sumVI = $sumVI + $evaluation['qualite_condition'];		
+		
+	}
+	
+	
+    $moygen = ($sumI/$count) + ($sumII/$count) + ($sumIII/$count) + ($sumIV/$count) + ($sumV/$count) + ($sumIV/$count);
+	
+	?>	
+	<table  class="table small">
+	<tr><th class="color2"><?php echo 'Formation : '.$theme; ?>	</th></tr>
+	<tr>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	echo '<tr><td >I.   Qualité des contenues de la formation</td><td >'.round($sumI/$count,2).'/4</td><td >'.round(($sumI/$count) * 2.5,2).'/10</td></tr>';
+	echo '<tr><td >II.  Pertinence par rapport aux besoins professionnels</td><td >'.round($sumII/$count,2).'/4<td >'.round(($sumII/$count) * 2.5,2).'/10</td></tr>';
+	echo '<tr><td >III. Efficacité des métdodes et techniques pédagogiques utilisées</td><td >'.round($moyIII/$count,2).'/4</td><td >'.round(($sumIII/$count) * 2.5,2).'/10</td></tr>';
+	echo '<tr><td >IV.  La qualité de la présentation du formateur</td><td >'.round($sumIV/$count,2).'/4</td><td >'.round(($sumIV/$count) * 2.5,2).'/10</td></tr>';
+	echo '<tr><td >V.   Atteinte des objectifs de la session de formation</td><td >'.round($sumV/$count,2).'/4</td><td >'.round($sumV/$count,2).'/10</td></tr>';
+	echo '<tr><td >VI.  Qualités des conditions de déroulement du stage</td><td >'.round($sumVI/$count,2).'/4</td><td >'.round(($sumVI/$count) * 2.5,2).'/10</td></tr>';
+    echo '<tr><td>Moyenne générale</td><td>'.round($moygen/6,2) .'/4</td><td>'.round(($moygen/6) * 2.5,2) .'/10</td></tr>';
+  
+	echo '</table>';
+	?>
+    </td>
+    </tr>
+    </table>
+<?php	
+}else{
+	echo $tdis->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

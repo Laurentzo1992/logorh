@@ -1,0 +1,14 @@
+<?php
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	$filter = array();
+		$filter = array(
+			'Rembulletin.num_bull'=>'N°',
+			'Rembulletin.date_debut'=>'Date debut',
+			
+		);
+	
+	echo $this->Paginator->filter('Rembulletin', $filter, null, array('view'=>'index2'));
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

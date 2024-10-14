@@ -1,0 +1,131 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ /*$(function() {
+	 $('#details input, #details select, #details textarea, #details radio, #details checkbox').attr('disabled','disabled');
+ });*/
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+//print_r($x);
+$alpha = date("Y");
+	   $beta = $alpha - 1;
+	   $gama = $alpha - 2;
+	   $annees = array($alpha=>$alpha,$beta=>$beta,$gama=>$gama);
+	   
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Periode','',''));
+	echo $this->Form->input('Carevaluation.periode', array('type'=>'select', 'options'=>$annees, 'empty'=>'Selectionner', 'before'=>'<tr><td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Carevaluation.valider', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Carevaluation.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+	echo '<br>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'etat', 'params'=>array('periode:'.$periode)), 
+			array('title'=>'Etat des évaluations', 'class'=>'print1 print groupAction_1')
+		);
+	}
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'etat2', 'params'=>array('periode:'.$periode)), 
+			array('title'=>'Avancement année paire', 'class'=>'print2 print groupAction_1')
+		);
+	}
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'etat3', 'params'=>array('periode:'.$periode)), 
+			array('title'=>'Avancement année impaire', 'class'=>'print4 print groupAction_1')
+		);
+	}
+	
+	
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Carevaluation.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'CarevaluationCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Carevaluation', array( 
+	'Action(s)'=>'',
+	'Matricule'=>'matricule',
+	'Nom & prénom(s)'=>'agdossier_id',
+	'Date évaluation'=>'date_eval',
+	'Moyenne'=>'moyenne',
+	'Date effet de l\'avancement'=>'date_effet_avancement',
+	'Statut'=>'statut',
+	
+	
+	));
+	$tableData = array();  //  
+	foreach($carevaluations as $carevaluation){
+		$carevaluation = $carevaluation['Carevaluation'];
+		/*---------------------------------------*/
+		$receiptCheckin = $this->Html->linkReplaceParam(
+			'', 
+		array('controller'=>'Carevaluations', 'view'=>'fiche', 'params'=>array('carevaluationid:'.$carevaluation['id'])), 
+		array('title'=>'Imprimer fiche de notation', 'class'=>'icon print')
+			);
+		
+		/*---------------------------------------*/
+		$date_av ='';
+		if($carevaluation['date_effet_avancement'] == '1970-01-01' ||
+		   $carevaluation['date_effet_avancement'] == NULL)
+		{
+			$date_av ='';
+		}
+		else
+		{
+			
+			$date_av = date("d-m-Y",strtotime($carevaluation['date_effet_avancement']));
+		
+		}
+		/*------------------------------------*/
+		
+		$action = $this->Form->input('Carevaluation.check.[]', array('type'=>'checkbox', 'class'=>'CarevaluationCheckItem', 'value'=>$carevaluation['id'], 'addHidden'=>false));
+		$tableData[] = array(
+		$receiptCheckin,
+        $carevaluation['matricule'],		
+		(isset($agdossiers[$carevaluation['agdossier_id']]))?$agdossiers[$carevaluation['agdossier_id']]:'',
+		$carevaluation['date_eval'],
+		$carevaluation['moyenne'],
+		$date_av,
+		$carevaluation['statut'],
+       	
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Carevaluation', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

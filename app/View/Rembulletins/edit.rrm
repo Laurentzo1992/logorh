@@ -1,0 +1,63 @@
+<!--cpbs Edit-->
+<script type="text/javascript">
+   /*************************************/
+   $(document).ready(function() {
+	   /*********************************************/
+		$("#prime").hide();
+	    $("#prorata").hide();
+		var tmp = '';
+		$("#typesal").change(function() {
+			//tmp = $("select#typesal").val();
+		    tmp = document.getElementById("typesal").value;
+			if(tmp == 3)
+			{
+				$("#prime").show();
+				$("#prorata").show();
+		    }
+			if(tmp != 3)
+			{
+				$("#prime").hide();
+	            $("#prorata").hide();
+		    }
+	      	//alert(tmp);
+		});
+	});
+</script>
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th class="color1">Bulletin</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	   //echo $this->Form->input('Rembulletin.num_bull', array('type'=>'text', 'class'=>'azerty', 'label'=>'N° bulletin:', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Rembulletin.date_debut', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date debut', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Rembulletin.date_fin', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date fin', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Rembulletin.paramtypesalaire_id', array('type'=>'select', 'id'=>'typesal', 'options'=>$paramtypesalaires, 'empty'=>'Selectionner', 'label'=>'Type salaire', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Rembulletin.taux_prime', array('type'=>'select',   'options'=>$tauxprimebilans, 'empty'=>'Selectionner', 'label'=>'Taux prime de bilan', 'before'=>'<tr id="prime"><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   //echo $this->Form->input('Rembulletin.taux_prorata', array('type'=>'text', 'class'=>'azerty', 'label'=>'Taux prorata', 'before'=>'<tr id="prorata"><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Rembulletin.id', array('type'=>'hidden'));
+	   echo $this->Form->input('Rembulletin.statut', array('type'=>'hidden', 'value'=>'Groupe'));
+	   echo $this->Form->input('Rembulletin.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   
+	   echo '</table>';
+	 ?>
+	</td>
+	
+    </tr>
+	</table>
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

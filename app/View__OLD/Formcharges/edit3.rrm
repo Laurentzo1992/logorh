@@ -1,0 +1,109 @@
+<!--Progsuiviactivites Edit-->
+<script>
+$(document).ready(function(){ 
+$( '#datedebut' ).datepicker({
+	defaultDate: 1,
+	changeMonth: true,
+	numberOfMonths: 3,
+	showWeek: true,
+	firstDay: 1,
+	//minDate: 0,
+	maxDate: "+1Y",
+	dayNamesMin: [ "Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa" ],
+	dateFormat: "dd-mm-yy",
+	onClose: function( selectedDate ) {
+	$( '#datefin' ).datepicker( "option", "minDate", selectedDate );
+	}
+});
+$( '#datefin' ).datepicker({
+	defaultDate: 1,
+	changeMonth: true,
+	numberOfMonths: 3,
+	showWeek: true,
+	firstDay: 1,
+	minDate: 1,
+	maxDate: "+1Y",
+	dayNamesMin: [ "Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa" ],
+	dateFormat: "dd-mm-yy",
+	onClose: function( selectedDate ) {
+	$( '#datedebut' ).datepicker( "option", "maxDate", selectedDate );
+	}
+});
+});
+ 
+</script>
+<?php
+//
+//print_r($structureresps);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	echo '<tr><th>Code activite</th>
+	          <th>Exercice</th>
+			  <th>Unités</th>
+			  <th>T1</th>
+			  <th>T2</th>
+			  <th>T3</th>
+			  <th>T4</th>
+			  <th>Prévu</th>
+			  <th>Coût unitaire</th>
+			  <th>BT1</th>
+			  <th>BT2</th> 
+			  <th>BT3</th> 
+			  <th>BT4</th>
+			  <th>Montant prévu</th>
+			  <th>Montant engage</th>
+			  <th>Taux montant engage</th>
+			  <th>Reliquat ligne A</th>
+			  <th>Taux</th>
+			  <th>structure responsable</th>';
+	
+	$tableData = array();
+	$ids = '';
+	for($i=0;$i<$n;$i++){
+		$ids .=  $this->Form->input($i .'.Progsuiviactivite.id', array('type'=>'hidden'));
+		$arr = array();
+		$arr = array(
+		    $this->Form->input($i .'.Progsuiviactivite.activite_id', array('type'=>'select', 'options'=>$activites, 'empty'=>'Selectionner')),
+			$this->Form->input($i .'.Progsuiviactivite.exercice_id', array('type'=>'select', 'options'=>$exercices, 'empty'=>'Selectionner')),
+			$this->Form->input($i .'.Progsuiviactivite.unitesactivite_id', array('type'=>'select', 'options'=>$unitesactivites, 'empty'=>'Selectionner')),
+			$this->Form->input($i .'.Progsuiviactivite.t1', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.t2', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.t3', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.t4', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.prevu', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.cout_unitaire', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.bt1', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.bt2', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.bt3', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.bt4', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.montantprevu', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.montantengage', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.tauxmontantengage', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.reliquatlignea', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.taux', array('type'=>'text')),
+			$this->Form->input($i .'.Progsuiviactivite.structure_resp', array('type'=>'select', 'options'=>$structureresps, 'empty'=>'Selectionner')),
+			//$this->Form->input($i .'.Progsuiviactivite.structure_part', array('type'=>'select', 'options'=>$structureresps, 'empty'=>'Selectionner')),
+			
+			);
+		
+		$tableData[] = $arr;
+		
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '</table>';
+	echo $ids;
+	echo '<table>';
+	echo $this->Form->input('Progsuiviactivite.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td><td></td></tr>'));
+	echo '</table><br/><br/>';
+
+	echo '<table>';
+	echo $this->Form->input('Progsuiviactivite.n', array('type'=>'text','before'=>'<tr><td align="right">Ajouter ', 'value'=>1, 'style'=>'width:20px', 'after'=>''));
+	echo $this->Form->input('Progsuiviactivite.rows', array('type'=>'hidden','before'=>'',  'value'=>$n, 'after'=>''));
+	echo $this->Form->input('Progsuiviactivite.addRows', array('type'=>'submit','before'=>' Lignes ', 'value'=>'Valider', 'after'=>'</td></tr>'));
+	echo '</table>';
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,348 @@
+<?php
+//print_r($cotisation);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+/*-----------------------------------------------*/
+    
+	
+/*----------------------------------------------------------*/
+	
+	$requete2 = "SELECT bul.id as bull_Id,
+	                    dos.ag_matricule as matricule,
+						dos.ag_nom  as nom,
+						dos.ag_prenom as prenom,
+						dos.ag_charge as charge,
+						cont.id as contratid,
+						cont.num_cotisation as num_cotisation
+				 FROM  rembulletins bul, agcontrats cont, agdossiers dos
+			     WHERE dos.id = cont.agdossier_id AND
+			          cont.id = bul.agcontrat_id   AND
+                      cont.paramstructurecotsocial_id = '1' AND					  
+			          bul.date_debut  = '".$date_debut."' AND
+				      bul.date_fin    = '".$date_fin."' AND
+				      bul.paramtypesalaire_id  = '".$typesal."'
+				 ORDER BY dos.ag_matricule ASC";
+	 
+	$reponse2 = $bdd->query($requete2);
+	
+/*---------------------------------------------------*/
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>';
+					echo '<td colspan="6" align="center">';
+					echo '<p><b><u>ETAT COTISATION SECURITE SOCIALE CNSS</u></b></p>';
+					echo'</td>';
+					echo '<td colspan="6" align="right">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '
+					 </td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="14" align="left">';
+						echo '<p><b><u>Période : </u> </b> '.strftime("  %B %G ", strtotime($date_fin)).'</p>';
+						
+					echo'</td>';
+				echo '</tr>';
+			
+		echo '</table>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#c9c9c9;font-weight:bold">';
+						echo'<td align="left"><b>Matr.</b></td>';
+						echo'<td align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>N° CNSS</b></td>';
+						echo'<td align="left"><b>Charge</b></td>';
+						echo'<td align="left"><b>Base CNSS</b></td>';
+						echo'<td align="left"><b>CNSS sal.</b></td>';
+						echo'<td align="left"><b>CNSS Pat.</b></td>';
+						echo'<td align="left"><b>TOTAL</b></td>';
+					echo '</tr>';
+		$totaux_salnet = 0;
+		$total_salbase = 0;
+		$total_alloc = 0;
+		$total_brute = 0;
+		$total_tpa = 0;
+		
+		$total_sspatron = 0;
+		$total_total_ss = 0;
+				
+		$total_net_imp = 0;
+		$total_iuts = 0;
+		$total_heure = 0;
+		$total_ind = 0;
+		$total_precompte = 0;
+		$totaux_impot = 0;
+		$total_cnss = 0;
+		$total_anc = 0;
+		$total_total = 0;
+		$total_base_cnss = 0;
+		while($donnees2 = $reponse2->fetch())
+		{	
+			
+			$bull_Id = $donnees2['bull_Id'];
+			$sal_base = 0;
+			/*------------Salaire de base----------*/
+			$sql1 = "SELECT  item.code as code, 
+							 SUM(item.montant) as montant
+					 FROM  rembulitems item
+					 WHERE item.rembulletin_id = '".$bull_Id."' AND item.code IN (1,36,37,1007)";
+			 
+			$rep1 = $bdd->query($sql1);
+			while($data1 = $rep1->fetch())
+			{
+				$sal_base = $data1['montant'];
+				$total_salbase = $total_salbase + $sal_base;
+			
+			}
+				/*=================ALLOCATION FAMILLIALE==============*/
+				$req2 = "SELECT item.montant as montant
+						 FROM    rembulitems item
+						 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+								item.code  = '8'";
+				$rep2 = $bdd->query($req2);
+				$alloc = 0;
+				while($data2 = $rep2->fetch())
+				{
+					$alloc = $data2['montant'];
+					$total_alloc = $total_alloc + $alloc;
+				}
+				/*=================SALLAIRE BRUT==============*/
+				$req3 = "SELECT  
+							   SUM(item.montant) as montant
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."' AND
+						 item.avoir_ret = '1' AND 
+						 item.montant > 0  AND
+						 item.code != '500'";
+				$rep3 = $bdd->query($req3);
+				$brute = 0;
+				$tpa = 0;
+				$sspatron = 0;
+				$total_ss = 0;
+				while($data3 = $rep3->fetch())
+				{
+					$brute = $data3['montant'];
+					$tpa = $data3['montant'] * 0.03;
+					
+					$total_brute = $total_brute + $brute;
+					$total_tpa = $total_tpa + $tpa;
+					
+					
+				}
+				/*=================NET IMPOSABLE==============*/
+				$req4 = "SELECT item.montant as montant
+						FROM  rembulitems item
+						WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code  = '1001'";
+				$rep4 = $bdd->query($req4);
+				$netimposable = 0;
+				while($data4 = $rep4->fetch())
+				{
+					$netimposable = $data4['montant'];
+					$total_net_imp = $total_net_imp + $netimposable;
+				}
+				/*=================IUTS==============*/
+				$req5 = "SELECT item.montant as montant
+						FROM  rembulitems item
+						WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code  = '402'";
+				$rep5 = $bdd->query($req5);
+				$iuts = 0;
+				while($data5 = $rep5->fetch())
+				{
+					$iuts = $data5['montant'];
+					$total_iuts = $total_iuts + $iuts;
+				}
+				/*=================Indemnité==============*/
+				$req6 = "SELECT SUM(item.montant) as indemnite
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code in (3,4,5,6,7,31,32,33,38)";
+				$rep6 = $bdd->query($req6);
+				$indemnite = 0;
+				
+				while($data6 = $rep6->fetch())
+				{
+					$indemnite = $data6['indemnite'];
+					$total_ind = $total_ind + $indemnite;
+				}
+				/*=================Précompte==============*/
+				$req7 = "SELECT SUM(item.montant) as precompte
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code in (29,98,1008)";
+				$rep7 = $bdd->query($req7);
+				$precompte = 0;
+				
+				while($data7 = $rep7->fetch())
+				{
+					$precompte = $data7['precompte'];
+					$total_precompte = $total_precompte + $precompte;
+				}
+				/*=================Totaux impots ==============*/
+				$req8 = "SELECT SUM(item.montant) as montant
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code = '501'";
+				$rep8 = $bdd->query($req8);
+				$impot = 0;
+				
+				while($data8 = $rep8->fetch())
+				{
+					$impot = $data8['montant'];
+					$totaux_impot = $totaux_impot + $impot;
+				}
+				/*=================SALAIRE NET==========*/
+				$sal_net = 0;
+				
+				$salaireNet = $brute - $impot;
+				if($donnees2['matricule'] == 126)
+				{
+					if($salaireNet > 2000000)
+					{
+						$sal_net = 2000000;
+					}
+					else
+					{
+						$sal_net = $salaireNet;
+					}
+				}
+				else
+				{
+				  $sal_net = $salaireNet;
+				}
+				$totaux_salnet = $totaux_salnet + $sal_net;
+				/*=================RETENUE==============*/
+				$req9 = "SELECT SUM(item.montant) as retenue
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.avoir_ret = 2";
+				$rep9 = $bdd->query($req9);
+				$retenue = 0;
+				while($data9 = $rep9->fetch())
+				{
+					$retenue = $data9['retenue'];
+				}
+				
+				/*=================HEURE SUP==============*/
+				$req10 = "SELECT item.montant as montant
+						 FROM    rembulitems item
+						 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+								item.code  = '12'";
+				$rep10 = $bdd->query($req10);
+				$heure_sup = 0;
+				while($data10 = $rep10->fetch())
+				{
+					$heure_sup = $data10['montant'];
+					$total_heure = $total_heure + $heure_sup;
+				}
+				
+				/*=================CNSS==============*/
+						
+					$req11 = "SELECT item.montant as montant
+					          FROM    rembulitems item
+							  WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+									item.code  = '400'";
+					$rep11 = $bdd->query($req11);
+					$cnss = 0;
+					while($data11 = $rep11->fetch())
+					{
+						$cnss = $data11['montant'];
+						$total_cnss = $total_cnss + $cnss;
+					}
+				/*=================Anciennete==============*/
+				$req12 = "SELECT SUM(item.montant) as precompte
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code  = '11'";
+				$rep12 = $bdd->query($req12);
+				$anc = 0;
+				
+				while($data12 = $rep12->fetch())
+				{
+					$anc = $data12['precompte'];
+					$total_anc = $total_anc + $precompte;
+				}
+                /*=================Base==============*/
+						
+					$req13 = "SELECT SUM(item.montant) as montant
+					          FROM    rembulitems item
+							  WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+									item.code in (1,11,37)";
+					$rep13 = $bdd->query($req13);
+					$base_cnss = 0;
+					while($data13 = $rep13->fetch())
+					{
+						$base_cnss = $data13['montant'];
+						$total_base_cnss = $total_base_cnss + $base_cnss;
+						$sspatron = $base_cnss * 0.16;
+						
+						$total_sspatron =$total_sspatron + (int)$sspatron;
+		          
+					}
+				echo '<tr>';
+					echo'<td align="right">'.$donnees2['matricule'].'</td>';
+					echo'<td align="left">'.$donnees2['nom'].' '.$donnees2['prenom'].'</td>';
+					echo'<td align="right">'.$donnees2['num_cotisation'].'</td>';
+					echo'<td align="right">'.$donnees2['charge'].'</td>';
+					echo'<td align="right">'.number_format($base_cnss, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($cnss, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format((int)$sspatron, 0,',', ' ').'</td>';
+					$total_ss = $cnss + (int)$sspatron;
+					echo'<td align="right">'.number_format($total_ss, 0,',', ' ').'</td>';
+	
+				echo '</tr>';
+				
+		}
+        echo '<tr style="background-color:#c9c9c9;font-weight:bold">';
+			echo'<td align="right" colspan="4"></td>';
+		    echo'<td align="right">'.number_format($total_base_cnss, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_cnss, 0,',', ' ').'</td>';  
+			echo'<td align="right">'.number_format($total_sspatron, 0,',', ' ').'</td>';
+			$total_total_ss = $total_cnss + $total_sspatron;
+			echo'<td align="right">'.number_format($total_total_ss, 0,',', ' ').'</td>';
+		echo '</tr>';
+		echo '</table>';
+			echo'<table width="100%" cellspacing="0" border="0">';	
+					
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DAFC<br><br><br><br><br><br></b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DG<br><br><br><br><br><br></b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dafc].'</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dg].'</b></td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

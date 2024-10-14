@@ -1,0 +1,251 @@
+<?php
+
+//print_r($objectifs);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+   
+	echo'<table width="100%" cellspacing="0" border="1">';
+			echo '<tr>';
+				echo'<td align="center">'. $this->Html->image('../../boot/img/logOneaFiche.png', array('width'=>'100','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+				echo'<td align="center" rowspan="2"><b>EVALUATION DE SATISFACTION DES PARTICIPANTS A LA FORMATION </b>(EVALUATION A CHAUD)</td>';
+				echo'<td align="center" colspan="2">Code : AFO-IS-13</td>';
+				echo'<td align="center" rowspan="2">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'100', 'alt'=>'CEMEAU')) . '</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo'<td align="center">Réf. Processus : S9</td>';
+				echo'<td align="center">Version : n°04 du 14/03/2018</td>';
+				echo'<td align="center">Page 1 sur 1</td>';
+			echo '</tr>';
+	echo'</table>';
+	echo '<br>';
+	echo'<table width="100%" cellspacing="0" border="1">';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left" colspan="2"><b><u>Titre de la formation :</u> </b>'.$theme.'</td>';
+				echo'<td  align="center"><b>Code</b></td>';
+			echo '</tr>';
+			echo '<tr style="font-size:13px;font-family:Arial;">';
+				echo'<td align="left"><b><u>Période :</u></b> '.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).' 	</td>';
+				echo'<td align="left"><b><u>Lieu: </u></b>'.$lieu.'</td>';
+				echo'<td align="left">'.$code.'</td>';
+            echo '</tr>';
+	echo'</table>';
+	echo '<br>';
+	echo '<table width="100%" cellspacing="0" border="1">';
+	        
+			echo '<tr><th style="background-color:#a2a6a8;color:#fff;" align="center" colspan="6">Cocher les cases conformément aux appréciations ci-dessous</th></tr>';
+		    echo '<tr><th style="background-color:#a2a6a8;color:#fff;" align="center" colspan="6">4 = Trés bien |3 = bien |2 = passable |1 = insuffisant</th></tr>';
+	        echo '<tr>
+			        <td></td>
+					<td></td>
+					<td>1</td>
+			        <td>2</td>
+			        <td>3</td>
+			        <td>4</td>
+			</tr>';
+	        echo '<tr>
+			        <td></td>
+					<th style="background-color:#a2a6a8;" align="left">I. Qualité des contenues de la formation</th>
+					<th style="background-color:#a2a6a8;" colspan="4"></th> 
+			</tr>';
+			echo '<tr>
+			        <td>1</td>
+					<td>Prise en compte des attentes et des niveaux des pré requis</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>2</td>
+					<td>Liens des cas pratiques et des exemples utilisés avec situation professionnelle</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>3</td>
+					<td>Structuration des connaissances apportées</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td></td>
+					<th style="background-color:#a2a6a8;" align="left">II. Pertinence par rapport aux besoins professionnels</th>
+					<th style="background-color:#a2a6a8;" colspan="4"></th> 
+			</tr>';
+			echo '<tr>
+			        <td>4</td>
+					<td>Possibilités d\'appliquer les acquis de cette formation à titre personnel</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>5</td>
+					<td>Possibilités d\'appliquer les acquis de cette formation dans votre cadre professionnel</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td></td>
+					<th style="background-color:#a2a6a8;" align="left">III. Efficacité des méthodes et techniques pédagogiques utilisées</th>
+					<th style="background-color:#a2a6a8;" colspan="4"></th> 
+			</tr>';
+			echo '<tr>
+			        <td>6</td>
+					<td>Qualité des diapositives</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>7</td>
+					<td>Qualité des documents supports de la formation</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>8</td>
+					<td>Implication des stagiaires et intensité des échanges dans le groupe</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>9</td>
+					<td>Motivation à poursuivre par un travail personnel</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td></td>
+					<th style="background-color:#a2a6a8;" align="left">IV. La qualité de la présentation du formateur</th>
+					<th style="background-color:#a2a6a8;" colspan="4"></th> 
+			</tr>';
+			echo '<tr>
+			        <td>10</td>
+					<td>Maitrise du sujet</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>11</td>
+					<td>Allure générale (présentation-attitude-enthousiasme</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>12</td>
+					<td>Prise en compte des questions et commentaires</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>13</td>
+					<td>Capacité d\'orientation et de recentrage des débats</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>14</td>
+					<td>Clarté des exposés</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td></td>
+					<th style="background-color:#a2a6a8;" align="left">V. Atteinte des objectifs de la session de formation</th>
+					<th style="background-color:#a2a6a8;" colspan="4"></th> 
+			</tr>';
+			//objs
+			$i = 14;
+			foreach($objspecifiques as $objspecifique)
+			{
+			    $objspecifique = $objspecifique['Objspecifique'];
+				$i++;
+				echo '<tr>
+			        <td>'.$i.'</td>
+					<td>'.$objspecifique['intitule'].'</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			         </tr>';
+			}
+			$a = $i +1;
+			$b = $i +2;
+			$c = $i +3;
+			$d = $i +4;
+			echo '<tr>
+			        <td></td>
+					<th style="background-color:#a2a6a8;" align="left">VI. Qualités des conditions de déroulement du stage</th>
+					<th style="background-color:#a2a6a8;" colspan="4"></th> 
+			</tr>';
+			echo '<tr>
+			        <td>'.$a.'</td>
+					<td>Qualité de l\'accueil</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>'.$b.'</td>
+					<td>Qualité de la restauration (pause-café, déjeuné)</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td>'.$c.'</td>
+					<td>Qualité de la salle de formation (éclairage, climatisation, propreté)</td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>';
+			echo '<tr>
+			        <td></td>
+					<td colspan="5">
+					VII. Suggestion pour améliorer les futures sessions (écrire au verso si nécessaire)
+					<br><br><br>
+					</td>
+					
+			</tr>';
+			echo '<tr>
+			        <td></td>
+					<td colspan="5">
+					VIII. Vos attentes par rapport à d\'autres formation au CEMEAU (écrire au verso si nécessaire)
+					<br><br><br>
+					</td>
+					
+			</tr>';
+			
+	echo'</table>';
+		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

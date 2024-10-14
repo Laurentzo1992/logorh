@@ -1,0 +1,53 @@
+<!--Sessionparticipants Edit-->
+
+<?php
+//print_r($sessionparticipants[0]['Sessionparticipant']['sessionformation_id']);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	echo '<th style="background-color:#a2a6a8"  colspan="8">Formation : '.$theme.'</th>';
+	echo '<tr>
+	          <th>Matricule</th>
+			  <th>Nom</th>
+			  <th>Prénom(s)</th>
+			   <th>Téléphone</th>
+	          <th colspan="4">Presence</th>
+			  
+			  ';
+	
+	$tableData = array();
+	/*--------------------*/
+	$i =0;
+	foreach($sessionparticipants as $sessionparticipant){
+			$i++;
+			$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+			//$presence = $this->Form->input('Sessionparticipant.'.$i.'.presence', array('type'=>'checkbox', 'checked'=>((int)$sessionparticipant['presence']),  'addHidden'=>false));;
+			
+			$arr = array();
+		    $arr = array(
+		    
+			$matricule[$sessionparticipant['participant_id']],
+			$nom[$sessionparticipant['participant_id']],
+			$prenom[$sessionparticipant['participant_id']],
+			$telephone[$sessionparticipant['participant_id']],
+			$this->Form->input('Sessionparticipant.'.$i.'.presence', array('type'=>'checkbox', 'checked'=>((int)$sessionparticipant['presence']),)),
+			$this->Form->input('Sessionparticipant.'.$i.'.sessionformation_id', array('type'=>'hidden', 'value'=>$sessionparticipant['sessionformation_id'])),
+			$this->Form->input('Sessionparticipant.'.$i.'.participant_id', array('type'=>'hidden', 'value'=>$sessionparticipant['participant_id'])),
+			$this->Form->input('Sessionparticipant.'.$i.'.id', array('type'=>'hidden', 'value'=>$sessionparticipant['id'])),
+			
+			);
+		   
+		$tableData[] = $arr;
+	}
+	/*--------------------*/
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '</table>';
+	echo '<table>';
+	echo $this->Form->input('Sessionparticipant.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td><td></td></tr>'));
+	echo '</table><br/><br/>';
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

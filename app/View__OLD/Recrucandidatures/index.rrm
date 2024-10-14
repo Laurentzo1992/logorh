@@ -1,0 +1,84 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Recrucandidatures', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Recrucandidatures', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Recrucandidatures', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Recrucandidature')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Recrucandidatures', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Recrucandidature'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Recrucandidature.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'RecrucandidatureCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Recrucandidature', array($actionCheck=>false, 
+	
+	'Session'=>'recrusession_id',
+	'Nom'=>'cand_nom',
+	'Prénom(s)'=>'cand_prenom',
+	'Genre'=>'cand_genre',
+	'Date naissance'=>'cand_date_naiss',
+	'Lieu naissance'=>'cand_lieu_naiss',
+	
+	));
+	$tableData = array();  //  
+	foreach($recrucandidatures as $recrucandidature){
+		$recrucandidature = $recrucandidature['Recrucandidature'];
+		
+		
+		$action = $this->Form->input('Recrucandidature.check.[]', array('type'=>'checkbox', 'class'=>'RecrucandidatureCheckItem', 'value'=>$recrucandidature['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		(isset($recrusessions[$recrucandidature['recrusession_id']]))?$recrusessions[$recrucandidature['recrusession_id']]:'',	
+		$recrucandidature['cand_nom'],
+        $recrucandidature['cand_prenom'],
+		$recrucandidature['cand_genre'],
+        $recrucandidature['cand_date_naiss'],
+        $recrucandidature['cand_lieu_naiss'],
+        
+			
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Recrucandidature', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

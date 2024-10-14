@@ -1,0 +1,262 @@
+<?php
+
+//print_r($nomforma[$sessionformateurs]);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    foreach($sessionparticipants as $sessionparticipant)
+	{
+		$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+		if($sessionparticipant['presence'] == 1)
+		{
+			echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr>';
+						echo'<td align="center">'. $this->Html->image('../../boot/img/logOneaFiche.png', array('width'=>'100','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+						echo'<td align="center" rowspan="2"><b>FICHE D\'EVALUATION POST-FORMATION</b></td>';
+						echo'<td align="center" colspan="2">Code : AFO-IS-13</td>';
+						echo'<td align="center" rowspan="2">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'100', 'alt'=>'CEMEAU')) . '</td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="center">Réf.:S9</td>';
+						echo'<td align="center">Version : n°03 du 30/06/2018</td>';
+						echo'<td align="center">Page 1 sur 1</td>';
+					echo '</tr>';
+			echo'</table>';
+			echo '<br>';
+			echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="font-size:13px;font-family:Arial;">';
+						echo'<td colspan="3" align="left"><b>Titre de la formation : </b>'.$theme.'</td>';
+					echo '</tr>';
+					echo '<tr style="font-size:13px;font-family:Arial;">';
+						echo'<td colspan="2" align="left"><b>Participant:</b> '.$nom[$sessionparticipant['participant_id']].' '.$prenom[$sessionparticipant['participant_id']].'</td>';
+						echo'<td align="left"><b>Matricule</b> : '.$matricule[$sessionparticipant['participant_id']].'</td>';
+					echo '</tr>';
+					echo '<tr style="font-size:13px;font-family:Arial;">';
+						echo'<td align="left"><b>Direction/Département/Service:</b> ';
+						if(isset($directions[$dir[$sessionparticipant['participant_id']]]))
+								{
+									
+									echo ''.$directions[$dir[$sessionparticipant['participant_id']]].'';
+									
+								}
+								else
+								{
+									echo '<td align="left"></td>';
+								}
+						
+						
+						echo '</td>';
+						echo'<td colspan="2" align="left"><b>Période et lieu de la formation :</b>
+						'.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).' '.$lieu.'</td>';
+					echo '</tr>';
+					echo '<tr style="font-size:13px;font-family:Arial;">';
+					     echo'<td colspan="3" align="left"><b>Formateur (s): </b>'; 
+						/*-------------------------------------------*/
+						foreach($sessionformateurs as $sessionformateur)
+						{
+							if(isset($nomforma[$sessionformateur]))
+							{
+								echo ': '.$nomforma[$sessionformateur].' '.$prenomforma[$sessionformateur].'<br>';
+							}
+							else
+							{
+								echo ': '.$raisonsocialforma[$sessionformateur].'<br>';
+							}
+						}
+						/*-------------------------------------------*/
+						echo'</td>';
+						
+					echo '</tr>';
+			echo'</table>';
+			echo '<br>';
+			echo '<table width="100%" cellspacing="0" border="1">';
+					echo'<tr>
+							<td colspan="13" align="center"><h3><b>Evaluation de la capacité de transfert des acquis de formation <b></h3></td>
+						</tr>';
+					echo '<tr>
+							<td rowspan="2" ><b>Activités à exécuter avec compétence suite à la formation</b></td>
+							<td colspan="11" align="center"><b>Évaluation du niveau de maîtrise de l’activité</b></td>
+							<td rowspan="2" style="background-color:#c6c6c6;"><b>Note/10</b><br>
+							'. $this->Html->image('../../boot/img/fleche_descendante.png', array('width'=>'54','height'=>'63', 'alt'=>'ONEA')) . '
+							</td>
+					</tr>';
+					echo '<tr>
+							
+							<td colspan="2" style="background-color:#c6c6c6;" align="center">Parfaitement maîtrisée (capitalisation)</td>
+							<td colspan="3" align="center">Bien maîtrisée (autonomie)</td>
+							<td colspan="3" style="background-color:#c6c6c6;"align="center">Faiblement maîtrisée (besoin de soutien)</td>
+							<td colspan="3" align="center">Pas maîtrisée (Ne sait pas faire)</td>
+							
+					</tr>';
+					foreach($objspecifiques as $objspecifique)
+					{
+						$objspecifique = $objspecifique['Objspecifique'];
+					echo '<tr>
+							<td rowspan="2">'.$objspecifique['intitule'].'</td>
+							<td style="background-color:#c6c6c6;">10</td>
+							<td style="background-color:#c6c6c6;">9</td>
+							<td>8</td>
+							<td>7</td>
+							<td>6</td>
+							<td style="background-color:#c6c6c6;">5</td>
+							<td style="background-color:#c6c6c6;">4</td>
+							<td style="background-color:#c6c6c6;">3</td>
+							<td>2</td>
+							<td>1</td>
+							<td>0</td>
+							<td style="background-color:#c6c6c6;" rowspan="2"></td>
+					</tr>';
+					
+						echo '<tr>
+								<td style="background-color:#c6c6c6;"><br></td>
+								<td style="background-color:#c6c6c6;"><br></td>
+								<td><br></td>
+								<td><br></td>
+								<td><br></td>
+								<td style="background-color:#c6c6c6;"><br></td>
+								<td style="background-color:#c6c6c6;"><br></td>
+								<td style="background-color:#c6c6c6;"><br></td>
+								<td><br></td>
+								<td><br></td>
+								<td><br></td>
+						</tr>';
+					}	
+					/*echo '<tr>
+							<td rowspan="2">Activité 2 :</td>
+							<td style="background-color:#c6c6c6;">10</td>
+							<td style="background-color:#c6c6c6;">9</td>
+							<td>8</td>
+							<td>7</td>
+							<td>6</td>
+							<td style="background-color:#c6c6c6;">5</td>
+							<td style="background-color:#c6c6c6;">4</td>
+							<td style="background-color:#c6c6c6;">3</td>
+							<td>2</td>
+							<td>1</td>
+							<td>0</td>
+							<td style="background-color:#c6c6c6;" rowspan="2"></td>
+					</tr>';
+					echo '<tr>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td><br></td>
+							<td><br></td>
+							<td><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td><br></td>
+							<td><br></td>
+							<td><br></td>
+					</tr>';
+						echo '<tr>
+							<td rowspan="2">Activité 3 :</td>
+							<td style="background-color:#c6c6c6;">10</td>
+							<td style="background-color:#c6c6c6;">9</td>
+							<td>8</td>
+							<td>7</td>
+							<td>6</td>
+							<td style="background-color:#c6c6c6;">5</td>
+							<td style="background-color:#c6c6c6;">4</td>
+							<td style="background-color:#c6c6c6;">3</td>
+							<td>2</td>
+							<td>1</td>
+							<td>0</td>
+							<td style="background-color:#c6c6c6;" rowspan="2"></td>
+					</tr>';
+					echo '<tr>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td><br></td>
+							<td><br></td>
+							<td><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td style="background-color:#c6c6c6;"><br></td>
+							<td><br></td>
+							<td><br></td>
+							<td><br></td>
+					</tr>';*/
+					echo'</table>';
+					
+					echo '<table width="100%" cellspacing="0" border="0">';
+					echo'<tr>
+							<td align="right" colspan="13">'. $this->Html->image('../../boot/img/moyenne_gen.png', array('width'=>'310','height'=>'60', 'alt'=>'ONEA')) . '</td>
+						</tr>';
+					echo'</table>';
+					echo '<table width="100%" cellspacing="0" border="1">';
+					echo'<tr>
+							<td align="center" colspan="2"><b>critères d\'appréciation</b></td>
+							<td align="center" colspan="2"><b>Conclusion générale</b></td>
+						</tr>';
+					echo'<tr>
+							<td align="center">moyenne</td>
+							<td align="center">résultat</td>
+							<td colspan="2" rowspan="4" align="left">
+“							La mise en œuvre des acquis de la formation sur le thème <b>“ '.$theme.' ”</b>  
+							réalisée au profit du collaborateur '.$nom[$sessionparticipant['participant_id']].' '.$prenom[$sessionparticipant['participant_id']].' est:
+							
+							</td>
+							
+						</tr>';
+						//cercle_ovale
+					echo'<tr>
+							<td align="left">1. Moyenne générale > 05 :</td>
+							<td align="center">Satisfaisant</td>
+							
+						</tr>';
+					echo'<tr >
+							<td align="left">2. Moyenne générale <= 05 :</td>
+							<td align="center">Non satisfaisant</td>
+							
+						</tr>';
+					echo'<tr>
+							<td colspan="2" rowspan="2"></td>
+							
+							
+						</tr>';
+					echo'<tr>
+							
+							<td align="center">Satisfaisants '. $this->Html->image('../../boot/img/cercle_ovale.png', array('width'=>'40','height'=>'25', 'alt'=>'ONEA')) . '</td>
+							<td align="center">Non satisfaisant'. $this->Html->image('../../boot/img/cercle_ovale.png', array('width'=>'40','height'=>'25', 'alt'=>'ONEA')) . '</td>
+						</tr>';
+					echo'</table>';
+			        echo '<p style="page-break-after:always;"></p>';
+					echo '<table width="100%" cellspacing="0" border="1">';
+					echo'<tr>
+							<td align="center" colspan="3"><b>Supérieur hiérarchique</b></td>
+						</tr>';
+					 echo'<tr>
+							<td align="center" colspan="2"><b>préconisation en cas non satisfaction</b></td>
+							<td rowspan="5"><b>Nom, fonction, signature, date, cachet du service<b>
+							<br><br><br><br>
+							</td>
+						</tr>';
+					 echo'<tr>
+							<td align="left">1. Prise de disposition d’accompagnement</td>
+							<td align="left">'. $this->Html->image('../../boot/img/cercle_ovale.png', array('width'=>'25','height'=>'25', 'alt'=>'ONEA')) . '</td>
+							
+						</tr>';
+					 echo'<tr>
+							<td align="left">2. Réinscription à la même formation</td>
+							<td align="left">'. $this->Html->image('../../boot/img/cercle_ovale.png', array('width'=>'25','height'=>'25', 'alt'=>'ONEA')) . '</td>
+							
+						</tr>';
+					echo'<tr>
+							<td align="left">3. La formation n’est plus nécessaire</td>
+							<td align="left">'. $this->Html->image('../../boot/img/cercle_ovale.png', array('width'=>'25','height'=>'25', 'alt'=>'ONEA')) . '</td>
+							
+						</tr>';
+					echo'<tr>
+							<td align="left" colspan="2">Autre:<br><br></td>
+							
+						</tr>';
+					echo'</table>';
+					echo '<p style="page-break-after:always;"></p>';
+		}
+        else
+        {
+		}			
+	}
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

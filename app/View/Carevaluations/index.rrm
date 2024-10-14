@@ -1,0 +1,149 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ /*$(function() {
+	 $('#details input, #details select, #details textarea, #details radio, #details checkbox').attr('disabled','disabled');
+ });*/
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo '<table style="margin-left:10px;" class="table trHover borderBottom">';
+	echo '<tr><th>Nom & prénom(s) : '.$agdossiers[$dossier].'</th></tr>';
+	echo '</table>';
+	echo '<br>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	/*$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Carevaluations', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);*/
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'edit', 'params'=>array('contratid:'.$contratid)), 
+			array('title'=>'Nouvelle évaluation', 'class'=>'icon new groupAction_1')
+		);
+	}
+	/*if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}*/
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'modif', 'params'=>array('id:')), 
+			array('title'=>'Modifier une évaluation', 'class'=>'icon edit groupAction', 'ref'=>'Carevaluation')
+		);
+	}
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'validation', 'params'=>array('id:')), 
+			array('title'=>'Validation d\'une évaluation', 'class'=>'icon success groupAction', 'ref'=>'Carevaluation')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Carevaluations', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Carevaluation'));
+	}
+	
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Carevaluation.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'CarevaluationCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Carevaluation', array($actionCheck=>false, 
+	'Action(s)'=>'',
+	'Matricule'=>'matricule',
+	'Nom & prénom(s)'=>'agdossier_id',
+	'Date évaluation'=>'date_eval',
+	'Moyenne'=>'moyenne',
+	'Date effet de l\'avancement'=>'date_effet_avancement',
+	'Statut'=>'statut',
+	'Fichier'=>'fichier',
+	
+	));
+	$tableData = array();  //  
+	foreach($carevaluations as $carevaluation){
+		$carevaluation = $carevaluation['Carevaluation'];
+		/*---------------------------------------*/
+		$receiptCheckin = $this->Html->linkReplaceParam(
+			'', 
+		array('controller'=>'Carevaluations', 'view'=>'fiche', 'params'=>array('carevaluationid:'.$carevaluation['id'])), 
+		array('title'=>'Imprimer fiche de notation', 'class'=>'icon print')
+			);
+		
+		/*---------------------------------------*/
+		$date_av ='';
+		if($carevaluation['date_effet_avancement'] == '1970-01-01' ||
+		   $carevaluation['date_effet_avancement'] == NULL)
+		{
+			$date_av ='';
+		}
+		else
+		{
+			
+			$date_av = date("d-m-Y",strtotime($carevaluation['date_effet_avancement']));
+		
+		}
+		/*------------------------------------*/
+		$img ='';
+		$actu = '';
+		
+		/*----------------------------------------------*/
+		if(isset($carevaluation['fichier'])) 
+		{
+			$img = '<img src="/LOGORH/app/boot/img/pdf.gif" align="absmiddle" border="0" alt="" />';
+			$actu ='<a href="/LOGORH/app/boot/fichier_numeriques/evaluations/'.$carevaluation['fichier'].'" target="_blank">'.$img.'</a>';
+		
+		}
+		else
+		{
+			$img = '<img src="/LOGORH/app/boot/img/general.gif" align="absmiddle" border="0" alt="" />';
+		}
+		/*----------------------------------*/
+		$action = $this->Form->input('Carevaluation.check.[]', array('type'=>'checkbox', 'class'=>'CarevaluationCheckItem', 'value'=>$carevaluation['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		$receiptCheckin,
+        $carevaluation['matricule'],		
+		(isset($agdossiers[$carevaluation['agdossier_id']]))?$agdossiers[$carevaluation['agdossier_id']]:'',
+		$carevaluation['date_eval'],
+		$carevaluation['moyenne'],
+		$date_av,
+		$carevaluation['statut'],
+       	$actu,		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Carevaluation', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

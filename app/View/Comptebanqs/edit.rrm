@@ -1,0 +1,36 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($parambanques);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th class="color1">Compte bancaire SONATUR</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	   //agdossiers
+	   echo $this->Form->input('Comptebanq.parambanque_id', array('type'=>'select', 'options'=>$parambanques,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Nom banque', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Comptebanq.numcompte', array('type'=>'text','class'=>'azerty','label'=>'N° compte', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Comptebanq.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Comptebanq.id', array('type'=>'hidden'));
+	   
+	   echo '</table>';
+	 ?>
+	</td>
+	
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

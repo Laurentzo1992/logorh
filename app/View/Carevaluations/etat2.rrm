@@ -1,0 +1,196 @@
+<?php
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$sql = "SELECT dir.id as dirid,
+               dir.nom_direction as direction 
+        FROM  paramdirections  dir";
+
+ 
+              $reponse = $bdd->query($sql);
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+        
+		echo '<table width="100%" cellspacing="0" border="0">';
+		    
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+					    SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+					    </td>';
+					echo '<td colspan="10" align="center">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+					<h3><u>Etat des notations</u></h3>
+					</td>';
+					echo '<td colspan="2" align="right">
+					    Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+			    echo '</tr>';
+				
+			
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+		while($donnees = $reponse->fetch())
+		{
+			$year = $periode;
+			$last_year = $year - 1;
+			/*---------------------------------------*/
+			$sql2 = "SELECT count(affec.agdossier_id)  as nbr
+					 FROM  carevaluations eval, agaffectmutations affec,
+                           agcontrats con					 
+					 WHERE eval.agcontrat_id = affec.agcontrat_id and
+					       affec.agcontrat_id = con.id and 
+						   affec.paramdirection_id = '".$donnees['dirid']."' and
+						   eval.date_eval = '".$year."' and
+						   (YEAR(con.date_debut)%2) = '0'";
+			$reponse2 = $bdd->query($sql2);
+			$nbr_dir = 0;		
+			while($donnees2 = $reponse2->fetch())
+			{
+				$nbr_dir = $donnees2['nbr'];
+			}
+			
+			/*----------------------------------------*/
+			if($nbr_dir > 0)
+			{
+				echo '<br>'.$donnees['direction'].'<br>';
+				
+				echo '<table width="100%" cellspacing="0" border="1">';
+				echo '<thead>';
+					echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+					echo '<th align="center"><b>N° ordre</b></th>';
+					echo '<th align="center"><b>Nom et Prénoms</b></th>';
+					echo '<th align="center"><b>Categorie</b></th>';
+					echo '<th align="center"><b>Fonction</b></th>';
+					echo '<th align="center"><b>Evaluateur</b></th>';
+					echo '<th align="center"><b>Note de 2018</b></th>';
+					echo '<th align="center"><b>Note de 2019</b></th>';
+					echo '<th align="center"><b>Appréciations</b></th>';
+					echo '<th align="center"><b>Notes de la commission</b></th>';
+					echo '<th align="center"><b>Moyennes des 2 années</b></th>';
+					echo '<th align="center"><b>Date d\'effet de l\'avancement</b></th>';
+					echo '</tr>';
+				echo '</thead>';	
+					
+				echo '<tbody>';
+						
+						/*==========ANNEE N-1==================*/
+						$req1 = "SELECT eval.date_eval               as date_eval,
+										eval.agdossier_id            as dossierid,
+										eval.moyenne                 as moyenne,
+										eval.evaluateur              as evaluateur,
+										eval.date_effet_avancement   as date_effet_avancement,
+										fct.nom_fonction             as fonction,
+										av.paramclassification_id    as class_id,
+										av.paramechelon_id           as ech_id,
+										YEAR(con.date_debut)         as embauche
+								 FROM  carevaluations eval, agaffectmutations affec, 
+									   paramfonctions fct, agavencements av,
+									   agcontrats con
+								 WHERE eval.agcontrat_id = av.agcontrat_id and
+								       eval.agcontrat_id = affec.agcontrat_id and
+								       eval.agcontrat_id = con.id and
+								       affec.paramdirection_id = '".$donnees['dirid']."' and
+								       affec.paramfonction_id = fct.id and 
+								       eval.date_eval = '".$year."'";
+								 
+						$rep = $bdd->query($req1);
+						$i = 0;
+						
+						while($data = $rep->fetch())
+						{
+							$i++;
+							$note_ant=0;
+							$moy = 0;
+							$appreciation = '';
+							/*++++++++++++++++*/
+							$req2 = "SELECT eval.moyenne  as note_ant
+									 FROM  carevaluations eval, agaffectmutations affec
+									 WHERE eval.agcontrat_id = affec.agcontrat_id and
+									 affec.paramdirection_id = '".$donnees['dirid']."'
+									 and eval.date_eval = '".$last_year."'";
+									 
+							$rep2 = $bdd->query($req2);
+							while($data2 = $rep2->fetch())
+							{
+								$note_ant = $data2['note_ant'];
+							}
+							$moy = ($note_ant + $data['moyenne']) / 2;
+							/*+++++++++++++++++*/
+							$date_av ='';
+							if($data['date_effet_avancement'] == '1970-01-01' ||
+							   $data['date_effet_avancement'] == NULL)
+							{
+								$date_av ='';
+							}
+							else
+							{
+								
+								$date_av = date("d-m-Y",strtotime($data['date_effet_avancement']));
+							
+							}
+							/*+++++++++++++++++*/
+							$note = $data['moyenne'];
+							switch ($note)
+							{
+							case  $note >= 0 && $note <= 9 :
+								  $appreciation = 'Insuffisant';
+							 break;
+							case $note >= 10 && $note <= 11 :
+								 $appreciation = 'Passable';
+							 break;
+							case $note >= 12 && $note <= 13 :
+								 $appreciation = 'Assez bien';
+							 break;
+							case $note >= 14 && $note <= 17 :
+								 $appreciation = 'Bien';
+							 break;
+							case $note >= 18 && $note <= 20 :
+								 $appreciation = 'Excellent';
+							 break;
+							
+							default:
+								$appreciation = '';
+							}
+							//echo $data['embauche'];
+							if(($data['embauche']%2) == 0)
+							{
+								/*-----------------*/
+								echo'<tr>
+										<td>'.$i.'</td>
+										<td>'.$nomprenoms[$data['dossierid']].'</td>
+										<td style="width:100px" align="right">'.$data['fonction'].'</td>
+										<td style="width:100px" align="right">'.$paramclassifications[$data['class_id']].' '.$paramechelons[$data['ech_id']].'</td>
+										<td style="width:100px" align="right">'.$nomprenoms[$data['evaluateur']].'</td>
+										<td style="width:100px" align="right">'.$note_ant.'</td>
+										<td style="width:100px" align="right">'.$data['moyenne'].'</td>
+										<td style="width:100px" align="right">'.$appreciation.'</td>
+										<td style="width:100px" align="right">'.$data['moyenne'].'</td>
+										<td style="width:100px" align="right">'.$moy.'</td>
+										<td style="width:100px" align="right">'.$date_av.'</td>
+									</tr>';
+								/*------------------*/
+							}
+						}
+						
+				echo '</tbody>';
+				echo '</table>';
+				echo '<br>';
+			}
+		}
+		echo '</div>';
+		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

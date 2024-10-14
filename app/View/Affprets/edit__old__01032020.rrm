@@ -1,0 +1,63 @@
+<!--Affprets Edit-->
+
+<?php
+//print_r($nomreg);
+//print_r($numero);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th style="text-align:center;background-color:#dd1616;">Pret</th><th style="text-align:center;background-color:#dd1616;">Traite</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	
+	    echo '<table class="table trHover borderBottom">';
+	    echo $this->Form->input('Affpret.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affpret.date_pret', array('type'=>'mouton',  'label'=>'Date prêt', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affpret.montant_pret', array('type'=>'text', 'label'=>'Montant prêt', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affpret.nbr_traite', array('type'=>'text', 'label'=>'Nombre de traite (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+		echo $this->Form->input('Affpret.valider', array('type'=>'submit', 'value'=>'...', 'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));
+	    
+		echo $this->Form->input('Affpret.date_effet', array('type'=>'mouton',  'label'=>'Date d\'éffet', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affpret.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affpret.id', array('type'=>'hidden'));
+	    echo '</table>';
+	?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+			$tableData = array();
+				
+				for($i=1;$i<=$nbr;$i++){
+					$tableData[] = array(
+						$this->Form->input('Affpret.'.$i.'.montant',array('type'=>'text', 'value'=>$traite,  'label'=>'Montant traite : ',)),
+					    $this->Form->input('Affpret.'.$i.'.rembousementDate', array('type'=>'date','format'=>true,  'label'=>'Date remboursement : ',)),
+				        
+					);
+				}
+				echo $this->Html->tableCells($tableData, array('class'=>'tr2'), array('class'=>'tr1'));
+			echo '</table>'; 
+	?>
+    </td>
+    </tr>
+    </table>
+<?php
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+
+<script type="text/javascript">
+$(".dateSelect").focus(function(){
+	new JsDatePick({
+		useMode:2,
+		target:$(this).attr("id"),
+		cellColorScheme:"aqua",
+		dateFormat:"%m-%Y"
+	});
+});
+</script>

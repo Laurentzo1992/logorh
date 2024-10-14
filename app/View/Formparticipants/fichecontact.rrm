@@ -1,0 +1,105 @@
+<?php
+
+//print_r($sessionformateurs);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+	echo'<table width="100%" cellspacing="0" border="0">';
+	echo '<thead>';
+	echo'<table width="100%" cellspacing="0" border="1">';
+			echo '<tr>';
+				echo'<td align="center">'. $this->Html->image('../../boot/img/logOneaFiche.png', array('width'=>'100','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+				echo'<td align="center" rowspan="2">
+				<b>Contacts des participants à la formation</b><br>
+				<b><u>Thème</u></b><br>
+				'.$theme.'<br>
+				<b><u>Période</u></b><br>
+				Du '.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).'<br>
+				</td>';
+				echo'<td align="center">Code : AFO-IS-03</td>';
+				echo'<td align="center">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'100', 'alt'=>'CEMEAU')) . '</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo'<td align="center">Réf. Processus : S5</td>';
+				echo'<td align="center">Version : n°04 du 04/03/2018</td>';
+				echo'<td align="center">Page 1 sur 1</td>';
+			echo '</tr>';
+	echo'</table>';
+	echo '<thead>';
+	echo '<tbody>';
+	echo '<br>';
+	echo '<table width="100%" cellspacing="0" border="1">';
+	        echo '<tr style="font-size:13px;font-family:Arial;background-color:#c9c9c9;color:#000;border-top:solid 1px #000">';
+			echo '<th align="center"><b>N° ordre</b></th>';
+			echo '<th align="center"><b>N° Mle</b></th>';
+			echo '<th align="center"><b>Nom et Prénom (s)</b></th>';
+			echo '<th align="center"><b>Poste ou Fonction</b></th>';
+			echo '<th align="center"><b>Direction/service</b></th>';
+			echo '<th align="center"><b>Téléphone</b></th>';
+			echo '<th align="center"><b>E-mail</b></th>';
+			echo '</tr>';
+			
+			$i = 0;
+		
+			foreach($sessionparticipants as $sessionparticipant)
+			{
+				$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+				$i++;
+				if(isset($dir[$sessionparticipant['participant_id']]))
+				{
+					echo '<tr style="font-size:13px;font-family:Arial;line-height:55px">';
+						echo '<td style="width:10px;" align="left">'.$i.'</td>';
+						echo '<td style="width:50px;" align="left">'.$matricule[$sessionparticipant['participant_id']].'</td>';
+						echo '<td style="width:250px;" align="left">
+						'.$nom[$sessionparticipant['participant_id']].'
+						'.$prenom[$sessionparticipant['participant_id']].'
+						</td>';
+						echo '<td style="width:120px;" align="left"></td>';
+						echo '<td style="width:120px;" align="left"></td>';
+						echo '<td style="width:110px;" align="left"></td>';
+						echo '<td style="width:100px;" align="left"></td>';
+						/*if(isset($directions[$dir[$sessionparticipant['participant_id']]]))
+						{
+							echo '<td align="left">
+							'.$directions[$dir[$sessionparticipant['participant_id']]].'
+							</td>';
+						}
+						else
+						{
+							echo '<td align="left"></td>';
+						}
+						echo '<td align="left">'.$telephone[$sessionparticipant['participant_id']].'</td>';
+                         */
+					echo '</tr>'; 
+				}
+				else
+				{
+					echo '<tr style="line-height:55px">';
+						echo '<td style="width:10px;" align="left">'.$i.'</td>';
+						echo '<td style="width:50px;" align="left">'.$matricule[$sessionparticipant['participant_id']].'</td>';
+						echo '<td style="width:250px;" align="left">
+						'.$nom[$sessionparticipant['participant_id']].'
+						'.$prenom[$sessionparticipant['participant_id']].'
+						</td>';
+						echo '<td style="width:120px;" align="left"></td>';
+						echo '<td style="width:120px;" align="left"></td>';
+						echo '<td style="width:110px;" align="left"></td>';
+						echo '<td style="width:100px;" align="left"></td>';
+						/*echo '<td align="left">
+						'.(isset($direction[$sessionparticipant['participant_id']]))?$direction[$sessionparticipant['participant_id']]:''.'
+						</td>';
+						echo '<td align="left">'.$telephone[$sessionparticipant['participant_id']].'</td>';
+                        */
+					echo '</tr>'; 
+				}
+			}
+		echo '</table>';
+
+		echo '</tbody>';
+		echo '<tfoot>';
+		
+	    echo '</tfoot>';
+		echo '</table>';
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

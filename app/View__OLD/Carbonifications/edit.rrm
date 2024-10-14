@@ -1,0 +1,22 @@
+<!--Carbonifications Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Carbonification.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & Prénom(s) (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Carbonification.date_dist', array('type'=>'mouton', 'label'=>'Date distinction (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Carbonification.distinction', array('type'=>'textarea', 'label'=>'Intitulé distinction (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Carbonification.date_effet', array('type'=>'mouton', 'label'=>'Date effet (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			//montant_prime
+			echo $this->Form->input('Carbonification.montant_prime', array('type'=>'text', 'label'=>'Montant prime (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Carbonification.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	
+	echo '</table>';
+	echo $this->Form->input('Carbonification.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

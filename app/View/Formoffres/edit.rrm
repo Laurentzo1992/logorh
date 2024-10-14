@@ -1,0 +1,18 @@
+<!--Paramavoirets Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	echo '<table class="table trHover borderBottom">';
+		echo $this->Form->input('Formoffre.type',   array('type'=>'text', 'label'=>'Type de formation',    'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Formoffre.formation_id',  array('type'=>'select', 'options'=>$formations,  'empty'=>'Selectionner', 'label'=>'Théme',   'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Formoffre.montant',array('type'=>'text', 'label'=>'Montant', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('fichier', array('type'=>'file', 'label'=>'Fichier ', 'format'=>false,'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+        echo $this->Form->input('Formoffre.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	echo '</table>';
+	echo $this->Form->input('Formoffre.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

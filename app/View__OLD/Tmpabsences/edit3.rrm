@@ -1,0 +1,58 @@
+<!--Tmpabsences Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="3" class="color1" style="text-align:center;background-color:#e59a31;">Affectation ou mutation d'un agent</th></tr>
+	<tr><th class="color1">Absence</th>
+	<th class="color2">Absence d'une journée ou d'une demi-journée</th>
+	<th class="color2">Absence supérieure à une journée</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Tmpabsence.numero', array('type'=>'text', 'label'=>'N°', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.autorisation', array('type'=>'checkbox', 'value'=>1, 'label'=>'Autorisation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.regulation', array('type'=>'checkbox',   'value'=>1, 'label'=>'Régulation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.tmptypabsence_id', array('type'=>'select', 'options'=>$typabsences, 'empty'=>'Selectionner', 'label'=>'Motif', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   //echo $this->Form->input('Tmpabsence.paramdirection_id', array('type'=>'select', 'options'=>$directions, 'empty'=>'Selectionner', 'label'=>'Direction', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   //echo $this->Form->input('Tmpabsence.paramservice_id', array('type'=>'select', 'options'=>$services, 'empty'=>'Selectionner', 'label'=>'Service', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   //echo $this->Form->input('Tmpabsence.paramfonction_id', array('type'=>'select', 'options'=>$typabsences, 'empty'=>'Selectionner', 'label'=>'Emploi/fonction', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	        
+	echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Tmpabsence.date_absence', array('type'=>'mouton', 'label'=>'Date', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.matin', array('type'=>'checkbox', 'value'=>1, 'label'=>'Matin', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.apres_midi', array('type'=>'checkbox',   'value'=>1, 'label'=>'Après-midi', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+    echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Tmpabsence.nbr_jour', array('type'=>'text', 'label'=>'Nombre de jour(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	       echo $this->Form->input('Tmpabsence.date_debut', array('type'=>'mouton', 'label'=>'Date début', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpabsence.date_fin', array('type'=>'mouton', 'label'=>'Date fin', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   
+	echo '</table>';
+    ?>
+    </td>
+    </tr>
+	</table>
+	
+<?php
+	echo $this->Form->input('Tmpabsence.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

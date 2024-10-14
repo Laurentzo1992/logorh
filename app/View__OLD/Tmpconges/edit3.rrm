@@ -1,0 +1,46 @@
+<!--Tmpconges Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">Demande de congé annuel d'un agent</th></tr>
+    <tr>
+	<td class="vertical-align-top color1">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Tmpconge.type', array('type'=>'radio',  'options'=>array('Agent'=>'Agent/Chef de service/Directeur','DG'=>'Directeur général'), 'before'=>'<tr><td>Type(*) </td><td>', 'between'=>'', 'after'=>'</td></tr>'));
+	       echo $this->Form->input('Tmpconge.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s) (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpconge.date_debut', array('type'=>'mouton', 'label'=>'Date de début (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpconge.date_fin', array('type'=>'mouton', 'label'=>'Date de fin (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpconge.nbr_jour', array('type'=>'text', 'label'=>'Nombre de jour(s) (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	       echo $this->Form->input('Tmpconge.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	       echo $this->Form->input('Tmpconge.statut', array('type'=>'hidden', 'value'=>'1')); 
+	echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Tmpconge.date_ret_last', array('type'=>'mouton', 'label'=>'Date de retour du dernier congé : ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpconge.date_dep_prev', array('type'=>'mouton', 'label'=>'Date de départ prévu : ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpconge.date_ret_prev', array('type'=>'mouton', 'label'=>'Date de retour : ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Tmpconge.nbr_jour_rest', array('type'=>'text', 'label'=>'Nombre de jours restants : ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+           echo $this->Form->input('Tmpconge.interim_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'L’intérim est assuré par : ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		  
+	echo '</table>';
+	 ?>
+	</td>
+    </tr>
+	</table>
+	
+<?php
+	echo $this->Form->input('Tmpconge.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

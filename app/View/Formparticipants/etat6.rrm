@@ -1,0 +1,128 @@
+﻿<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				
+				
+			]
+		} );
+		
+	} );
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($personnels);
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$curDate = date("Y-m-d");
+//print_r($curDate);	
+$sql = "SELECT th.intitule as theme,
+			   SUM(sp.moyen_gen) as  moyenne,
+			   COUNT(sp.participant_id) as nbrpart
+        FROM  sessionparticipants sp,   sessionformations sf, themes th
+		WHERE sp.sessionformation_id = sf.id  and
+			  sf.theme_id = th.id and sp.presence = 1 and
+			  sf.date_debut BETWEEN '".$dateDebut."' AND '".$dateFin."'
+		GROUP BY th.intitule";
+ 
+$reponse = $bdd->query($sql);
+//if(isset($accessLspel['view']) && $accessLspel['view'] && isset($accessLspel['edit']) && $accessLspel['edit']){
+
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','',''));
+	echo $this->Form->input('Sessionparticipant.dateDebut', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Sessionparticipant.dateFin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	//echo $this->Form->input('Sessionparticipant.theme', array('type'=>'select', 'options'=>$themes, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+		
+	echo $this->Form->input('Sessionparticipant.submit', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Sessionparticipant.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+   
+?>
+<table id="example" class="display" style="width:100%">
+        <thead style="background-color:#a2a6a8; color:#fff;">   
+		<tr>
+		    <th>Thème</th>
+			<th>Taux de satisfaction</th>
+			<th>Appréciation</th>
+		</tr>
+        </thead>
+        <tbody>
+		   
+			    <?php
+				      
+					 $moyengen =0;
+					 $satisfaction =0;
+					 $count = 0;
+				while($donnees = $reponse->fetch())
+				{
+						$count++;
+						$moyengen = ($donnees['moyenne'] / $donnees['nbrpart'] * 100) /10;
+						$satisfaction += $moyengen;
+						
+					?>
+					<tr><td><?php echo $donnees['theme']; ?></td>
+					    <td><?php echo round($moyengen,2); ?> %</td>
+						<?php
+						if(round($moyengen,2) >= $critere)
+						{ 
+						?>
+							<td style="background-color:#00FF00;color:white"><?php echo 'Satisfaisant'; ?></td>
+						<?php
+						}
+						else
+						{
+						?>
+							<td style="background-color:#FF0000;color:white"><?php echo 'Non satisfaisant'; ?></td>
+						<?php
+						}
+						?>
+					</tr>
+					<?php
+				}
+			?>
+       </tbody>
+	   <tfoot>
+	       <tr>
+			<td>Taux de satisfaction générale</td>
+		  
+			<td><?php echo round(($satisfaction/$count),2); ?> %</td>
+			<?php
+					if(round(($satisfaction/$count),2) >= $critere)
+					{ 
+					?>
+						<td style="background-color:#00FF00;color:white"><?php echo 'Satisfaisant'; ?></td>
+					<?php
+					}
+					else
+					{
+					?>
+						<td style="background-color:#FF0000;color:white"><?php echo 'Non satisfaisant'; ?></td>
+					<?php
+					}
+					?>
+		   </tr>
+	   </tfoot>
+    </table>		
+<?php		
+/*}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}*/
+?>
+

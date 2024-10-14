@@ -1,0 +1,82 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ 
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','',''));
+	echo $this->Form->input('Affregimemedico.datedebut', array('type'=>'mouton',  'before'=>'<tr><td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Affregimemedico.datefin', array('type'=>'mouton',    'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Affregimemedico.valider', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Affregimemedico.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affregimemedicos', 'view'=>'etat2', 'params'=>array('datedebut:'.$datedebut,'datefin:'.$datefin)), 
+			array('title'=>'Etat des évaluations', 'class'=>'icon print groupAction_1')
+		);
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affregimemedico.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffregimemedicoCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affregimemedico', array($actionCheck=>false,
+	
+	'Date'=>'date_med',
+	'Nom & Prénom(s)'=>'agdossier_id',
+	'Intitulé'=>'paramregimemedico_id',
+	'Montant'=>'montant',
+	'Montant à remboursé'=>'montant_rembourse',
+	'Struc. sanitaire'=>'paramsrtucsanitaire_id',
+	
+	));
+	$tableData = array();  //  
+	foreach($affregimemedicos as $affregimemedico){
+		$affregimemedico = $affregimemedico['Affregimemedico'];
+		
+		$action = $this->Form->input('Affregimemedico.check.[]', array('type'=>'checkbox', 'class'=>'AffregimemedicoCheckItem', 'value'=>$affregimemedico['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		$affregimemedico['date_med'],
+		(isset($agdossiers[$affregimemedico['agdossier_id']]))?$agdossiers[$affregimemedico['agdossier_id']]:'',
+		(isset($regimes[$affregimemedico['paramregimemedico_id']]))?$regimes[$affregimemedico['paramregimemedico_id']]:'',
+		number_format($affregimemedico['montant'], 0,',', ' '),
+		number_format($affregimemedico['montant_rembourse'], 0,',', ' '),
+		(isset($srtucsanitaires[$affregimemedico['paramsrtucsanitaire_id']]))?$srtucsanitaires[$affregimemedico['paramsrtucsanitaire_id']]:'',
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affregimemedico', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

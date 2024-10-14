@@ -1,0 +1,42 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th class="color1">Besoin de recrutement</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	
+	   echo '<table class="table trHover borderBottom">';
+	  
+	   echo $this->Form->input('Recrubesoin.date_besoin', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrubesoin.intitule', array('type'=>'textarea', 'class'=>'azerty', 'label'=>'Intitulé du poste (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrubesoin.nombre', array('type'=>'text', 'class'=>'azerty', 'label'=>'Nombre (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrubesoin.mission', array('type'=>'textarea', 'class'=>'azerty', 'label'=>'Mission (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrubesoin.profil', array('type'=>'textarea', 'class'=>'azerty', 'label'=>'Profil (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Recrubesoin.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Recrubesoin.statut', array('type'=>'hidden', 'value'=>1));
+	   echo $this->Form->input('Recrubesoin.id', array('type'=>'hidden'));
+
+	echo '</table>';
+	 ?>
+	</td>
+	
+    </tr>
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

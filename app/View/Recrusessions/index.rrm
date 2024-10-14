@@ -1,0 +1,75 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Recrusessions', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Recrusessions', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Recrusessions', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Recrusession')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Recrusessions', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Recrusession'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Recrusession.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'RecrusessionCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Recrusession', array($actionCheck=>false,
+	'Année'=>'annee',
+	'Budget'=>'parambudget_id',
+	'Montant'=>'montant',
+	
+	));
+	$tableData = array();  //  
+	foreach($recrusessions as $recrusession){
+		$recrusession = $recrusession['Recrusession'];
+		
+		
+		$action = $this->Form->input('Recrusession.check.[]', array('type'=>'checkbox', 'class'=>'RecrusessionCheckItem', 'value'=>$recrusession['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		$recrusession['annee'],
+		(isset($budgets[$recrusession['parambudget_id']]))?$budgets[$recrusession['parambudget_id']]:'',
+		$recrusession['montant'],
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Recrusession', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

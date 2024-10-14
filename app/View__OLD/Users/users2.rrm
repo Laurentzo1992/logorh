@@ -1,0 +1,49 @@
+
+<!--Users Index-->
+<?php
+
+$cleSecrete = "MaCleEstIncassable";
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	//$this->Session->write('return', $this->Html->getReturnUrl());
+	
+		echo '<div class="floatContent">';
+		$actionLink = '';
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Users', 'view'=>'search2',), 
+			array('title'=>'Recherche', 'class'=>'icon search groupAction_1')
+		);
+		
+		echo "<div class=\"actionContent\">{$actionLink}</div>";
+		echo '<table class="table trHover borderBottom">';
+		//$actionCheck = $this->Form->input('User.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'UserCheck', 'value'=>1, 'addHidden'=>false));
+		echo $this->Paginator->tableHeaders('User', array('Nom et Prénoms'=>'name', 'Utilisateur'=>'username', 'Mot de passe'=>false, 'Email'=>'email'));
+		$tableData = array();
+		foreach($users as $user){
+			$user = $user['User'];
+			//$action = $this->Form->input('User.check.[]', array('type'=>'checkbox', 'class'=>'UserCheckItem', 'value'=>$user['id'], 'addHidden'=>false));
+			$tableData[] = array($user['name'], $user['username'], $user['password'], $user['email']);
+		}
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '<tr><td colspan="4">';
+		echo $this->Paginator->numbers('User', array(			
+				'before'=>'<div class="paginate">',
+				'after'=>'</div>',
+				'modulus'=>5,
+				'separator'=>'',
+				'tag'=>'span',
+				'ellipsis'=>'...',
+				'first'=>'<<',
+				'last'=>'>>',
+				'class'=>'',
+				'currentClass'=>'',
+				'counter'=>''
+			));
+		echo '</td></tr>';
+		echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

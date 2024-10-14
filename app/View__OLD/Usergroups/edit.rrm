@@ -1,0 +1,50 @@
+<!--Usergroup Edit-->
+
+<?php
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	$ids = '';
+	for($i=0;$i<$n;$i++){
+		$ids .=  $this->Form->input($i .'.Usergroup.id', array('type'=>'hidden'));		
+		echo '<table class="table trHover borderBottom">';
+		echo $this->Form->input($i .'.Usergroup.name', array('type'=>'text', 'label'=>$i+1 . '. Profil: ', 'before'=>'<tr><th align="left">', 'between'=>'</th><th align="left">', 'after'=>'</th></tr>'));
+		echo $this->Form->input('Usergroup.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'UsergroupCheck', 'value'=>1, 'addHidden'=>false, 'label'=>'<i>Selectionner tout</i>',  'before'=>'<tr><td align="left">', 'between'=>'</td><td align="left">', 'after'=>'</td></tr>'));
+		$tableData = array();
+		$index = 0;
+		foreach ($accessCheck as $key=>$value){
+			$headOut = '';
+			$dataOut = '';
+			$accessTableData = $accessTableHeader = $this->Html->tag('tr', '%s');			
+				foreach ($accessCheck[$key] as $check){
+					$checkboxName = 'data[otherData][accessLevel]['.$i.']['.$index.']';
+					$id = 'otherDataAccessLevel' . $index ;
+					$options = array('type'=>'checkbox', 'format'=>false, 'id'=>$id, 'value'=>1, 'class'=>'UsergroupCheckItem');
+					if(!empty($defaultAccess[$i]) && substr($defaultAccess[$i], $index, 1)==1){
+						$options['checked'] = true;
+					}
+					$dataOut .= $this->Html->tag('td', $this->Form->checkbox($checkboxName, $options));
+					$headOut .= $this->Html->tag('th', $check);
+					$index++;
+				}
+			$accessTableHeader = sprintf($accessTableHeader, $headOut);
+			$accessTableData = sprintf($accessTableData, $dataOut);
+			$tableData[] = array($key, $this->Html->tag('table', $accessTableHeader . $accessTableData, array('class'=>'table little border width50')));
+		}
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '</table>';
+		echo $ids;
+		echo '<table>';
+		echo $this->Form->input('Usergroup.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td><td></td></tr>'));
+		echo '</table><br/><br/>';
+	}
+	
+	echo '<table>';
+	echo $this->Form->input('Usergroup.n', array('type'=>'text','before'=>'<tr><td align="right">Ajouter ', 'value'=>1, 'style'=>'width:20px', 'after'=>''));
+	echo $this->Form->input('Usergroup.rows', array('type'=>'hidden','before'=>'',  'value'=>$n, 'after'=>''));
+	echo $this->Form->input('Usergroup.addRows', array('type'=>'submit','before'=>' Lignes ', 'value'=>'Go', 'after'=>'</td></tr>'));
+	echo '</table>';
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

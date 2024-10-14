@@ -1,0 +1,286 @@
+<?php
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+/*$sql = "SELECT bul.id as bulletinid,
+               bul.ag_dossier as dossier_id, 
+               bul.matricule as matricule,
+			   bul.date_debut  as debut,
+			   bul.date_fin  as fin
+	    FROM  rembulletins  bul
+		WHERE  bul.date_debut  = '".$datedebut."' AND 
+			   bul.date_fin  = '".$datefin."'";
+*/
+
+$sql = "SELECT bul.id as bulletinid,
+               bul.paramtypesalaire_id 	as type,
+               bul.ag_dossier as dossier_id, 
+               bul.matricule as matricule,
+			   bul.date_debut  as debut,
+			   bul.date_fin  as fin
+	    FROM  rembulletins  bul
+		WHERE  bul.date_debut  BETWEEN '".$datedebut."' AND  '".$datefin."'";
+ 
+              $reponse = $bdd->query($sql);
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+        
+		echo '<table width="100%" cellspacing="0" border="0">';
+		    
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+					    SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+					    </td>';
+					echo '<td colspan="10" align="center">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+					<h3><u>Etat général des salaires</u></h3>
+					</td>';
+					echo '<td colspan="2" align="right">
+					    Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+			    echo '</tr>';
+				
+			
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+		
+		
+	echo '<table width="100%" cellspacing="0" border="1">';
+		
+		echo '<thead>';
+			echo '<tr style="font-size:11px;font-family:Arial;background-color:#DCDCDC;color:#000;border-top:solid 1px #000">';
+			echo '<th align="center"><b>Matricule</b></th>';
+			echo '<th align="center"><b>Nom et Prénoms</b></th>';
+			echo '<th align="center"><b>Salaire base</b></th>';
+			echo '<th align="center"><b>Indemnités</b></th>';
+			echo '<th align="center"><b>H Sup</b></th>';
+			echo '<th align="center"><b>All. Fam</b></th>';
+			echo '<th align="center"><b>Brut</b></th>';
+			echo '<th align="center"><b>Net Impos</b></th>';
+			echo '<th align="center"><b>IUTS</b></th>';
+			echo '<th align="center"><b>TPA</b></th>';
+			echo '<th align="center"><b>SS Salarié</b></th>';
+			echo '<th align="center"><b>SS Patron</b></th>';
+			echo '<th align="center"><b>Précompte</b></th>';
+			echo '<th align="center"><b>Salaire Net</b></th>';
+			echo '</tr>';
+		echo '</thead>';	
+			
+		echo '<tbody>';
+		    while($donnees = $reponse->fetch())
+            {
+			    /*==========BASE==================*/
+				$req1 = "SELECT item.montant as montant
+					     FROM  rembulitems item
+		                 WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.code  = '1'";
+				$rep = $bdd->query($req1);
+				$base = 0;
+				
+				while($data = $rep->fetch())
+                {
+					$base = $data['montant'];
+				}
+				/*=================ALLOCATION FAMILLIALE==============*/
+				$req2 = "SELECT item.montant as montant
+					     FROM    rembulitems item
+		                 WHERE   item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                        item.code  = '8'";
+				$rep2 = $bdd->query($req2);
+				$alloc = 0;
+				while($data2 = $rep2->fetch())
+                {
+					$alloc = $data2['montant'];
+				}
+				/*=================SALLAIRE BRUTE==============*/
+				$req3 = "SELECT item.montant as montant
+					    FROM  rembulitems item
+		                WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.code  = '500'";
+				$rep3 = $bdd->query($req3);
+				$brute = 0;
+				$tpa = 0;
+				$sspatron = 0;
+				while($data3 = $rep3->fetch())
+                {
+					$brute = $data3['montant'];
+					$tpa = $data3['montant'] * 0.03;
+					$sspatron = $data3['montant'] * 0.16;
+				}
+				/*=================NET IMPOSABLE==============*/
+				$req4 = "SELECT item.montant as montant
+					    FROM  rembulitems item
+		                WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.code  = '1001'";
+				$rep4 = $bdd->query($req4);
+				$netimposable = 0;
+				while($data4 = $rep4->fetch())
+                {
+					$netimposable = $data4['montant'];
+				}
+				/*=================IUTS==============*/
+				$req5 = "SELECT item.montant as montant
+					    FROM  rembulitems item
+		                WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.code  = '402'";
+				$rep5 = $bdd->query($req5);
+				$iuts = 0;
+				while($data5 = $rep5->fetch())
+                {
+					$iuts = $data5['montant'];
+				}
+				/*=================Indemnité==============*/
+				$req6 = "SELECT SUM(item.montant) as indemnite
+					     FROM  rembulitems item
+		                 WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.code in (3,4,5,6,11)";
+				$rep6 = $bdd->query($req6);
+				$indemnite = 0;
+				while($data6 = $rep6->fetch())
+                {
+					$indemnite = $data6['indemnite'];
+				}
+				/*=================Précompte==============*/
+				$req7 = "SELECT SUM(item.montant) as precompte
+					     FROM  rembulitems item
+		                 WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.code in (98,29,13)";
+				$rep7 = $bdd->query($req7);
+				$precompte = 0;
+				while($data7 = $rep7->fetch())
+                {
+					$precompte = $data7['precompte'];
+				}
+				/*=================AVOIR==============*/
+				$req8 = "SELECT SUM(item.montant) as avoir
+					     FROM  rembulitems item
+		                 WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.avoir_ret = 1";
+				$rep8 = $bdd->query($req8);
+				$avoir = 0;
+				while($data8 = $rep8->fetch())
+                {
+					$avoir = $data8['avoir'];
+				}
+				/*=================RETENUE==============*/
+				$req9 = "SELECT SUM(item.montant) as retenue
+					     FROM  rembulitems item
+		                 WHERE item.rembulletin_id = '".$donnees['bulletinid']."'  AND 
+		                      item.avoir_ret = 2";
+				$rep9 = $bdd->query($req9);
+				$retenue = 0;
+				while($data9 = $rep9->fetch())
+                {
+					$retenue = $data9['retenue'];
+				}
+				$salaire_net = ($brute - $retenue) + $precompte;
+				
+				echo '<tr>
+			        <td>'.$donnees['matricule'].'</td>
+                    <td>'.$nomprenoms[$donnees['dossier_id']].'</td>
+				    <td style="width:100px" align="right">'.number_format($base, 0,',', ' ').'</td>
+				    <td style="width:100px" align="right">'.number_format($indemnite, 0,',', ' ').'</td>
+					<td style="width:100px" align="right"></td>
+				    <td style="width:100px" align="right">'.number_format($alloc, 0,',', ' ').'</td>
+					<td style="width:100px" align="right">'.number_format($brute, 0,',', ' ').'</td>
+					<td style="width:100px" align="right">'.number_format($netimposable, 0,',', ' ').'</td>
+					<td style="width:100px" align="right">'.number_format($iuts, 0,',', ' ').'</td>
+					<td style="width:100px" align="right">'.number_format($tpa, 0,',', ' ').'</td>
+					<td style="width:100px" align="right"></td>
+					<td style="width:100px" align="right">'.number_format($sspatron, 0,',', ' ').'</td>
+					<td style="width:100px" align="right">'.number_format($precompte, 0,',', ' ').'</td>';
+					/*-----------------*/
+				if($donnees['matricule'] == 126)
+						{
+							$month = date('m/Y',strtotime($donnees['debut']));
+							if($month == '06/2020')
+							{
+								if($salaire_net > 2000000)
+								{
+									$salaire_net = 2000000;
+									$sal_journalier = $salaire_net / 30;
+									$solde = $sal_journalier * 21;
+									echo '<td style="width:100px" align="right">'.number_format($solde, 0,',', ' ').'</td>';
+								}
+								else
+								{
+								   $sal_journalier = $salaire_net / 30;
+								   $solde = $sal_journalier * 21;
+								   echo '<td style="width:100px" align="right">'.number_format($solde, 0,',', ' ').'</td>';
+								}
+							}
+							else
+							{
+								if($salaire_net > 2000000)
+								{
+									$salaire_net = 2000000;
+									echo '<td style="width:100px" align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+								}
+								else
+								{
+								   echo '<td style="width:100px" align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+								}
+							}
+						}
+						else
+						{
+							echo '<td style="width:100px" align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+						}
+				/*-----------------*/
+					
+					
+					
+					//<td style="width:100px" align="right">'.number_format($salaire_net, 0,',', ' ').'</td>
+					
+				 echo '</tr>'
+
+			}
+		    /*$i = 0;
+			for($i=0;$i<$count;$i++) 
+		    {
+				$precompte = 0;
+				$pret = (isset($retpret_tab[$i]))?$retpret_tab[$i]:0;
+				$cegeci = (isset($cegeci_tab[$i]))?$cegeci_tab[$i]:0;
+				$pharma = (isset($pharma_tab[$i]))?$pharma_tab[$i]:0;
+				
+				$precompte = $pret + $cegeci + $pharma;
+				echo '<tr>
+			        <td>'.$matricules[$dossier_tab[$i]].'</td>
+                    <td>'.$nomprenoms[$dossier_tab[$i]].'</td>
+				    <td align="right">'.number_format($base_tab[$i], 0,',', ' ').'</td>
+				    <td align="right"></td>
+					<td align="right"></td>';
+				    echo '<td align="right">'.$alloc_tab[$i].'</td>';
+					echo '<td align="right">'.number_format($brute_tab[$i], 0,',', ' ').'</td>
+					<td align="right">'.number_format($netimposable_tab[$i], 0,',', ' ').'</td>
+					<td align="right">'.number_format($iuts_tab[$i], 0,',', ' ').'</td>
+					<td align="right">'.number_format($tpa_tab[$i], 0,',', ' ').'</td>
+					<td align="right"></td>
+					<td align="right"></td>
+					<td align="right"></td>
+					<td align="right"></td>
+					
+				 </tr>';
+				
+			}*/
+			
+		echo '</tbody>';
+		
+		echo '</table>';
+		echo '</div>';
+		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

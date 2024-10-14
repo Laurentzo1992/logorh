@@ -1,0 +1,150 @@
+<?php
+
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/logOneaFiche.png', array('width'=>'100','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+					echo'<td align="center" rowspan="2"><b>FICHE DE RESERVATION DE LOGISTIQUE</b></td>';
+					echo'<td align="center">Code : AFO-IS-05</td>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/logo-CEMEAU.png', array('width'=>'100','height'=>'100', 'alt'=>'CEMEAU')) . '</td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="center">Réf. : S5</td>';
+					echo'<td align="center">Version : n°03 du 14/08/2018</td>';
+					echo'<td align="center">Page 1 sur 1</td>';
+				echo '</tr>';
+		echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+		echo '<br>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr>';
+					echo'<td align="center">Evolutions depuis les versions précédentes:<br>
+					<b>Version : n°02 du 07/07/2016</td>';
+					echo'<td align="center"><b><u>Diffusion :</b></u></td>';
+				echo '</tr>';
+		echo'</table>';
+		echo '<br>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr>';
+					echo'<td align="left"><b>Titre de la formation</b></td>';
+					echo'<td colspan="2" align="left">'.$theme.'</td>';
+				    echo'<td align="center"><b>Code</b> <br> '.$codesage.'</td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="2" align="left"><b>Période & lieu</b>  
+					'.date('d/m/Y',strtotime($dateDebut)).' au '.date('d/m/Y',strtotime($dateFin)).'  '.$lieu.'</td>';
+					echo'<td align="center"><b>Nombre de participants invités </b><br> '.$nbrpart.'</td>';
+					echo'<td align="center"><b>Nombre de participants présents </b><br><br> &nbsp;&nbsp;&nbsp;</td>';
+				echo '</tr>';
+				
+				echo '<tr style="font-size:13px;font-family:Arial;">';
+					echo'<td align="center"><b>Nombre de formateurs </b><br> '.$nbrfor.'</td>';
+					echo'<td align="center"><b>Nombre d\'assistants </b><br><br> &nbsp;&nbsp;&nbsp; </td>';
+					echo'<td align="center"><b>Client </b><br> '.$client[$clientID].'</td>';
+					echo'<td align="center"><b>Programme </b><br> '.$programmes[$programmeID].'</td>';
+				echo '</tr>';
+				
+		echo'</table>';
+		echo '<br><br>';
+		echo '<table width="100%" cellspacing="0" border="1">';
+			echo '<tr>';
+				echo '<th colspan="8" align="center"><b>RESERVATIONS</b></th>';
+			echo '</tr>';
+			echo '<tr>';
+				echo '<td align="center">Pause-café</td>';
+				echo '<td align="center">Repas</td>';
+				echo '<td align="center">Salle de formation</td>';
+				echo '<td align="center">Salle informatique</td>';
+				echo '<td align="center">Atelier</td>';
+				echo '<td align="center">Plateforme</td>';
+				echo '<td align="center">Kit de prises de notes</td>';
+				echo '<td align="center">Véhicule de sortie de terrain</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo '<td rowspan="2" align="center"></td>';
+				echo '<td rowspan="2" align="center"></td>';
+				echo '<td rowspan="2" align="center"></td>';
+				echo '<td rowspan="2" align="center"></td>';
+				echo '<td rowspan="2" align="center"></td>';
+				echo '<td rowspan="2" align="center"></td>';
+				echo '<td rowspan="2" align="center"></td>';
+				echo '<td align="right">'. $this->Html->image('../../boot/img/cercle_ovale.png', array('width'=>'40','height'=>'25')) . '
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Ouaga</td>';
+			echo '</tr>';
+			echo '<tr>';
+				echo '<td align="right">'. $this->Html->image('../../boot/img/cercle_ovale.png', array('width'=>'40','height'=>'25')) . '&nbsp;&nbsp; Hors ouaga</td>';
+			echo '</tr>';
+            echo '<tr>';
+				echo '<td colspan="4" align="center"><b>Mission de suivi</b><br>&nbsp;&nbsp;&nbsp;</td>';
+				echo '<td colspan="3" align="center"><b>Reproduction de support</b><br>&nbsp;&nbsp;&nbsp;</td>';
+				echo '<td align="center"><b>Mission formateur</b><br>&nbsp;&nbsp;&nbsp;</td>';
+				
+            echo '</tr>';
+             echo '<tr>';
+				echo '<td colspan="4" align="center"><b>Oui&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Non</b> <br>
+				                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+				echo '<td colspan="3" align="center"><b>Oui&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Non</b> <br>
+				                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+				
+				echo '<td align="center"><b>Oui&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Non</b> <br>
+				                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</td>';
+            echo '</tr>';				
+		echo '</table>';
+			
+			echo '<br><br>';
+			echo '</tbody>';
+			echo '<tfoot>';
+			echo '<table width="100%" cellspacing="0" border="0">';
+			        echo '<tr>';
+						echo'<td colspan="4" align="right">Date '.date('d/m/Y').'</td>';
+					echo '</tr>';
+					 echo '<tr>';
+						echo'<td colspan="4" align="right"><br><br></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left"><b>Chargé de suivi</b></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td><br><br><br><br><br><br></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left"><b>Chef de service formation</b></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td align="right"><b>Le Directeur du Centre des Métiers de l’Eau</b></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left"><br><br><br><br></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="left"></td>';
+						echo '<td></td>';
+						echo '<td></td>';
+						echo '<td align="right"><b><u>'.$pr_prenom.' '.$pr_nom.'</u></b></td>';
+					echo '</tr>';
+					
+			echo '</table>';
+			echo '<br><br>';
+		
+			echo '</tfoot>';
+			echo '</table>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,179 @@
+<!--Contrats Index-->
+<?php
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$curDate = date("Y") + 1;
+$today = date("Y-m-d");
+//$carretraites = array();
+//print_r($curDate);	
+$sql = "SELECT ag.id as ID, 
+               ag.ag_matricule as matricule, 
+               ag.ag_nom as nom,
+			   ag.ag_prenom as prenom,
+			   ag.ag_date_naiss as datenaiss,
+			   co.date_debut as datembauche,
+			   co.date_fin  as dateFin,
+			   nat.libelle as naturecontrat,
+			   nat.id as natcont,
+			   so.age_retraite as age_retraire,
+			   so.libelle as categorie,
+			   av.date_retraite  as dateRetraite,
+			   av.date_alerte  as dateAlerte
+	    FROM  agdossiers ag, agcontrats co, agavencements av, paramclassifications cla,  paramsociopros so,
+		      paramnatcontrats nat
+		WHERE ag.id = co.agdossier_id   and co.id = av.agcontrat_id and av.paramclassification_id = cla.id and
+			  cla.paramsociopro_id = so.id and co.paramnatcontrat_id = nat.id
+			  and '".$today."' between  av.date_alerte and av.date_retraite
+			  order by nat.libelle asc";
+ 
+$reponse = $bdd->query($sql);
+
+?> 
+<table id="example" class="table" style="width:60%" border="1" cellspacing="1">
+        <thead style="background-color:#a2a6a8; color:#fff;">   
+		<tr>
+			<th>Action(s)</th>
+			<th>Matricule</th>
+			<th>Nom</th>
+			<th>Prénom</th>
+			<th>Age </th>
+		    <th>Catégorie</th>
+			<th>Embauche</th>
+			<th>Nat. contrat</th>
+			<th>Départ retraite/Fin contrat</th>
+		</tr>
+        </thead>
+        <tbody>
+		   
+			    <?php
+				while($donnees = $reponse->fetch())
+				{
+				  $link ='';
+				  if($today >= $donnees['dateRetraite'])
+				  {
+					$link = $this->Html->link('Action', array('controller'=>'Carretraites', 'view'=>'edit',
+						'params'=>array('agdossierID:'.$donnees['age_retraire'],'matricule:'.$donnees['matricule'],
+						'nom:'.$donnees['nom'],'prenom:'.$donnees['prenom'],)));  
+				  }
+				  $age = 0;
+				  $a = 0;
+				  $age = $curDate - date("Y",strtotime($donnees['datenaiss']));
+				  $a = $age - 1;
+				 if($donnees['natcont'] == 2 || $donnees['natcont'] == 3 || $donnees['natcont'] == 4)
+				 {
+          			 echo '<tr>';
+						echo '<td>' .$link. '</td>';
+						echo '<td>'.$donnees['matricule'].'</td>';
+						echo '<td>'.$donnees['nom'].'</td>';
+						echo '<td>'.$donnees['prenom'].'</td>';
+						echo '<td>'.$a.'</td>';
+						echo '<td>'.$donnees['categorie'].'</td>';
+						echo '<td>'.$donnees['datembauche'].'</td>';
+						echo '<td>'.$donnees['naturecontrat'].'</td>';
+						echo '<td>'.date("d-m-Y",strtotime($donnees['dateRetraite'])).'</td>';
+						echo '</tr>';
+		
+				  }
+                  else	
+                  {
+					echo '<tr>';
+						echo '<td>' .$link. '</td>';
+						echo '<td>'.$donnees['matricule'].'</td>';
+						echo '<td>'.$donnees['nom'].'</td>';
+						echo '<td>'.$donnees['prenom'].'</td>';
+						echo '<td>'.$a.'</td>';
+						echo '<td>'.$donnees['categorie'].'</td>';
+						echo '<td>'.$donnees['datembauche'].'</td>';
+						echo '<td>'.$donnees['naturecontrat'].'</td>';
+						echo '<td>'.date("d-m-Y",strtotime($donnees['dateFin'])).'</td>';
+					echo '</tr>';
+				  }				  
+				}
+			    ?>
+       </tbody>
+    </table>
+<?php
+/*if(isset($accessLevel['view']) && $accessLevel['view']){
+
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Carretraites', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carretraites', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Carretraites', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Carretraite')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Carretraites', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Carretraite'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Carretraite.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'CarretraiteCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Carretraite', array($actionCheck=>false,
+	
+	'Date de départ à la retraite'=>'date_retraite',
+	'Matricule'=>'matricule',
+	'Nom & Prénom(s)'=>'agdossier_id',
+	'Prime à la retraite'=>'prime_retraite',
+	
+	
+	));
+	$tableData = array();  //  
+	foreach($carretraites as $carretraite){
+		//$carretraite = $carretraite['Carretraite'];
+		
+		$action = $this->Form->input('Carretraite.check.[]', array('type'=>'checkbox', 'class'=>'CarretraiteCheckItem', 'value'=>$carretraite['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		$carretraite['date_retraite'],
+		$carretraite['matricule'],
+		(isset($agdossiers[$carretraite['agdossier_id']]))?$agdossiers[$carretraite['agdossier_id']]:'',
+		number_format($carretraite['prime_retraite'], 0,',', ' '),
+		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Carretraite', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}*/
+?>

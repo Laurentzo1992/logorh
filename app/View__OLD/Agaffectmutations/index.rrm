@@ -1,0 +1,126 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ /*$(function() {
+	 $('#details input, #details select, #details textarea, #details radio, #details checkbox').attr('disabled','disabled');
+ });*/
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+//print_r($agaffectmutations);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo '<table style="margin-left:10px;" class="table trHover borderBottom">';
+	echo '<tr><th>Nom & prénom(s) : '.$agdossiers[$dossier].'</th></tr>';
+	echo '</table>';
+	echo '<br>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	/*$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Agaffectmutations', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);*/
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agaffectmutations', 'view'=>'edit', 'params'=>array('varcontrat:'.$varcontrat)), 
+			array('title'=>'Effectuer une affectation ou mutation', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agaffectmutations', 'view'=>'edit2', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Agaffectmutation')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Agaffectmutations', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Agaffectmutation'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Agaffectmutation.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AgaffectmutationCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Agaffectmutation', array($actionCheck=>false, 
+	'Action(s)'=>'',
+	'Matricule'=>'matricule',
+	'Nom & prénom'=>'agdossier_id',
+	'Num contrat'=>'agcontrat_id',
+	'Date'=>'date_affectmut',
+	'Fonction/poste'=>'paramfonction_id',
+	'Niveau responsabilité'=>'paramtypefonction_id',
+	'Service'=>'paramservice_id',
+	'Direction'=>'paramdirection_id',
+	'Type'=>'paramtypemvt_id',
+	'Document'=>'fichier'
+	
+	));
+	$tableData = array();  //  
+	foreach($agaffectmutations as $agaffectmutation){
+		$agaffectmutation = $agaffectmutation['Agaffectmutation'];
+		
+		$img ='';
+		$actu = '';
+		
+		/*----------------------------------------------*/
+		if(isset($agaffectmutation['fichier'])) 
+		{
+			$img = '<img src="/LOGORH/app/boot/img/pdf.gif" align="absmiddle" border="0" alt="" />';
+			$actu ='<a href="/LOGORH/app/boot/fichier_numeriques/decisions/'.$agaffectmutation['fichier'].'" target="_blank">'.$img.'</a>';
+		
+		}
+		else
+		{
+			$img = '<img src="/LOGORH/app/boot/img/general.gif" align="absmiddle" border="0" alt="" />';
+		}
+		
+		$receiptCheckin = $this->Html->linkReplaceParam(
+		'', 
+		array('controller'=>'Agaffectmutations', 'view'=>'decision', 'params'=>array('affectmutid:'.$agaffectmutation['agdossier_id'])), 
+		array('title'=>'Générer la décision', 'class'=>'icon print')
+			);
+		
+		$action = $this->Form->input('Agaffectmutation.check.[]', array('type'=>'checkbox', 'class'=>'AgaffectmutationCheckItem', 'value'=>$agaffectmutation['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		$receiptCheckin,
+        $agaffectmutation['matricule'],		
+		(isset($agdossiers[$agaffectmutation['agdossier_id']]))?$agdossiers[$agaffectmutation['agdossier_id']]:'',	
+		(isset($agcontrats[$agaffectmutation['agcontrat_id']]))?$agcontrats[$agaffectmutation['agcontrat_id']]:'',	
+		$agaffectmutation['date_affectmut'],
+		(isset($fonctions[$agaffectmutation['paramfonction_id']]))?$fonctions[$agaffectmutation['paramfonction_id']]:'',
+	    (isset($nivrespons[$agaffectmutation['paramtypefonction_id']]))?$nivrespons[$agaffectmutation['paramtypefonction_id']]:'',
+	    (isset($services[$agaffectmutation['paramservice_id']]))?$services[$agaffectmutation['paramservice_id']]:'',
+	    (isset($directions[$agaffectmutation['paramdirection_id']]))?$directions[$agaffectmutation['paramdirection_id']]:'',
+	    (isset($paramtypemvts[$agaffectmutation['paramtypemvt_id']]))?$paramtypemvts[$agaffectmutation['paramtypemvt_id']]:'',
+	    $actu,
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Agaffectmutation', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

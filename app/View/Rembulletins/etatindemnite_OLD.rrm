@@ -1,0 +1,136 @@
+<?php
+//print_r($cotisation);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+/*-----------------------------------------------*/
+    $lib_indemnite = '';
+   
+    $requete1 = "SELECT ind.libelle  as lib_indemnite
+	             FROM  paramindemnites  ind
+			     WHERE ind.id  = '".$indemnite."'";
+	$reponse1 = $bdd->query($requete1);
+	while($donnees1 = $reponse1->fetch())
+	{
+		$lib_indemnite = $donnees1['lib_indemnite'];
+	}
+
+/*----------------------------------------------------------*/
+	
+	$requete2 = "SELECT DISTINCT bul.id as bull_Id,
+	                    dos.ag_matricule as matricule,
+						dos.ag_nom  as nom,
+						dos.ag_prenom as prenom,
+						item.montant as mnt_indemnite					 
+		         FROM  rembulletins bul, rembulitems item, agcontrats cont, agdossiers dos
+			     WHERE dos.id = cont.agdossier_id  AND
+			          cont.id = bul.agcontrat_id   AND
+                      item.rembulletin_id = bul.id AND 					  
+			          bul.date_debut  = '".$date_debut."' AND
+				      bul.date_fin    = '".$date_fin."' AND
+				      bul.paramtypesalaire_id  = '".$typesal."' AND
+					  item.code = '".$indemnite."' AND
+					  item.montant > 0
+		         ORDER BY dos.ag_matricule ASC";
+	 
+	$reponse2 = $bdd->query($requete2);
+	
+/*---------------------------------------------------*/
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>'; 
+					echo '<td colspan="6" align="center">';
+					echo 'Ouagadougou, le '.date('d/m/y').' ';
+					
+					echo'</td>';
+					echo '<td colspan="6" align="right">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '
+					 </td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="14" align="center"><br><br>';
+				          echo'<u><b>ETAT DES INDEMNITES</b></u>';
+					echo'<br><br></td>';
+				echo '</tr>';
+			
+		echo '</table>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#c9c9c9;font-weight:bold">';
+						echo'<td align="center"><b>Matr.</b></td>';
+						echo'<td align="center"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="center"><b>'.$lib_indemnite.'</b></td>';
+
+					echo '</tr>';
+		$montant_indemnite = 0;
+		$total_indemnite = 0;
+		while($donnees2 = $reponse2->fetch())
+		{	
+			$bull_Id = $donnees2['bull_Id'];
+			
+			$montant_indemnite = $donnees2['mnt_indemnite'];
+			$total_indemnite = $total_indemnite + $montant_indemnite;
+	
+			echo '<tr>';
+				echo'<td align="right">'.$donnees2['matricule'].'</td>';
+				echo'<td align="left">'.$donnees2['nom'].' '.$donnees2['prenom'].'</td>';
+				echo'<td align="right">'.number_format($montant_indemnite, 0,',', ' ').'</td>';
+			echo '</tr>';
+				
+		}
+        echo '<tr style="background-color:#c9c9c9;font-weight:bold">';
+			echo'<td align="right" colspan="2"></td>';
+		
+			echo'<td align="right">'.number_format($total_indemnite, 0,',', ' ').'</td>';
+		echo '</tr>';
+		echo '</table>';
+		   
+			echo'<table width="100%" cellspacing="0" border="0">';	
+					echo '<tr border="0">';
+						echo '<td colspan="6" align="left">
+						<p>Arrété le présent état à la somme de:
+						 <b>'.ucwords($this->Chiffrelettre->ConvNumberLetter($total_indemnite,0,',', ' ')). ' F CFA</b></p>
+						</td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DAFC<br><br><br><br><br><br></b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DG<br><br><br><br><br><br></b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dafc].'</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dg].'</b></td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+		//<p> <b>'.ucwords($this->Chiffrelettre->ConvNumberLetter($total_net_paye,0,0)). ' F CFA</b></p>
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

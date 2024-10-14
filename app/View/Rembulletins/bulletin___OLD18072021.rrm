@@ -1,0 +1,587 @@
+<?php
+//print_r($taux);
+
+//print_r($typebul);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    
+	
+	if($typebul == 2)
+	{
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+		echo'<table width="100%" cellspacing="0" border="0">';
+				echo '<tr>';
+				    echo'<td align="left"><b>SONATUR<br>
+					03 BP 7222 OUAGA 03<br>
+					TEL: 25 30 17 73 / 74<br> 
+					</td>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+			        echo'<td align="left"><b><u><h2>BULLETIN DE PAIE</h2></u></b>
+						<table width="70%" cellspacing="0" border="0">
+							<tr>
+								<td><b>Période du :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_debut)).'</td>
+							</tr>
+							<tr>
+								<td><b>au :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_fin)).'</td>
+							</tr>
+						</table>
+					 </td>';
+				echo '</tr>';
+				
+		echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+		echo '<br>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr style="background-color:#808080">';
+					echo'<td align="left"><b>Matricule</b></td>';
+					echo'<td colspan="3" align="left"><b>Nom & Prénom(s)</b></td>';
+					echo'<td align="left"><b>Catégorie</b></td>';
+					echo'<td align="left"><b>Echelon</b></td>';
+					echo'<td align="left"><b>Charge</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">'.$matricule.'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+					echo'<td align="left">'.$paramclassifications[$classificationid].'</td>';
+					echo'<td align="left">'.$paramechelons[$paramechelonid].'</td>';
+					echo'<td align="left">'.$charge[$ag_dossier].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="2"align="left"><b>N° CNSS</b></td>';
+					echo'<td colspan="2" align="left"><b>Affectation</b></td>';
+					echo'<td colspan="3"align="left"><b>Fonction</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="2"align="left">'.$cotisation.'</td>';
+					echo'<td colspan="2" align="left">'.$directions[$directionid].'</td>';
+					echo'<td colspan="3"align="left">'.$fonctions[$fonctionid].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="1"align="left"><b>Mode paiement</b></td>';
+					echo'<td colspan="1" align="left"><b>N° de compte</b></td>';
+					echo'<td colspan="2" align="left"><b>Domiciliation</b></td>';
+					echo'<td colspan="3" align="left"><b>Intitulé du compte</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="1"align="left">'.$parammodepaies[$modepaieid].'</td>';
+					echo'<td colspan="1" align="left">'.$comptebanq.'</td>';
+					echo'<td colspan="2" align="left">'.$parambanques[$banqueid].'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+				echo '</tr>';
+		echo '</table>';	
+		echo '<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#808080;">';
+						echo '<td><b>Code</b></td>';
+						echo '<td><b>Désignation élément de salaire</b></td>';
+						echo '<td><b>Base</b></td>';
+						echo '<td><b>Taux</b></td>';
+						echo '<td><b>Avoirs</b></td>';
+						echo '<td><b>Retenues</b></td>';
+					echo '</tr>';
+					$total_avoir = 0;
+					$total_ret = 0;
+					$salaire_net = 0;
+					$net = 0;
+					foreach($elements as $element)
+					{
+						$element = $element['Rembulitem'];
+                       						
+						if($element['code'] == 500)
+						{
+							
+						}
+						elseif($element['code'] == 8)
+						{
+							
+						}
+						elseif($element['code'] == 401)
+						{
+							
+						}
+						elseif($element['code'] == 1001)
+						{
+							
+						}
+						else
+						{
+							if($element['avoir_ret'] == 1)
+							{
+								$total_avoir = $total_avoir + $element['montant'];
+								echo '<tr>';
+								echo '<td  align="left">'.sprintf('%03d', $element['code']).'</td>';
+								echo '<td  align="left">'.$element['designation'].'</td>';
+								echo '<td  align="right">'.number_format($element['base'], 0,',', ' ').'</td>';
+								echo '<td  align="right">'.$element['taux'].'</td>';
+								echo '<td  align="right">'.number_format($element['montant'], 0,',', ' ').'</td>';
+								echo '<td></td>';
+								echo '</tr>'; 
+							}
+							else
+							{
+								$total_ret = $total_ret + $element['montant'];
+								echo '<tr align="right">';
+								echo '<td align="left">'.sprintf('%03d', $element['code']).'</td>';
+								echo '<td align="left">'.$element['designation'].'</td>';
+								echo '<td align="right">'.number_format($element['base'], 0,',', ' ').'</td>';
+								echo '<td align="right">'.$element['taux'].'</td>';
+								echo '<td align="right"></td>';
+								echo '<td align="right">'.number_format($element['montant'], 0,',', ' ').'</td>';
+								echo '</tr>';
+							}
+						}
+					
+					}
+					echo '<tr>';
+						echo '<td colspan="4" style="background-color:#808080;">Totaux</td>';
+						echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($total_ret, 0,',', ' ').'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo '<td>Net imposable</td>';
+						echo '<td>Salaire Brut</td>';
+						echo '<td>Salaire Net</td>';
+						echo '<td>Précompte</td>';
+						echo '<td colspan="2">Net à payer</td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="right">'.number_format($salImp, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+						
+						//$salaire_net = (($salbrut - $total_ret) + $precompte);
+						$net = $salbrut - $total_ret;
+						//echo '<td align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($net, 0,',', ' ').'</td>';
+						//echo '<td align="right">'.number_format($precompte, 0,',', ' ').'</td>';
+						echo '<td align="right">0</td>';
+						
+						//echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+						echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+					echo '</tr>';
+				echo '</table>';
+				echo'<table width="100%" cellspacing="0" border="0">';	
+					echo '<tr border="0">';
+						echo '<td align="right" colspan="2"><br><br></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><br><br></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>Signature de l\'employé</b></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><b>Visa et Cachet</b></td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+	}
+	elseif($typebul == 3)
+	{
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+		echo'<table width="100%" cellspacing="0" border="0">';
+				echo '<tr>';
+				    echo'<td align="left"><b>SONATUR<br>
+					03 BP 7222 OUAGA 03<br>
+					TEL: 25 30 17 73 / 74<br> 
+					</td>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+			        echo'<td align="left"><b><u><h2>BULLETIN DE PAIE</h2></u></b>
+						<table width="70%" cellspacing="0" border="0">
+							<tr>
+								<td><b>Période du :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_debut)).'</td>
+							</tr>
+							<tr>
+								<td><b>au :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_fin)).'</td>
+							</tr>
+						</table>
+					 </td>';
+				echo '</tr>';
+				
+		echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+		echo '<br>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr style="background-color:#808080">';
+					echo'<td align="left"><b>Matricule</b></td>';
+					echo'<td colspan="3" align="left"><b>Nom & Prénom(s)</b></td>';
+					echo'<td align="left"><b>Catégorie</b></td>';
+					echo'<td align="left"><b>Echelon</b></td>';
+					echo'<td align="left"><b>Charge</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">'.$matricule.'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+					echo'<td align="left">'.$paramclassifications[$classificationid].'</td>';
+					echo'<td align="left">'.$paramechelons[$paramechelonid].'</td>';
+					echo'<td align="left">'.$charge[$ag_dossier].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="2"align="left"><b>N° CNSS</b></td>';
+					echo'<td colspan="2" align="left"><b>Affectation</b></td>';
+					echo'<td colspan="3"align="left"><b>Fonction</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="2"align="left">'.$cotisation.'</td>';
+					echo'<td colspan="2" align="left">'.$directions[$directionid].'</td>';
+					echo'<td colspan="3"align="left">'.$fonctions[$fonctionid].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="1"align="left"><b>Mode paiement</b></td>';
+					echo'<td colspan="1" align="left"><b>N° de compte</b></td>';
+					echo'<td colspan="2" align="left"><b>Domiciliation</b></td>';
+					echo'<td colspan="3" align="left"><b>Intitulé du compte</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="1"align="left">'.$parammodepaies[$modepaieid].'</td>';
+					echo'<td colspan="1" align="left">'.$comptebanq.'</td>';
+					echo'<td colspan="2" align="left">'.$parambanques[$banqueid].'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+				echo '</tr>';
+		echo '</table>';	
+		echo '<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#808080;">';
+						echo '<td><b>Code</b></td>';
+						echo '<td><b>Désignation élément de salaire</b></td>';
+						echo '<td><b>Base</b></td>';
+						echo '<td><b>Taux</b></td>';
+						echo '<td><b>Avoirs</b></td>';
+						echo '<td><b>Retenues</b></td>';
+					echo '</tr>';
+					$total_avoir = 0;
+					$total_ret = 0;
+					$salaire_net = 0;
+					$net = 0;
+					foreach($elements as $element)
+					{
+						$element = $element['Rembulitem'];
+                       						
+						if(($element['code'] == 500) || ($element['code'] == 1001))
+						{
+						}
+						else
+						{
+							if($element['avoir_ret'] == 1)
+							{
+								$total_avoir = $total_avoir + $element['montant'];
+								echo '<tr>';
+								echo '<td  align="left">'.sprintf('%03d', $element['code']).'</td>';
+								echo '<td  align="left">'.$element['designation'].'</td>';
+								echo '<td  align="right">'.number_format($element['base'], 0,',', ' ').'</td>';
+								echo '<td  align="right">'.$element['taux'].'</td>';
+								echo '<td  align="right">'.number_format($element['montant'], 0,',', ' ').'</td>';
+								echo '<td></td>';
+								echo '</tr>'; 
+							}
+							else
+							{
+								$total_ret = $total_ret + $element['montant'];
+								echo '<tr align="right">';
+								echo '<td align="left">'.sprintf('%03d', $element['code']).'</td>';
+								echo '<td align="left">'.$element['designation'].'</td>';
+								echo '<td align="right">'.number_format($element['base'], 0,',', ' ').'</td>';
+								echo '<td align="right">'.$element['taux'].'</td>';
+								echo '<td align="right"></td>';
+								echo '<td align="right">'.number_format($element['montant'], 0,',', ' ').'</td>';
+								echo '</tr>';
+							}
+						}
+					
+					}
+					echo '<tr>';
+						echo '<td colspan="4" style="background-color:#808080;">Totaux</td>';
+						echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($total_ret, 0,',', ' ').'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo '<td>Net imposable</td>';
+						echo '<td>Salaire Brut</td>';
+						echo '<td>Salaire Net</td>';
+						echo '<td>Précompte</td>';
+						echo '<td colspan="2">Net à payer</td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="right">'.number_format($salImp, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+						
+						//$salaire_net = (($salbrut - $total_ret) + $precompte) * ($taux/100);
+						//$salaire_net = $salbrut * ($taux/100);
+						$net = $salbrut * ($taux/100);
+						
+						
+						echo '<td align="right">'.number_format($net, 0,',', ' ').'</td>';
+						echo '<td align="right">0</td>';
+						
+						//$net = ($salbrut - $total_ret) * ($taux/100);
+						
+						
+						echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+					echo '</tr>';
+				echo '</table>';
+				echo'<table width="100%" cellspacing="0" border="0">';	
+					echo '<tr border="0">';
+						echo '<td align="right" colspan="2"><br><br></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><br><br></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>Signature de l\'employé</b></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><b>Visa et Cachet</b></td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+	}
+	else
+	{
+		echo'<table width="100%" cellspacing="0" border="0">';
+		echo '<thead>';
+		echo'<table width="100%" cellspacing="0" border="0">';
+				echo '<tr>';
+				    echo'<td align="left"><b>SONATUR<br>
+					03 BP 7222 OUAGA 03<br>
+					TEL: 25 30 17 73 / 74<br> 
+					</td>';
+					echo'<td align="center">'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '</td>';
+			       echo'<td align="left"><b><u><h2>BULLETIN DE PAIE</h2></u></b>
+						<table width="70%" cellspacing="0" border="0">
+							<tr>
+								<td><b>Période du :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_debut)).'</td>
+							</tr>
+							<tr>
+								<td><b>au :</b></td>
+								<td style="border: 1px solid #000;width:100px;height:25px;">'.date('d/m/Y',strtotime($date_fin)).'</td>
+							</tr>
+						</table>
+					 </td>';
+				echo '</tr>';
+				
+		echo'</table>';
+		echo '<thead>';
+		echo '<tbody>';
+		echo '<br>';
+		echo'<table width="100%" cellspacing="0" border="1">';
+				echo '<tr style="background-color:#808080">';
+					echo'<td align="left"><b>Matricule</b></td>';
+					echo'<td colspan="3" align="left"><b>Nom & Prénom(s)</b></td>';
+					echo'<td align="left"><b>Catégorie</b></td>';
+					echo'<td align="left"><b>Echelon</b></td>';
+					echo'<td align="left"><b>Charge</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td align="left">'.$matricule.'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+					echo'<td align="left">'.$paramclassifications[$classificationid].'</td>';
+					echo'<td align="left">'.$paramechelons[$paramechelonid].'</td>';
+					echo'<td align="left">'.$charge[$ag_dossier].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="2"align="left"><b>N° CNSS</b></td>';
+					echo'<td colspan="2" align="left"><b>Affectation</b></td>';
+					echo'<td colspan="3"align="left"><b>Fonction</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="2"align="left">'.$cotisation.'</td>';
+					echo'<td colspan="2" align="left">'.$directions[$directionid].'</td>';
+					echo'<td colspan="3"align="left">'.$fonctions[$fonctionid].'</td>';
+				echo '</tr>';
+				echo '<tr style="background-color:#808080;">';
+					echo'<td colspan="1"align="left"><b>Mode paiement</b></td>';
+					echo'<td colspan="1" align="left"><b>N° de compte</b></td>';
+					echo'<td colspan="2" align="left"><b>Domiciliation</b></td>';
+					echo'<td colspan="3" align="left"><b>Intitulé du compte</b></td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="1"align="left">'.$parammodepaies[$modepaieid].'</td>';
+					echo'<td colspan="1" align="left">'.$comptebanq.'</td>';
+					echo'<td colspan="2" align="left">'.$parambanques[$banqueid].'</td>';
+					echo'<td colspan="3" align="left">'.$agdossiers[$ag_dossier].'</td>';
+				echo '</tr>';
+		echo '</table>';	
+		echo '<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#808080;">';
+						echo '<td><b>Code</b></td>';
+						echo '<td><b>Désignation élément de salaire</b></td>';
+						echo '<td><b>Base</b></td>';
+						echo '<td><b>Taux</b></td>';
+						echo '<td><b>Avoirs</b></td>';
+						echo '<td><b>Retenues</b></td>';
+					echo '</tr>';
+					$total_avoir = 0;
+					$total_ret = 0;
+					$salaire_net = 0;
+					$net = 0;
+					foreach($elements as $element)
+					{
+						$element = $element['Rembulitem'];
+                       						
+						if(($element['code'] == 500) || ($element['code'] == 1001))
+						{
+						}
+						else
+						{
+							if($element['base'] > 0){
+								if($element['avoir_ret'] == 1)
+								{
+									$total_avoir = $total_avoir + $element['montant'];
+									echo '<tr>';
+									echo '<td  align="left">'.sprintf('%03d', $element['code']).'</td>';
+									echo '<td  align="left">'.$element['designation'].'</td>';
+									echo '<td  align="right">'.number_format($element['base'], 0,',', ' ').'</td>';
+									echo '<td  align="right">'.$element['taux'].'</td>';
+									echo '<td  align="right">'.number_format($element['montant'], 0,',', ' ').'</td>';
+									echo '<td></td>';
+									echo '</tr>'; 
+								}
+								else
+								{
+									$total_ret = $total_ret + $element['montant'];
+									echo '<tr align="right">';
+									echo '<td align="left">'.sprintf('%03d', $element['code']).'</td>';
+									echo '<td align="left">'.$element['designation'].'</td>';
+									echo '<td align="right">'.number_format($element['base'], 0,',', ' ').'</td>';
+									echo '<td align="right">'.$element['taux'].'</td>';
+									echo '<td align="right"></td>';
+									echo '<td align="right">'.number_format($element['montant'], 0,',', ' ').'</td>';
+									echo '</tr>';
+								}
+							}
+						}
+					
+					}
+					echo '<tr>';
+						echo '<td colspan="4" style="background-color:#808080;">Totaux</td>';
+						echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($total_ret, 0,',', ' ').'</td>';
+					echo '</tr>';
+					echo '<tr style="background-color:#808080;">';
+						echo '<td>Net imposable</td>';
+						echo '<td>Salaire Brut</td>';
+						echo '<td>Salaire Net</td>';
+						echo '<td>Précompte</td>';
+						echo '<td colspan="2">Net à payer</td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo '<td align="right">'.number_format($salImp, 0,',', ' ').'</td>';
+						echo '<td align="right">'.number_format($salbrut, 0,',', ' ').'</td>';
+						$salaire_net = ($salbrut - $total_ret) + $precompte;
+						
+						if($matricule == 126)
+						{
+							$month = date('m/Y',strtotime($date_debut));
+							if($month == '06/2020')
+							{
+								if($salaire_net > 2000000)
+								{
+									$salaire_net = 2000000;
+									$sal_journalier = $salaire_net / 30;
+									$solde = $sal_journalier * 21;
+									echo '<td align="right">'.number_format($solde, 0,',', ' ').'</td>';
+								}
+								else
+								{
+								   $sal_journalier = $salaire_net / 30;
+								   $solde = $sal_journalier * 21;
+								   echo '<td align="right">'.number_format($solde, 0,',', ' ').'</td>';
+								}
+							}
+							else
+							{
+								if($salaire_net > 2000000)
+								{
+									$salaire_net = 2000000;
+									echo '<td align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+								}
+								else
+								{
+								   echo '<td align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+								}
+							}
+						}
+						else
+						{
+							echo '<td align="right">'.number_format($salaire_net, 0,',', ' ').'</td>';
+						}
+						
+						
+						echo '<td align="right">'.number_format($precompte, 0,',', ' ').'</td>';
+						$net = $salbrut - $total_ret;
+						if($matricule == 126)
+						{
+							$month = date('m/Y',strtotime($date_debut));
+							if($month == '06/2020')
+							{
+								if($net > 2000000)
+								{
+									$net = 2000000;
+									$sal_journalier = $net / 30;
+									$solde = $sal_journalier * 21;
+									echo '<td align="right" colspan="2">'.number_format($solde, 0,',', ' ').'</td>';
+								}
+								else
+								{
+								   $sal_journalier = $net / 30;
+								   $solde = $sal_journalier * 21;
+								   echo '<td align="right" colspan="2">'.number_format($solde, 0,',', ' ').'</td>';
+								}
+							}
+							else
+							{
+								if($net > 2000000)
+								{
+									$net = 2000000;
+									echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+								}
+								else
+								{
+								   echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+								}
+							}	
+							
+						}
+						else
+						{
+							echo '<td align="right" colspan="2">'.number_format($net, 0,',', ' ').'</td>';
+					    }
+					echo '</tr>';
+				echo '</table>';
+				echo'<table width="100%" cellspacing="0" border="0">';	
+					echo '<tr border="0">';
+						echo '<td align="right" colspan="2"><br><br></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><br><br></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>Signature de l\'employé</b></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right"></td>';
+						echo '<td align="right" colspan="2"><b>Visa et Cachet</b></td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+	}
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,92 @@
+﻿<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	} );
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($personnels);
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$curDate = date("Y-m-d");
+//print_r($curDate);	
+$sql = "SELECT aff.agdossier_id as agent,
+			   aff.date_affectmut as date,
+			   aff.paramfonction_id as fonction,
+			   aff.paramservice_id as service,
+			   aff.paramdirection_id as direction
+        FROM   agaffectmutations aff";
+ 
+$reponse = $bdd->query($sql);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+   
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','',''));
+	echo $this->Form->input('Agaffectmutation.dateDebut', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Agaffectmutation.dateFin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+		
+	echo $this->Form->input('Agaffectmutation.submit', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Agaffectmutation.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+   
+?>
+<table id="example" class="display" style="width:100%">
+        <thead style="background-color:#a2a6a8; color:#fff;">   
+		<tr>
+			<th>MATRICULE</th>
+			<th>NOM</th>
+			<th>PRENOM</th>
+			<th>FONCTION</th>
+			<th>SERVICE</th>
+			<th>DIRECTION</th>
+			
+		</tr>
+        </thead>
+        <tbody>
+		    
+			    <?php
+				     
+					 while($donnees = $reponse->fetch())
+					 {
+				?>
+				<tr>
+				    <td></td>
+					<td></td>
+					<td></td>
+					<td><?php echo $donnees['agent']; ?></td>
+					<td><?php echo $donnees['service']; ?></td>
+					<td><?php echo $donnees['direction']; ?></td>
+			    </tr>
+			<?php		
+				}
+			?>
+       </tbody>
+    </table>		
+<?php		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+

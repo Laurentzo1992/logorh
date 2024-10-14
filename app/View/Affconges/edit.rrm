@@ -1,0 +1,47 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($bulletins);
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">AGENT</th></tr>
+	<tr><th class="color1">Infos personnels</th><th class="color1">Période allocation de congé</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Affconge.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'class'=>'azerty', 'label'=>'Nom & Prénom(S)(*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Affconge.date_debut', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date début congé (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Affconge.date_fin', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Date fin congé (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   //echo $this->Form->input('Affconge.salaire', array('type'=>'text', 'class'=>'azerty', 'label'=>'Salaire moyen (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Affconge.destination', array('type'=>'text', 'class'=>'azerty', 'label'=>'Destination ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Affconge.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Affconge.id', array('type'=>'hidden'));
+	   echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Affconge.periode_debut', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Période début (01/01/2022)(*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo $this->Form->input('Affconge.periode_fin', array('type'=>'mouton', 'class'=>'azerty', 'label'=>'Période fin (31/12/2022)(*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	   echo '</table>';
+	 ?>
+	</td>
+    </tr>
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

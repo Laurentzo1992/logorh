@@ -1,0 +1,110 @@
+﻿<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	} );
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($personnels);
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+$curDate = date("Y-m-d");
+//print_r($curDate);	
+$sql = "SELECT dir.nom_direction as direction,
+               serv.nom_service as service, 
+			   pa.pa_matricule as matricule, 
+               pa.pa_nom as nom,
+			   pa.pa_prenom as prenom,
+			   th.intitule as theme,
+			   sf.date_debut as datedebut,
+			   sf.date_fin as datefin
+        FROM  sessionparticipants sp,   sessionformations sf, participants pa, themes th,
+		      directions dir, services serv
+		WHERE sp.sessionformation_id = sf.id  and 
+		      sp.participant_id = pa.id and 
+			  sf.theme_id = th.id and
+			  pa.pa_direction_id = dir.id and
+			  pa.pa_service_id = serv.id and
+			  Sf.date_debut BETWEEN '".$dateDebut."' AND '".$dateFin."' and
+			  pa.pa_direction_id LIKE '%".$direction."%' and 
+			  pa.pa_service_id LIKE '%".$service."%'and
+			  Sf.date_debut > '".$curDate."'";
+ 
+$reponse = $bdd->query($sql);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Direction','Service','Du','Au','Thème','',''));
+	echo $this->Form->input('Sessionparticipant.direction', array('type'=>'select', 'options'=>$directions, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Sessionparticipant.service', array('type'=>'select', 'options'=>$services, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Sessionparticipant.dateDebut', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Sessionparticipant.dateFin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Sessionparticipant.theme', array('type'=>'select', 'options'=>$themes, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Sessionparticipant.submit', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Sessionparticipant.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+   
+?>
+<table id="example" class="display" style="width:100%">
+        <thead style="background-color:#a2a6a8; color:#fff;">   
+		<tr>
+		   <th>Direction</th>
+		   <th>Service</th>
+			<th>Matricule</th>
+			<th>Nom</th>
+			<th>Prénom</th>
+		    <th>Théme</th>
+			<th>Date début</th>
+			<th>Date fin</th>
+		</tr>
+        </thead>
+        <tbody>
+		    <tr>
+			    <?php
+				     
+					 while($donnees = $reponse->fetch())
+					 {
+						//$total = $total + $donnees['nbr'];
+				?>
+				<td><?php echo $donnees['direction']; ?></td>
+				<td><?php echo $donnees['service']; ?></td>
+			    <td><?php echo $donnees['matricule']; ?></td>
+                <td><?php echo $donnees['nom']; ?></td>
+				<td><?php echo $donnees['prenom']; ?></td>
+				<td><?php echo $donnees['theme']; ?></td>
+				<td><?php echo date("d-m-Y",strtotime($donnees['datedebut'])); ?></td>
+				<td><?php echo date("d-m-Y",strtotime($donnees['datefin'])); ?></td>
+            </tr>
+			<?php		
+				}
+			?>
+       </tbody>
+    </table>		
+<?php		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+

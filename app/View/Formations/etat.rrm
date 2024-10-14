@@ -1,0 +1,115 @@
+﻿<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	} );
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($formations);
+// Connexion à la base de données
+/*try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+/*$curDate = date("Y-m-d");
+	
+$sql = "SELECT pa.pa_matricule as matricule, 
+               pa.pa_nom as nom,
+			   pa.pa_prenom as prenom,
+			   th.intitule as theme,
+			   sf.date_debut as datedebut,
+			   sf.date_fin as datefin
+        FROM  sessionparticipants sp,   sessionformations sf, participants pa, themes th
+		WHERE sp.sessionformation_id = sf.id  and 
+		      sp.participant_id = pa.id and sp.presence = 1 and
+			  sf.theme_id = th.id and
+			  Sf.date_debut BETWEEN '".$dateDebut."' AND '".$dateFin."' and
+			  pa.pa_matricule LIKE '%".$matricule."%' and 
+			  pa.pa_nom LIKE '%".$nom."%' and
+              pa.pa_prenom LIKE '%".$nom."%' and			  
+			  th.id LIKE '%".$theme."%'";
+ 
+$reponse = $bdd->query($sql);*/
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','Dénomination','Budget','',''));
+	echo $this->Form->input('Formation.dateDebut', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Formation.dateFin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Formation.denomination', array('type'=>'select', 'options'=>$denominations, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Formation.budget', array('type'=>'select', 'options'=>$budgets, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'</td><td>', 'after'=>'</td>'));
+	echo $this->Form->input('Formation.submit', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Formation.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+   
+?>
+<table id="example" class="display" style="width:100%">
+        <thead style="background-color:#a2a6a8; color:#fff;">   
+		<tr>
+			<th>Denomination</th>
+			<th>Intitulé du thème</th>
+			<th>Objectif(s)</th>
+		    <th>Postes concernés</th>
+			<th>Nombre de participants</th>
+			<th>Modalité</th>
+			<th>Durée</th>
+			<th>Lieu</th>
+			<th>Année</th>
+			<th>Budget</th>
+			<th>Coût (FCFA)</th>
+			<th>Statut</th>
+			
+		</tr>
+        </thead>
+        <tbody>
+		   
+			    <?php
+				     
+					foreach($formations as $formation)
+					{
+						//$formation = $formation['Formation'];
+				?>
+				    <tr>
+						<td><?php echo $denominations[$formation['formdenomination_id']]; ?></td>
+						<td><?php echo $formation['theme']; ?></td>
+						<td><?php echo $formation['objectif']; ?></td>
+						<td><?php echo $formation['poste']; ?></td>
+						<td><?php echo $formation['nbr_participant']; ?></td>
+						<td><?php echo $formation['modalite']; ?></td>
+						<td><?php echo $formation['duree']; ?></td>
+						<td><?php echo $formation['lieu']; ?></td>
+						<td><?php echo $formation['annee']; ?></td>
+						<td><?php echo $budgets[$formation['parambudget_id']]; ?></td>
+						<td><?php echo number_format($formation['cout'], 0,',', ' '); ?></td>
+						<td><?php echo $formation['statut']; ?></td>
+                    </tr>
+			<?php		
+				   }
+			?>
+       </tbody>
+    </table>		
+<?php		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+

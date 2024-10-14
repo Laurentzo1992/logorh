@@ -1,0 +1,93 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+    echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Année','',''));
+	echo $this->Form->input('Affdotverre.annee', array('type'=>'text', 'before'=>'<tr><td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Affdotverre.valider', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Affdotverre.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Affdotverres', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affdotverres', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affdotverres', 'view'=>'modif', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Affdotverre')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Affdotverres', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Affdotverre'));
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affdotitems', 'view'=>'index', 'params'=>array('id:')), 
+			array('title'=>'Achat de verre(s)', 'class'=>'icon reload groupAction', 'ref'=>'Affdotverre')
+		);
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affdotverre.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffdotverreCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affdotverre', array(
+	$actionCheck=>false,
+	'Matricule'=>'matricule',
+	'Dossier'=>'agdossier_id',
+	'Année'=>'annee',
+	'Montant dotation'=>'dotation',
+	'Montant restant'=>'dotation_restant',));
+	$tableData = array();  //  
+	foreach($affdotverres as $affdotverre){
+		$affdotverre = $affdotverre['Affdotverre'];
+		
+		
+		$action = $this->Form->input('Affdotverre.check.[]', array('type'=>'checkbox', 'class'=>'AffdotverreCheckItem', 'value'=>$affdotverre['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		$affdotverre['matricule'],
+        $agdossiers[$affdotverre['agdossier_id']], 
+        $affdotverre['annee'],
+        number_format($affdotverre['dotation'], 0,',', ' '), 
+        number_format($affdotverre['dotation_restant'], 0,',', ' '), 		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affdotverre', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

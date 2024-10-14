@@ -1,0 +1,7 @@
+<?php
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo $this->Paginator->filter('User', array('User.name'=>'Nom et Prénom', 'User.username'=>'Nom d\'utilisateur'), null, array('view'=>'index'));
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

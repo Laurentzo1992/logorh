@@ -1,0 +1,95 @@
+<!--Carevaluations Edit-->
+<?php
+// Connexion à la base de données
+//print_r($postData);
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th style="text-align:center;background-color:#dd1616;">Agent</th><th style="text-align:center;background-color:#dd1616;">Critère évaluation</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   $alpha = date("Y");
+	   $beta = $alpha - 1;
+	   $gama = $alpha - 2;
+	   $annees = array($alpha=>$alpha,$beta=>$beta,$gama=>$gama);
+	   
+	   echo '<table class="table trHover borderBottom">';
+	   echo $this->Form->input('Carevaluation.date_eval', array('type'=>'select', 'options'=>$annees,  'empty'=>'Selectionner', 'label'=>'Date évaluation',  'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   //echo $this->Form->input('Carevaluation', array('type'=>'text','class'=>'azerty', 'disabled', 'label'=>'Num contrat', 'value'=>$agcontrats[$varcontrat], 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Carevaluation', array('type'=>'text','class'=>'azerty', 'disabled', 'label'=>'Matricule', 'value'=>$matricule, 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Carevaluation', array('type'=>'text','class'=>'azerty', 'disabled', 'label'=>'Nom & prénom(s)', 'value'=>$agdossiers[$dossier], 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	   echo $this->Form->input('Carevaluation.evaluateur', array('type'=>'select', 'options'=>$agdossiers,  'empty'=>'Selectionner', 'class'=>'azerty', 'label'=>'Nom & prénom (s) évaluateur', 'value'=>$agdossiers, 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  
+	   echo $this->Form->input('Carevaluation.id', array('type'=>'hidden'));
+	   echo $this->Form->input('Carevaluation.agcontrat_id', array('type'=>'hidden', 'value'=>$varcontrat));
+	   echo $this->Form->input('Carevaluation.agdossier_id', array('type'=>'hidden', 'value'=>$dossier));
+	   echo $this->Form->input('Carevaluation.matricule', array('type'=>'hidden', 'value'=>$matricule));
+	   echo $this->Form->input('Carevaluation.statut', array('type'=>'hidden', 'value'=>'Proposition'));
+	   echo $this->Form->input('Carevaluation.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	  
+	   echo '</table>';
+	?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+
+			$tableData = array();
+				$i=0;
+				foreach($carcriteres as $carcritere){
+					$carcritere = $carcritere['Carcritere'];
+					
+					
+					/*=============================*/
+					$req = "SELECT csc.id as identifiant,
+					               csc.libelle as libelle,
+								   csc.bareme as bareme,
+                                   csc.carcritere_id as critere_id
+	                        FROM  carsouscriteres  csc
+		                    WHERE csc.carcritere_id  = '".$carcritere['id']."'";
+
+                    $reponse = $bdd->query($req);
+					/*=============================*/
+					echo '<tr>';
+					      echo '<th>'.$carcritere['libelle'].'</th>';
+						  echo '<th></th>';
+						  echo '<th></th>';
+					echo '</tr>';
+					while($donnees = $reponse->fetch())
+                    {
+						$i++;
+						echo '<tr>';
+						echo '<td>'.$this->Form->input('Carevaluation.'.$i.'.lib',array('type'=>'text', 'disabled', 'value'=>$donnees['libelle'],  'class'=>'azerty', 'label'=>'Libéllé : ',)).'</td>';
+					    echo '<td>'.$this->Form->input('Carevaluation.'.$i.'.note',array('type'=>'text',   'label'=>'Note : ',)).'</td>';
+					    echo '<td>'.$this->Form->input('Carevaluation.'.$i.'.bar',array('type'=>'text',   'label'=>' /  ','value'=>$donnees['bareme'], 'disabled',)).'</td>';
+                        /*---------------------------------------------------------------------------------------------------*/
+						echo '<td>'.$this->Form->input('Carevaluation.'.$i.'.souscritere_id',array('type'=>'hidden', 'value'=>$donnees['identifiant'],)).'</td>';
+					    echo '<td>'.$this->Form->input('Carevaluation.'.$i.'.bareme',array('type'=>'hidden', 'value'=>$donnees['bareme'],)).'</td>';
+					    echo '<td>'.$this->Form->input('Carevaluation.'.$i.'.critere_id',array('type'=>'hidden', 'value'=>$donnees['critere_id'],)).'</td>';
+					    echo '</tr>';
+			        }
+				}
+				echo $this->Html->tableCells($tableData, array('class'=>'tr2'), array('class'=>'tr1'));
+			echo '</table>'; 
+	?>
+    </td>
+    </tr>
+    </table>
+<?php
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

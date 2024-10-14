@@ -1,0 +1,68 @@
+<!--cpbs Edit-->
+<script type="text/javascript">
+tinymce.init({
+    selector: ".mce",
+	language: "fr_FR",
+    theme: "modern",
+    toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+    toolbar2: "print preview media | forecolor backcolor emoticons",
+    image_advtab: true,
+    templates: [
+        {title: 'Test template 1', content: 'Test 1'},
+        {title: 'Test template 2', content: 'Test 2'}
+    ]
+});
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1">Fiche de poste</th></tr>
+	
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	    echo $this->Form->input('Recruposte', array('type'=>'textarea', 'value'=>$recrubesoins[$besoinid], 'label'=>'Libéllé besoin', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Recruposte.recrubesoin_id', array('type'=>'hidden', 'value'=>$besoinid));
+	    echo $this->Form->input('Recruposte.date_poste', array('type'=>'mouton',  'label'=>'Date', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Recruposte.date_limite', array('type'=>'mouton',  'label'=>'Date limite dossier', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Recruposte.intitule', array('type'=>'textarea',         'class'=>'mce',  'label'=>'Titre du poste', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Recruposte.lieu_affectation', array('type'=>'textarea', 'class'=>'mce',  'label'=>'Lieu d’affectation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Recruposte.superieur_hierar', array('type'=>'textarea', 'class'=>'mce',  'label'=>'Supérieur hiérarchique', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Recruposte.attribution', array('type'=>'textarea',      'class'=>'mce',  'label'=>'Principales attributions', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    
+		echo $this->Form->input('Recruposte.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Recruposte.id', array('type'=>'hidden'));
+	    echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	  echo '<table class="table trHover borderBottom">';
+	  echo $this->Form->input('Recruposte.competence', array('type'=>'textarea', 'class'=>'mce', 'label'=>'Aptitude et compétences requises', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Recruposte.education', array('type'=>'textarea',  'class'=>'mce', 'label'=>'Education et expérience', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Recruposte.autre_competence', array('type'=>'textarea', 'class'=>'mce','label'=>'Autre compétences pertinentes', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Recruposte.langue', array('type'=>'textarea', 'class'=>'mce','label'=>'Langue(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Recruposte.duree_eng', array('type'=>'textarea', 'class'=>'mce', 'label'=>'Durée de l\'engagement', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Recruposte.remuneration', array('type'=>'textarea', 'class'=>'mce','label'=>'Rémunération', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Recruposte.dossier', array('type'=>'textarea',  'class'=>'mce','label'=>'Dossier de candidature', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  
+	  echo '</table>';
+    ?>
+    </td>
+    </tr>
+	</table>
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

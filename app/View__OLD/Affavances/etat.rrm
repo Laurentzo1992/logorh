@@ -1,0 +1,55 @@
+<script type="text/javascript">
+          $(document).ready(function() {
+			$('#example').DataTable( {
+				dom: 'Bfrtip',
+				buttons: [
+					'excelHtml5',
+					'csvHtml5',
+					'pdfHtml5'
+				]
+			} );
+		} );
+</script>
+<!--------------------------------------------------------------->
+<?php
+if(isset($accessLevel['etat']) && $accessLevel['etat']){
+	$filter = array();
+		$filter = array(
+		    'Region.numero'=>'N° de région',
+			'Region.nomreg'=>'Nom de région',
+			'Region.cheflieu'=>'Chef lieu de région',
+		);
+	echo $this->Paginator->filter('Region', $filter, null, $this->Html->getUrl(array('controller'=>'Regions', 'view'=>'etat')));
+    /****************************************************************************************************/
+?>
+<table id="example" class="display" style="width:100%">
+        <thead style="background-color:#0C810D; color:#fff;">
+            <tr>
+			    <th>N° de région</th>
+                <th>Nom de région</th>
+                <th>Chef lieu de région</th>
+            </tr>
+        </thead>
+        <tbody>
+		<?php             
+             foreach($regions as $region){
+		        $region = $region['Region'];
+
+          ?>
+            <tr>
+			    <td><?php echo $region['numero']; ?></td>
+                <td><?php echo $region['nomreg']; ?></td>
+                <td><?php echo $region['cheflieu']; ?></td>
+              
+            </tr>
+        <?php 
+		    }    
+		?>
+       </tbody>
+    </table>		
+<?php		
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>		
+

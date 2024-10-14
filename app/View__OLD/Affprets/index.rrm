@@ -1,0 +1,86 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Affprets', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affprets', 'view'=>'edit',), 
+			array('title'=>'Créer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affprets', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Affpret')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Affprets', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Affpret'));
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Afftraites', 'view'=>'index', 'params'=>array('pretid:')), 
+			array('title'=>'Modifier', 'class'=>'icon file groupAction', 'ref'=>'Affpret')
+		);
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affpret.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffpretCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affpret', array($actionCheck=>false, 
+	
+	'Matricule'=>'matricule',
+	'Nom & prénom(s)'=>'agdossier_id',
+	'Date prêt'=>'date_pret',
+	'Montant prêt'=>'montant_pret',
+	//'Statut'=>'statut',
+	));
+	$tableData = array();  //  
+	foreach($affprets as $affpret){
+		$affpret = $affpret['Affpret'];
+		
+		
+		$action = $this->Form->input('Affpret.check.[]', array('type'=>'checkbox', 'class'=>'AffpretCheckItem', 'value'=>$affpret['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+        $affpret['matricule'],		
+		(isset($agdossiers[$affpret['agdossier_id']]))?$agdossiers[$affpret['agdossier_id']]:'',
+		$affpret['date_pret'],
+		number_format($affpret['montant_pret'], 0,',', ' '),
+       //(isset($statuts[$affpret['statut']]))?$statuts[$affpret['statut']]:'',			
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affpret', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

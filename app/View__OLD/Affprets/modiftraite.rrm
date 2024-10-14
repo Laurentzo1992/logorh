@@ -1,0 +1,68 @@
+<!--Affprets Edit-->
+
+<?php
+//print_r($nomreg);
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th style="text-align:center;background-color:#dd1616;">Pret</th><th style="text-align:center;background-color:#dd1616;">Traite mensuel</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	
+	    echo '<table class="table trHover borderBottom">';
+	    echo $this->Form->input('Affpret.agdossier_id', array('type'=>'select', 'disabled', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affpret.date_pret', array('type'=>'mouton',    'disabled', 'label'=>'Date prêt', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affpret.montant_pret', array('type'=>'text',   'disabled', 'label'=>'Montant prêt', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affpret.date_effet', array('type'=>'mouton',   'disabled', 'label'=>'Date d\'éffet', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('fichier', array('type'=>'file', 'label'=>'Fichier ', 'format'=>false,'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		
+		echo $this->Form->input('Affpret.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affpret.id', array('type'=>'hidden'));
+	    echo '</table>';
+	?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+			$tableData = array();
+				$i =0;
+				foreach($afftraites as $afftraite){
+					$afftraite  = $afftraite['Afftraite'];
+					$i++;
+					$tableData[] = array(
+						$this->Form->input('Affpret.'.$i.'',array('type'=>'text', 'value'=>$afftraite['montant_traite'],  'disabled', 'label'=>'Montant traite : ',)),
+					    $this->Form->input('Affpret.'.$i.'', array('type'=>'text','format'=>true,  'value'=>$afftraite['date_traite'], 'disabled', 'label'=>'Date remboursement : ',)),
+				        /*************************************************************/
+						$this->Form->input('Affpret.'.$i.'.id',array('type'=>'hidden', 'value'=>$afftraite['id'],)),
+					    $this->Form->input('Affpret.'.$i.'.montant',array('type'=>'text', 'value'=>$afftraite['montant_traite'], 'label'=>'Montant traite : ',)),
+					    //$this->Form->input('Affpret.'.$i.'.rembousementDate', array('type'=>'text','format'=>true,  'value'=>$afftraite['date_traite'], 'readonly', 'label'=>'Date remboursement : ',)),
+				        
+					);
+				}
+				echo $this->Html->tableCells($tableData, array('class'=>'tr2'), array('class'=>'tr1'));
+			echo '</table>'; 
+	?>
+    </td>
+    </tr>
+    </table>
+<?php
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+
+<script type="text/javascript">
+$(".dateSelect").focus(function(){
+	new JsDatePick({
+		useMode:2,
+		target:$(this).attr("id"),
+		cellColorScheme:"aqua",
+		dateFormat:"%m-%Y"
+	});
+});
+</script>

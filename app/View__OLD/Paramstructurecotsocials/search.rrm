@@ -1,0 +1,13 @@
+<?php
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	$filter = array();
+		$filter = array(
+			'Paramstructurecotsocial.nom_structure'=>'Nom structure',
+			
+		);
+	
+	echo $this->Paginator->filter('Paramstructurecotsocial', $filter, null, array('view'=>'index'));
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

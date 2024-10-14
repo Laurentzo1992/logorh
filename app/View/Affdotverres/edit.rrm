@@ -1,0 +1,41 @@
+<!--Affdotverres Edit-->
+
+<?php
+//print_r($affbonpharmas); 
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th style="text-align:center;background-color:#dd1616;">Dotation pour des verres</th></tr>
+	<tr>
+		<td class="vertical-align-top color1">
+		<?php
+			echo '<table class="table trHover borderBottom">';
+			echo $this->Form->input('Affdotverre.annee', array('type'=>'text', 'label'=>'Année', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotverre.montant', array('type'=>'text', 'value'=>$dotation , 'label'=>'Montant dotation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotverre.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotverre.id', array('type'=>'hidden'));
+			echo '</table>';
+		?>
+		</td>
+	</tr>
+    </table>
+<?php
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+
+<script type="text/javascript">
+$(".dateSelect").focus(function(){
+	new JsDatePick({
+		useMode:2,
+		target:$(this).attr("id"),
+		cellColorScheme:"aqua",
+		dateFormat:"%m-%Y"
+	});
+});
+</script>

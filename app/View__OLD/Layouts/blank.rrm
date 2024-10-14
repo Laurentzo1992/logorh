@@ -1,0 +1,19 @@
+<?php echo $Html->docType() . "\n"; ?>
+<html>
+<head>
+<meta charset="utf-8" />
+<title><?php echo isset($pageTitle)?$pageTitle:APP_DEFAULT_NAME ?></title>
+<?php echo $this->Html->meta('icon') . PHP_EOL;?>
+<!--Page Specific JS-->
+<?php if(isset($js))echo $this->Html->script((array)$js)?>
+<!--Page Specific CSS-->
+<?php if(isset($css))echo $this->Html->css((array)$css)?>
+<!--Page Specific Style-->
+<?php if(isset($style))echo $this->Html->tag('style', "<!--{$style}-->")?>
+</head>
+<body>				
+<?php
+echo $this->fetch('content');
+?>
+</body>
+</html>

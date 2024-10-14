@@ -1,0 +1,35 @@
+<!--Affbonpharmas Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	?>
+	
+	<table  class="table small">
+	<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">Bon produit(s) pharmaceutique(s)</th></tr>
+    <tr>
+	<td class="vertical-align-top color1">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Affbonpharma.numero_bon', array('type'=>'text', 'label'=>'N° bon : ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+           echo $this->Form->input('Affbonpharma.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s) (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Affbonpharma.date_bon', array('type'=>'mouton', 'label'=>'Date du bon (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Affbonpharma.montant_bon', array('type'=>'text', 'label'=>'Montant du bon : ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+           echo $this->Form->input('Affbonpharma.statut', array('type'=>'hidden', 'value'=>0));
+           
+		   echo $this->Form->input('Affbonpharma.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	echo '</table>';
+	 ?>
+	</td>
+	
+    </tr>
+	</table>
+	
+<?php
+	echo $this->Form->input('Affbonpharma.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

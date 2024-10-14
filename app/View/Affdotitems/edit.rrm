@@ -1,0 +1,45 @@
+<!--Affdotitems Edit-->
+
+<?php
+//print_r($affbonpharmas); 
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th style="text-align:center;background-color:#dd1616;">Achat de verre(s) correcteur(s)</th></tr>
+	<tr>
+		<td class="vertical-align-top color1">
+		<?php
+			echo '<table class="table trHover borderBottom">';
+			echo $this->Form->input('Affdotitem.affdotverre_id', array('type'=>'hidden', 'value'=>$dotverre_id));
+			echo $this->Form->input('Affdotitem.agdossier_id', array('type'=>'hidden', 'value'=>$agdossier_id));
+			echo $this->Form->input('Affdotitem', array('type'=>'text', 'value'=>$agdossiers[$agdossier_id], 'label'=>'Nom & Prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotitem.date_item', array('type'=>'mouton', 'label'=>'Date achat', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotitem.libelle', array('type'=>'textarea',  'label'=>'Libelle', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotitem.montant', array('type'=>'text', 'label'=>'Montant', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotitem.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Affdotitem.id', array('type'=>'hidden'));
+			echo '</table>';
+		?>
+		</td>
+	</tr>
+    </table>
+<?php
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
+
+<script type="text/javascript">
+$(".dateSelect").focus(function(){
+	new JsDatePick({
+		useMode:2,
+		target:$(this).attr("id"),
+		cellColorScheme:"aqua",
+		dateFormat:"%m-%Y"
+	});
+});
+</script>

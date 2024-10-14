@@ -1,0 +1,83 @@
+<!--Contrats Index-->
+<?php
+//print_r($count);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	//$tdis->Session->write('return', $tdis->Html->getReturnUrl());
+	
+	/*------------------------------------*/
+	?>
+	<table  class="table small">
+	<tr><th class="color2"><?php echo 'Formation : '.$theme; ?>	</th></tr>
+	<tr>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	echo '<tr><th>Matricule</th><th>Nom</th><th>Prénom(s)</th><th>Moyenne générale</th></tr>';
+	
+	$condition = 0;
+	$count = 0;
+	$moygen =0;
+	foreach($sessionparticipants as $sessionparticipant)
+	{
+		$sessionparticipant = $sessionparticipant['Sessionparticipant'];
+		if($sessionparticipant['presence'] == 1)
+		{
+			$count++;
+			$moyen    = (float)$sessionparticipant['moyen_gen'];
+			$participantID = $sessionparticipant['participant_id'];
+			echo '<tr>
+					   <td >'.$matricule[$participantID].'</td>
+					   <td >'.$nom[$participantID].'</td>
+					   <td >'.$prenom[$participantID].'</td>
+					   <td>'.round($moyen,2).'/10</td>
+				  </tr>';
+			$moygen += $moyen;
+		}
+	}
+	
+	echo '<tr><td colspan="3">Moyenne générale</td><td>'.round(($moygen/$count),2) .'/10</td></tr>';
+  
+	echo '</table>';
+	?>
+    </td>
+    </tr>
+    </table>
+	
+	<?php
+			
+						  
+			  $taux = round(($moygen/$count),2);	
+			  $satisfaction = ($taux * 100) /10;
+			 
+			  if($satisfaction >= $critere)
+			  {
+				  $app = '#00FF00';
+				  $msg = 'Satisfaisant';
+			  }
+			  else
+			  {
+				  $app = '#FF0000';
+				  $msg = 'Non satisfaisant';
+			  }
+			  
+		?>	
+		<table id="example" width="34%" cellspacing="0" class="table trHover borderBottom">
+		   <thead>
+			  <tr>
+			    <th>Cible</th>
+				<th>Taux de satisfaction</th>
+				<th colspan="2">Appréciation</th>
+			  </tr>
+			</thead>
+			<tr>
+			    <td><b><?php echo $critere; ?> %  </b></td>
+				<td><b><?php echo round($satisfaction,2); ?> % </b></td>
+				
+				<td style="background-color:<?php echo $app;?> ;color:black"><b><?php echo $msg ?> </b></td>
+			</tr>
+		</table>
+<?php	
+}else{
+	echo $tdis->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

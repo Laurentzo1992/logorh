@@ -1,0 +1,72 @@
+<!--Progsuiviactivites Edit-->
+<script>
+$(document).ready(function(){ 
+$( '#datedebut' ).datepicker({
+	defaultDate: 1,
+	changeMonth: true,
+	numberOfMonths: 3,
+	showWeek: true,
+	firstDay: 1,
+	//minDate: 0,
+	maxDate: "+1Y",
+	dayNamesMin: [ "Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa" ],
+	dateFormat: "dd-mm-yy",
+	onClose: function( selectedDate ) {
+	$( '#datefin' ).datepicker( "option", "minDate", selectedDate );
+	}
+});
+$( '#datefin' ).datepicker({
+	defaultDate: 1,
+	changeMonth: true,
+	numberOfMonths: 3,
+	showWeek: true,
+	firstDay: 1,
+	minDate: 1,
+	maxDate: "+1Y",
+	dayNamesMin: [ "Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa" ],
+	dateFormat: "dd-mm-yy",
+	onClose: function( selectedDate ) {
+	$( '#datedebut' ).datepicker( "option", "maxDate", selectedDate );
+	}
+});
+});
+ 
+</script>
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+    ?>
+	
+	<table  class="table small">
+	<!--<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">CLIENT</th></tr>
+	-->
+	<tr><th class="color2">Charges de formation</th></tr>
+	<tr>
+	<td class="vertical-align-top color2">
+	<?php
+    echo '<table class="table trHover borderBottom">';
+		echo $this->Form->input('Comptabilite', array('type'=>'textarea', 'value'=>$theme, 'label'=>'Session formation',   'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite', array('type'=>'textarea', 'value'=>$agdossier, 'label'=>'Participant',         'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite.frais_mission', array('type'=>'text',        'label'=>'Frais missions',      'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite.frais_transport', array('type'=>'text',      'label'=>'Frais transport',     'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite.frais_restauration', array('type'=>'text',   'label'=>'Frais restauration',  'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite.frais_kitfor', array('type'=>'text',         'label'=>'Frais kit formation', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite.frais_inscription', array('type'=>'text',    'label'=>'Frais inscription',   'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite.frais_generaux', array('type'=>'text',    'label'=>'Frais généraux',   'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		
+		echo $this->Form->input('Comptabilite.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Comptabilite.id', array('type'=>'hidden'));
+        echo $this->Form->input('Comptabilite.sessionformation_id', array('type'=>'hidden'));
+		echo $this->Form->input('Comptabilite.participant_id', array('type'=>'hidden'));
+	echo '</table>';
+	?>
+    </td>
+    </tr>
+    </table>
+<?php
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

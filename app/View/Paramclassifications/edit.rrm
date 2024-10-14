@@ -1,0 +1,21 @@
+<!--Paramclassifications Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	       echo $this->Form->input('Paramclassification.code', array('type'=>'text', 'label'=>'Code', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Paramclassification.libelle', array('type'=>'text', 'label'=>'Libelle', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Paramclassification.qualification', array('type'=>'textarea', 'label'=>'Qualification', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Paramclassification.emploi', array('type'=>'textarea', 'label'=>'Emploi', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		   echo $this->Form->input('Paramclassification.paramsociopro_id', array('type'=>'select', 'options'=>$paramsociopros, 'empty'=>'Selectionner', 'label'=>'Catégorie socio-professionnelle', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Paramclassification.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	        
+	echo '</table>';
+	echo $this->Form->input('Paramclassification.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,38 @@
+<!--User Edit-->
+<?php
+//print_r($tmp);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	echo '<tr><th>Nom et Prénoms</th><th>Nom d\'utilisateur</th><th>Mot de passe</th><th>Email</th><th>Profil</th></tr>';
+	$tableData = array();
+	$ids = '';
+	$n = 1;
+	for($i=0;$i<$n;$i++){
+		$ids .=  $this->Form->input($i .'.User.id', array('type'=>'hidden'));		
+		$tableData[] = array(
+			$this->Form->input($i .'.User.name', array('type'=>'text')),
+			$this->Form->input($i .'.User.username', array('type'=>'text', )),
+			$this->Form->input($i .'.User.password', array('type'=>'text', 'value'=>$password, 'readonly')),
+			$this->Form->input($i .'.User.email', array('type'=>'text',)),
+			$this->Form->input($i .'.User.usergroup_id', array('type'=>'select', 'options'=>$usergroups, 'empty'=>'(Choisir groupe)'))
+		);
+		
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '</table>';
+	echo $ids;
+	echo '<table>';
+	echo $this->Form->input('User.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td><td></td></tr>'));
+	echo '</table><br/><br/>';
+	
+	/*echo '<table>';
+	echo $this->Form->input('User.n', array('type'=>'text','before'=>'<tr><td align="right">Ajouter ', 'value'=>1, 'style'=>'width:20px', 'after'=>''));
+	echo $this->Form->input('User.rows', array('type'=>'hidden','before'=>'',  'value'=>$n, 'after'=>''));
+	echo $this->Form->input('User.addRows', array('type'=>'submit','before'=>' Lignes ', 'value'=>'Ajouter', 'after'=>'</td></tr>'));
+	echo '</table>';*/
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

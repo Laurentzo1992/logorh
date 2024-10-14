@@ -1,0 +1,88 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Affbonpharmas', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbonpharmas', 'view'=>'add',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbonpharmas', 'view'=>'modif', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Affbonpharma')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Affbonpharmas', 'view'=>'montant', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon sell groupAction', 'ref'=>'Affbonpharma')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Affbonpharmas', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Affbonpharma'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Affbonpharma.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AffbonpharmaCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Affbonpharma', array($actionCheck=>false, 
+	'N° Bon'=>'numero_bon',
+	'Date du bon'=>'date_bon',
+	'Matricule'=>'matricule',
+	'Nom & Prénom(s)'=>'agdossier_id',
+	'Montant du bon'=>'montant_bon',
+	'Pharmacie'=>'parampharmacie_id',
+	));
+	$tableData = array();  //  
+	foreach($affbonpharmas as $affbonpharma){
+		$affbonpharma = $affbonpharma['Affbonpharma'];
+		
+		
+		$action = $this->Form->input('Affbonpharma.check.[]', array('type'=>'checkbox', 'class'=>'AffbonpharmaCheckItem', 'value'=>$affbonpharma['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		$affbonpharma['numero_bon'],
+		date("d-m-Y",strtotime($affbonpharma['date_bon'])),
+		$affbonpharma['matricule'],
+		(isset($agdossiers[$affbonpharma['agdossier_id']]))?$agdossiers[$affbonpharma['agdossier_id']]:'',
+		$affbonpharma['montant_bon'],
+		(isset($parampharmacies[$affbonpharma['parampharmacie_id']]))?$parampharmacies[$affbonpharma['parampharmacie_id']]:'',
+					
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Affbonpharma', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,53 @@
+<!--Comptabilites Index-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	    $frmission = 0;
+		$frtrans   = 0;
+		$frestau   = 0;
+		$frkit   = 0;
+		$frins   = 0;
+		$fgen   = 0;
+		$total = 0;
+		foreach($formcharges as $formcharge){
+				$formcharge = $formcharge['Formcharge'];
+				$frmission = $frmission + $formcharge['frais_mission'];
+				$frtrans   = $frtrans + $formcharge['frais_transport'];
+				$frestau   = $frestau + $formcharge['frais_restauration'];
+				$frkit     = $frkit + $formcharge['frais_kitfor'];
+				$frins     = $frins + $formcharge['frais_inscription'];
+				$fgen      = $fgen  + $formcharge['frais_generaux'];
+		}
+        $total = $frmission + $frtrans + $frestau + $frkit + $frins + $fgen;		
+			?>	
+	<table  class="table small">
+	<tr><th class="color2"><?php echo 'Formation : '.$theme; ?>	</th></tr>
+	<tr>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+	//echo '<tr><td>Frais de location de salle</td><td align="right">'.number_format($location, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	//echo '<tr><td>Frais généraux (acteurs interne)</td><td align="right">'.number_format($fraisgeneraux, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	//echo '<tr><td>Honoraires formateur</td><td align="right">'.number_format($honoraireformateur, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	
+	echo '<tr><td>Frais de missions</td><td align="right">'.number_format($frmission, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	echo '<tr><td>Frais de transport</td><td align="right">'.number_format($frtrans, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	echo '<tr><td>Frais de restauration</td><td align="right">'.number_format($frestau, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	echo '<tr><td>Frais de kit de formation</td><td align="right">'.number_format($frkit, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	echo '<tr><td>Frais d\'inscription</td><td align="right">'.number_format($frins, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	echo '<tr><td>Frais généraux (participants)</td><td align="right">'.number_format($fgen, 0,',', ' ').'</td><td>F CFA</td></tr>';
+	
+	echo '<tr><th>Total des charges</th><th align="right">'.number_format($total, 0,',', ' ').'</th><th>F CFA</th></tr>';
+	echo '<tr><th>Budget prévisionnel</th><th align="right">'.number_format($cout, 0,',', ' ').'</th><th>F CFA</th></tr>';
+	
+	echo '</table>';
+	?>
+    </td>
+    </tr>
+    </table>
+<?php
+
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

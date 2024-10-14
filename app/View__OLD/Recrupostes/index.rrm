@@ -1,0 +1,101 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ /*$(function() {
+	 $('#details input, #details select, #details textarea, #details radio, #details checkbox').attr('disabled','disabled');
+ });*/
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo '<table style="margin-left:10px;" class="table trHover borderBottom">';
+	echo '<tr><th>Besoin : '.$libelle.'</th></tr>';
+	echo '</table>';
+	echo '<br>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Recrupostes', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Recrupostes', 'view'=>'edit', 'params'=>array('besoinid:'.$besoinid)), 
+			array('title'=>'Créer une fiche de fiche', 'class'=>'icon new groupAction_1', 'ref'=>'Recruposte')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Recrupostes', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Recruposte')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Recrupostes', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Recruposte'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Recruposte.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'RecruposteCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Recruposte', array($actionCheck=>false, 
+	''=>'',
+	'Date'=>'date_poste',
+	'Intitulé'=>'intitule',
+	'Lieu affectation'=>'lieu_affectation',
+	'Date limite'=>'date_limite',
+	
+	));
+	$tableData = array();  //  
+	foreach($recrupostes as $recruposte){
+		$recruposte = $recruposte['Recruposte'];
+		
+		/*---------------------------------------*/
+		$receiptCheckin = $this->Html->linkReplaceParam(
+			'', 
+		array('controller'=>'Recrupostes', 'view'=>'ficheposte', 'params'=>array('posteid:'.$recruposte['id'])), 
+		array('title'=>'Imprimer fiche de poste', 'class'=>'icon print')
+			);
+		
+		/*---------------------------------------*/
+		
+		$action = $this->Form->input('Recruposte.check.[]', array('type'=>'checkbox', 'class'=>'RecruposteCheckItem', 'value'=>$recruposte['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		$receiptCheckin,
+        $recruposte['date_poste'],	
+        $recruposte['intitule'],
+        $recruposte['lieu_affectation'],	
+        $recruposte['date_limite'],		
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Recruposte', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

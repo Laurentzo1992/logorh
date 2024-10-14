@@ -1,0 +1,38 @@
+<!--Logs View-->
+<?php
+//print_r($logs);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Utilisateur','Nom & prénom(s)', 'Historique', 'Date', 'Heure'));
+	$tableData = array();	    
+    foreach($logs as $log){
+		
+		   $tableData[] = array(
+		   $users[$log['Log']['user_id']], 
+		   $names[$log['Log']['user_id']], 
+		   $log['Log']['statement'], 
+		   date('d-m-Y', strtotime($log['Log']['created'])),
+		   date('H:i:s', strtotime($log['Log']['created']))
+		   );
+	   
+	}
+	
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '</table>';
+	echo $this->Paginator->numbers('Log', array(			
+			'before'=>'',
+			'after'=>'',
+			'modulus'=>4,
+			'separator'=>'|',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'Premier',
+			'last'=>'Dernier',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>' Page {:page} sur {:pages}'
+		));
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'errorMsg'));
+}
+?>

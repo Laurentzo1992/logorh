@@ -1,0 +1,80 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Paramtyperuptures', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramtyperuptures', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramtyperuptures', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Paramtyperupture')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Paramtyperuptures', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Paramtyperupture'));
+	}
+	/*if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramtyperuptures', 'view'=>'edit2', 'params'=>array('id:')), 
+			array('title'=>'Validation', 'class'=>'icon success groupAction', 'ref'=>'Paramtyperupture')
+		);
+	}*/
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Paramtyperupture.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'ParamtyperuptureCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Paramtyperupture', array($actionCheck=>false, 
+	'Libéllé'=>'libelle',
+	
+	));
+	$tableData = array();  //  
+	foreach($paramtyperuptures as $paramtyperupture){
+		$paramtyperupture = $paramtyperupture['Paramtyperupture'];
+		
+		    $action = $this->Form->input('Paramtyperupture.check.[]', array('type'=>'checkbox', 'class'=>'ParamtyperuptureCheckItem', 'value'=>$paramtyperupture['id'], 'addHidden'=>false));
+		
+			$tableData[] = array($action, 
+			$paramtyperupture['libelle'],
+				
+			);
+		
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Paramtyperupture', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

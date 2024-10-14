@@ -1,0 +1,104 @@
+<!--Contrats Index-->
+<?php
+//print_r($paramtauxprimebilans);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Paramtauxprimebilans', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramtauxprimebilans', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Paramtauxprimebilans', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Paramtauxprimebilan')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Paramtauxprimebilans', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Paramtauxprimebilan'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Paramtauxprimebilan.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'ParamtauxprimebilanCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Paramtauxprimebilan', array($actionCheck=>false, 
+	'Taux'=>'taux',
+    'Unité'=>'unite',	
+	));
+	$tableData = array();  //  
+	foreach($paramtauxprimebilans as $paramtauxprimebilan){
+		$paramtauxprimebilan = $paramtauxprimebilan['Paramtauxprimebilan'];
+		
+		$action = $this->Form->input('Paramtauxprimebilan.check.[]', array('type'=>'checkbox', 'class'=>'ParamtauxprimebilanCheckItem', 'value'=>$paramtauxprimebilan['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+			$paramtauxprimebilan['taux'],
+			$paramtauxprimebilan['unite'],
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Paramtauxprimebilan', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+	/*if($paramtauxprimebilanid && $nomparamtauxprimebilan){
+		
+		echo '<div class="floatContent">';
+		
+		echo '<table class="table trHover borderBottom">';
+		echo $this->Paginator->tableHeaders('Paramtauxprimebilan', array('Paramtauxprimebilans'=>'nomcom'));
+		$tableData = array();
+		
+		foreach($paramtauxprimebilans as $paramtauxprimebilan){
+			$paramtauxprimebilan = $paramtauxprimebilan['Paramtauxprimebilan'];
+			
+			$tableData[] = array(htmlEntities($paramtauxprimebilan['nomcom'], ENT_QUOTES | ENT_IGNORE, "UTF-8"));
+		}
+		
+		echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+		echo '<tr><td colspan="4">';
+		echo $this->Paginator->numbers('Paramtauxprimebilan', array(			
+				'before'=>'<div class="paginate">',
+				'after'=>'</div>',
+				'modulus'=>5,
+				'separator'=>'',
+				'tag'=>'span',
+				'ellipsis'=>'...',
+				'first'=>'<<',
+				'last'=>'>>',
+				'class'=>'',
+				'currentClass'=>'',
+				'counter'=>''
+			));
+		echo '</td></tr>';
+		echo '</table></div>';
+	}*/
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

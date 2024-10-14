@@ -1,0 +1,83 @@
+
+<?php
+//print_r($Formations);
+//print_r($resIds.'<br>');
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();	
+	$trs = array(true=>'tr1', false=>'th');
+	$toogle = false;
+	//echo $this->Session->read('username');
+	//echo $this->Session->read('usergroups');
+	//echo $this->Session->read('id');
+?>
+<table class="table">
+<tr><th class="color1">Formation</th><th class="color1">Participant</th></tr>
+<tr>
+<td class="vertical-align-top color2">
+<?php
+
+echo '<table class="tableHeight">';
+echo $this->Form->input('Formation.theme', array('type'=>'textarea', 'disabled','cols'=>'45',  'label'=>'Code sage ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+echo $this->Form->input('Formation.objectif', array('type'=>'textarea',  'disabled','cols'=>'45',  'label'=>'Thème', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+echo $this->Form->input('Formation.poste', array('type'=>'text',  'disabled', 'class'=>'session', 'label'=>'Date de début ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+echo $this->Form->input('Formation.nbr_participant', array('type'=>'text',    'disabled', 'class'=>'session', 'label'=>'Date de fin','before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+echo $this->Form->input('Formation.duree', array('type'=>'text', 'disabled', 'class'=>'session', 'label'=>'Heure de début ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+echo $this->Form->input('Formation.lieu', array('type'=>'text',   'disabled', 'class'=>'session', 'label'=>'Heure de fin ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+echo $this->Form->input('Formation.annee', array('type'=>'text',   'disabled', 'class'=>'session', 'label'=>'Heure de fin ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+echo $this->Form->input('Formation.statut', array('type'=>'text',   'disabled', 'class'=>'session', 'label'=>'Heure de fin ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'),$formation);
+
+echo '</table>';
+?>
+</td>
+
+<td class="vertical-align-top color2" width="600">
+<?php
+echo $this->Form->input('getparticipant', array('type'=>'text', 'format'=>false, 'label'=>'Nom participant ', 'class'=>'autocomp-filter'));
+
+echo '<table class="tableHeight"  width="100%">';
+echo'<tr><th colspan="2">Afficher les participants disponibles</th></tr>';
+echo '</table>';
+
+echo $this->Html->tag('div', null , array('style'=>'max-height:750px; overflow:auto; padding-right:15px; border:1px solid #000'));
+echo '<table class="tableHeight" id="participant-table"   width="100%">';
+echo '</table>';
+echo '<table class="tableHeight" width="100%">';
+        if(isset($Formations)){ 
+		    $participantexiste = true;
+			/*$i = 0;
+		    
+			foreach ($Formations as $formation){
+				$sessionp = $formation['Agdossier'];
+				$sessionf = $formation['Formation'];
+				$sessionpart = $formation['Formparticipant'];
+				$i++;
+				if(($i % 2) == 0)
+				{
+				  echo '<tr class="tr3"><td>'.$sessionp['ag_matricule'].' - '.$sessionp['ag_nom'].' '.$sessionp['ag_prenom'].'<input class="participant" name="data[Formparticipant]['.$sessionf['id'].'][participant_id]" type="hidden" value="'.$sessionp['id'].'"/>	</td><td>'.$this->Html->link('Supprimer', array('controller'=>'Formparticipants', 'view'=>'del', 'params'=>array('id:' .$sessionpart['id'], 'sessionid:' .$sessionid))).'</td></tr>';
+			    }
+                else
+				{
+				   echo '<tr class="tr4"><td>'.$sessionp['ag_matricule'].' - '.$sessionp['ag_nom'].' '.$sessionp['ag_prenom'].'<input class="participant" name="data[Formparticipant]['.$sessionf['id'].'][participant_id]" type="hidden" value="'.$sessionp['id'].'"/>	</td><td>'.$this->Html->link('Supprimer', array('controller'=>'Formparticipants', 'view'=>'del', 'params'=>array('id:' .$sessionpart['id'], 'sessionid:' .$sessionid))).'</td></tr>';
+			    }
+			}*/
+			
+		}
+		else{$participantexiste = false;}
+echo '</table>';
+echo '</div>';
+?>
+</td>
+
+</tr>
+<?php
+echo $this->Form->input('Formparticipant.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr "class="enregistrer"><td colspan="2" class="th">', 'after'=>'</td></tr>'));
+?>
+</table>
+<?php
+echo $this->Form->input('Formparticipant.id', array('type'=>'hidden',));
+echo $this->Form->input('Formparticipant.formation_id', array('type'=>'hidden', 'value'=>$formationid));
+echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

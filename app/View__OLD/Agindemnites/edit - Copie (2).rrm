@@ -1,0 +1,87 @@
+
+<?php
+//print_r($indemnites);
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();	
+	$trs = array(true=>'tr1', false=>'th');
+	$toogle = false;
+	
+?>
+<table class="table">
+<tr><th class="color1">Agent</th><th class="color1">Indemnité disponible</th><th class="color1">Indemnite</th></tr>
+<tr>
+<td class="vertical-align-top color1">
+<?php
+
+echo '<table class="tableHeight">';
+echo $this->Form->input('Agindemnite.agdossier_id', array('type'=>'text', 'value'=>$agdossiers[$dossier], 'disabled','cols'=>'45',  'label'=>'Nom &prénom(s) ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+echo $this->Form->input('Agindemnite.matricule', array('type'=>'text', 'value'=>$matricule, 'disabled','cols'=>'45',  'label'=>'Matricule', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+echo $this->Form->input('Agindemnite.agcontrat_id', array('type'=>'text',  'value'=>$numcontrat, 'disabled',  'label'=>'Num contrtat ', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+
+echo '</table>';
+?>
+</td>
+<td class="vertical-align-top color2" width="300">
+<?php
+/*--*/
+echo $this->Html->tag('div', null , array('style'=>'max-height:750px; overflow:auto; padding-right:15px; border:1px solid #000'));
+echo '<table class="tableHeight" width="100%">';
+        if(isset($indemnites)){ 
+		    $participantexiste = true;
+			$i = 0;
+		    
+			foreach ($indemnites as $indemnite){
+				
+				$indemnite = $indemnite['Agindemnite'];
+				
+				$i++;
+				if(($i % 2) == 0)
+				{
+				  echo '<tr class="tr3"><td>'.$paramindemnites[$indemnite['paramindemnite_id']].'<td>'.$this->Html->link('Supprimer', array('controller'=>'Agindemnites', 'view'=>'del', 'params'=>array('id:' .$indemnite['id'], 'contratid:' .$varcontrat))).'</td></tr>';
+			    }
+                else
+				{
+				   echo '<tr class="tr4"><td>'.$paramindemnites[$indemnite['paramindemnite_id']].'</td><td>'.$this->Html->link('Supprimer', array('controller'=>'Agindemnites', 'view'=>'del', 'params'=>array('id:' .$indemnite['id'], 'contratid:' .$varcontrat))).'</td></tr>';
+			    }
+			}
+			
+		}
+		else{$participantexiste = false;}
+echo '</table>';
+echo '</div>';
+?>
+</td>
+<td class="vertical-align-top color1" width="300">
+
+<?php
+echo $this->Html->tag('div', null , array('style'=>'max-height:500px; overflow:auto; padding-right:15px; border:1px solid #000'));
+echo '<table class="tableHeight">';
+    $i = 0;
+	foreach($pindemnites as $pindemnite)
+	{
+	    $pindemnite = $pindemnite['Paramindemnite'];	
+	    $i++;
+	    echo $this->Form->input('Agindemnite.'.$i, array('type'=>'text','value'=>$pindemnite['code'], 'readonly', 'before'=>'<tr><td>', 'between'=>'', 'after'=>'</td>'));
+	    echo $this->Form->input('Agindemnite.'.$i, array('type'=>'textarea', 'cols'=>30, 'value'=>$pindemnite['libelle'], 'readonly', 'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));
+	    echo $this->Form->input('Agindemnite.'.$i.'.indemnite_id', array('type'=>'hidden', 'value'=>$pindemnite['id']));
+	    echo $this->Form->input('Agindemnite.'.$i.'.statut', array('type'=>'checkbox', 'value'=>'1', 'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));
+  
+	}
+echo '</table>';
+echo '</div>';
+?>
+</td>
+</tr>
+<?php
+echo $this->Form->input('Agindemnite.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr "class="enregistrer"><td colspan="3" class="th">', 'after'=>'</td></tr>'));
+?>
+</table>
+<?php
+echo $this->Form->input('Agindemnite.id', array('type'=>'hidden',));
+echo $this->Form->input('Agindemnite.agcontrat_id', array('type'=>'hidden', 'value'=>$varcontrat));
+echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

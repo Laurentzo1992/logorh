@@ -1,0 +1,106 @@
+<!--Contrats Index-->
+<script type="text/javascript">
+ /*$(function() {
+	 $('#details input, #details select, #details textarea, #details radio, #details checkbox').attr('disabled','disabled');
+ });*/
+ $(document).ready(function () {
+	$('.print').click(function(event){
+		event.preventDefault();
+		window.open($(this).attr('href'), 'ReceiptWin_1', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=900,height=1000')
+	});
+});
+</script>
+<?php
+
+//print_r($rembulletins);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	echo $this->Form->create();
+	echo '<table class="table">';
+	echo $this->Html->tableHeaders(array('Du','Au','Type salaire','',''));
+	echo $this->Form->input('Rembulletin.datedebut', array('type'=>'mouton', 'before'=>'<tr><td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Rembulletin.datefin', array('type'=>'mouton', 'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Rembulletin.typesal', array('type'=>'select', 'options'=>$paramtypesalaires, 'empty'=>'Selectionner', 'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));
+ 	echo $this->Form->input('Rembulletin.valider', array('type'=>'submit', 'value'=>'Recherche',  'before'=>'<td>', 'between'=>'', 'after'=>'</td>'));	
+	echo $this->Form->input('Rembulletin.reinit', array('type'=>'submit', 'value'=>'Reinit',  'before'=>'<td>', 'between'=>'', 'after'=>'</td></tr>'));	
+	echo '</table>';
+	echo $this->Form->end();
+	echo '<br/>';
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Rembulletins', 'view'=>'search2',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Rembulletins', 'view'=>'edit2'), 
+			array('title'=>'Effectuer une affectation ou mutation', 'class'=>'icon new groupAction_1')
+		);
+	}
+	
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Rembulletins', 'view'=>'del2', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Rembulletin'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Rembulletin.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'RembulletinCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Rembulletin', array($actionCheck=>false, 
+	''=>'',
+	'N° bulletin'=>'num_bull',
+	'Matricule'=>'matricule',
+	'Nom & prénom'=>'ag_dossier',
+	'Date debut'=>'date_debut',
+	'Date fin'=>'date_fin',
+	'Type salaire'=>'paramtypesalaire_id',
+	
+	));
+	$tableData = array();  //  
+	foreach($rembulletins as $rembulletin){
+		$rembulletin = $rembulletin['Rembulletin'];
+		/*---------------------------------------*/
+		$receiptCheckin = $this->Html->linkReplaceParam(
+			'', 
+		array('controller'=>'Rembulletins', 'view'=>'bulletin', 'params'=>array('bulletinid:'.$rembulletin['id'])), 
+		array('title'=>'Imprimer bulletin', 'class'=>'icon print')
+			);
+		
+		/*---------------------------------------*/
+		$action = $this->Form->input('Rembulletin.check.[]', array('type'=>'checkbox', 'class'=>'RembulletinCheckItem', 'value'=>$rembulletin['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+			$receiptCheckin,
+			sprintf('%05d', $rembulletin['num_bull']),
+			$rembulletin['matricule'],
+			(isset($agdossiers[$rembulletin['ag_dossier']]))?$agdossiers[$rembulletin['ag_dossier']]:'',
+			date("d-m-Y",strtotime($rembulletin['date_debut'])),	
+			date("d-m-Y",strtotime($rembulletin['date_fin'])),
+			(isset($paramtypesalaires[$rembulletin['paramtypesalaire_id']]))?$paramtypesalaires[$rembulletin['paramtypesalaire_id']]:'',
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Rembulletin', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

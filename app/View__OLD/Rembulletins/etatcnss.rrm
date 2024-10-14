@@ -1,0 +1,170 @@
+<?php
+//print_r($cotisation);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/**************************SQL***********************************/
+/*-----------------------------------------------*/
+    
+	
+/*----------------------------------------------------------*/
+	
+	$requete2 = "SELECT bul.id as bull_Id,
+	                    dos.ag_matricule as matricule,
+						dos.ag_nom  as nom,
+						dos.ag_prenom as prenom,
+						dos.ag_charge as charge,
+						cont.id as contratid,
+						cont.num_cotisation as num_cotisation
+				 FROM  rembulletins bul, agcontrats cont, agdossiers dos
+			     WHERE dos.id = cont.agdossier_id AND
+			          cont.id = bul.agcontrat_id   AND
+                      cont.paramstructurecotsocial_id = '1' AND					  
+			          bul.date_debut  = '".$date_debut."' AND
+				      bul.date_fin    = '".$date_fin."' AND
+				      bul.paramtypesalaire_id  = '".$typesal."'
+				 ORDER BY dos.ag_matricule ASC";
+	 
+	$reponse2 = $bdd->query($requete2);
+	
+/*---------------------------------------------------*/
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>';
+					echo '<td colspan="6" align="center">';
+					echo '<p><b><u>ETAT COTISATION SECURITE SOCIALE CNSS</u></b></p>';
+					echo'</td>';
+					echo '<td colspan="6" align="right">
+					'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . '
+					 </td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="14" align="left">';
+						echo '<p><b><u>Période : </u> </b> '.strftime("  %m/%Y ", strtotime($date_fin)).'</p>';
+						
+					echo'</td>';
+				echo '</tr>';
+			
+		echo '</table>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1">';
+					echo '<tr style="background-color:#c9c9c9;font-weight:bold">';
+						echo'<td align="left"><b>Matr.</b></td>';
+						echo'<td align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>N° CNSS</b></td>';
+						echo'<td align="left"><b>Charge</b></td>';
+						echo'<td align="left"><b>Base CNSS</b></td>';
+						echo'<td align="left"><b>CNSS sal.</b></td>';
+						echo'<td align="left"><b>CNSS Pat.</b></td>';
+						echo'<td align="left"><b>TOTAL</b></td>';
+					echo '</tr>';
+		
+		$total_brute = 0;
+		$total_cnss_sal = 0;
+		$total_cnss_pat = 0;
+		$total_total = 0;
+		while($donnees2 = $reponse2->fetch())
+		{	
+			
+			    $bull_Id = $donnees2['bull_Id'];
+			
+				/*=================SALLAIRE BRUT==============*/
+				$req3 = "SELECT  
+							   SUM(item.montant) as montant
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."' AND
+						 item.avoir_ret = '1' AND 
+						 item.montant > 0  AND
+						 item.code != '500'";
+				$rep3 = $bdd->query($req3);
+				$brute = 0;
+				$cnss_sal = 0;
+				$cnss_pat = 0;
+				$total = 0;
+				while($data3 = $rep3->fetch())
+				{
+					$alpha = 0;
+					$alpha = $data3['montant'];
+					if($alpha >= 600000){$brute = 600000;}else{$brute = $alpha;}
+					$total_brute = $total_brute + $brute;
+					
+					/**************/
+					$beta = 0;
+					$beta = $brute * 0.055;
+					if($beta >= 33000){$cnss_sal = 33000;}else{$cnss_sal = $beta;}
+					$total_cnss_sal = $total_cnss_sal + (int)$cnss_sal;
+					/*----------*/
+					$sigma = 0;
+				    $sigma = $brute * 0.16;
+					if($sigma >= 96000){$cnss_pat = 96000;}else{$cnss_pat = $sigma;}
+					$total_cnss_pat = $total_cnss_pat + (int)$cnss_pat;
+					/*---------------*/
+					$total = (int)$cnss_sal + (int)$cnss_pat;
+					$total_total = $total_total + $total;
+				}
+				
+				echo '<tr>';
+					echo'<td align="right">'.$donnees2['matricule'].'</td>';
+					echo'<td align="left">'.$donnees2['nom'].' '.$donnees2['prenom'].'</td>';
+					echo'<td align="right">'.$donnees2['num_cotisation'].'</td>';
+					echo'<td align="right">'.$donnees2['charge'].'</td>';
+					echo'<td align="right">'.number_format($brute, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format((int)$cnss_sal, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format((int)$cnss_pat, 0,',', ' ').'</td>';
+			
+					echo'<td align="right">'.number_format($total, 0,',', ' ').'</td>';
+	
+				echo '</tr>';
+				
+		}
+        echo '<tr style="background-color:#c9c9c9;font-weight:bold">';
+			echo'<td align="right" colspan="4"></td>';
+		    echo'<td align="right">'.number_format($total_brute, 0,',', ' ').'</td>';
+			echo'<td align="right">'.number_format($total_cnss_sal, 0,',', ' ').'</td>';  
+			echo'<td align="right">'.number_format($total_cnss_pat, 0,',', ' ').'</td>';
+			
+			echo'<td align="right">'.number_format($total_total, 0,',', ' ').'</td>';
+		echo '</tr>';
+		echo '</table>';
+			echo'<table width="100%" cellspacing="0" border="0">';	
+					
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DAFC<br><br><br><br><br><br></b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b><br><br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DG<br><br><br><br><br><br></b></td>';
+					echo '</tr>';
+					echo '<tr border="0">';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dafc].'</b></td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="right">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="left" colspan="2"><b>'.$agdossiers[$sign_dg].'</b></td>';
+					echo '</tr>';
+		echo '</table>';
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

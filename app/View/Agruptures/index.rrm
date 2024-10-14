@@ -1,0 +1,79 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+	
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Agruptures', 'view'=>'search',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	if($accessLevel['add']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agruptures', 'view'=>'edit',), 
+			array('title'=>'Creer', 'class'=>'icon new groupAction_1')
+		);
+	}
+	if($accessLevel['edit']){
+		$actionLink .= $this->Html->link(
+			'', 
+			array('controller'=>'Agruptures', 'view'=>'edit', 'params'=>array('id:')), 
+			array('title'=>'Modifier', 'class'=>'icon edit groupAction', 'ref'=>'Agrupture')
+		);
+	}
+	if($accessLevel['del']){
+		$actionLink .= ' ' . $this->Html->link(
+			'', 
+			array('controller'=>'Agruptures', 'view'=>'del', 'params'=>array('id:')), 
+			array('title'=>'Suprimer', 'class'=>'icon trash groupAction confirm', 'ref'=>'Agrupture'));
+	}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Agrupture.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'AgruptureCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Agrupture', array($actionCheck=>false, 
+	'N°'=>'agcontrat_id',
+	'Date rupture'=>'date_rupture',
+	'Nom & prénom(s)'=>'agdossier_id',
+	'Motif'=>'motif',
+	'Détail(s)'=>'detail',
+	
+	));
+	$tableData = array();  //  
+	foreach($agruptures as $agrupture){
+		$agrupture = $agrupture['Agrupture'];
+		
+		$action = $this->Form->input('Agrupture.check.[]', array('type'=>'checkbox', 'class'=>'AgruptureCheckItem', 'value'=>$agrupture['id'], 'addHidden'=>false));
+		$tableData[] = array($action, 
+		(isset($agcontrats[$agrupture['agcontrat_id']]))?$agcontrats[$agrupture['agcontrat_id']]:'',
+		date("d-m-Y",strtotime($agrupture['date_rupture'])),
+		(isset($agdossiers[$agrupture['agdossier_id']]))?$agdossiers[$agrupture['agdossier_id']]:'',
+		(isset($motifs[$agrupture['motif']]))?$motifs[$agrupture['motif']]:'',
+		$agrupture['detail'],
+					
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Agrupture', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

@@ -1,0 +1,23 @@
+<!--Paramindemitems Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Paramindemitem.paramindemnite_id', array('type'=>'select', 'options'=>$paramindemnites, 'empty'=>'Selectionner', 'label'=>'Indemnité (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemitem.paramclassification_id', array('type'=>'select', 'options'=>$paramclassifications, 'empty'=>'Selectionner', 'label'=>'Classification', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemitem.paramtypefonction_id', array('type'=>'select', 'options'=>$paramtypefonctions, 'empty'=>'Selectionner', 'label'=>'Type fonction', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemitem.montant', array('type'=>'text', 'label'=>'Montant', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemitem.taux', array('type'=>'text', 'label'=>'Taux', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemitem.unite', array('type'=>'text', 'label'=>'Unité', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemitem.description', array('type'=>'textarea', 'label'=>'Description', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Paramindemitem.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	        
+	echo '</table>';
+	echo $this->Form->input('Paramindemitem.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

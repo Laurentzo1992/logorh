@@ -1,0 +1,38 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<!--<tr><th colspan="2" class="color1" style="text-align:center;background-color:#e59a31;">CLIENT</th></tr>
+	-->
+	<tr><th class="color2">Civilité</th></tr>
+	<tr>
+	<td class="vertical-align-top color2">
+	<?php
+	echo '<table class="table trHover borderBottom">';
+		echo $this->Form->input('Paramtauxprimebilan.taux', array('type'=>'text', 'label'=>'Taux', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Paramtauxprimebilan.unite', array('type'=>'text', 'label'=>'Unité', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		
+		echo $this->Form->input('Paramtauxprimebilan.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Paramtauxprimebilan.id', array('type'=>'hidden'));
+
+	echo '</table>';
+    ?>
+    </td>
+    </tr>
+    </table>
+	
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

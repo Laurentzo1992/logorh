@@ -1,0 +1,97 @@
+<!--Contrats Index-->
+<?php
+//print_r($x);
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+	echo '<div class="floatContent">';
+	$actionLink = '';
+	$actionLink .= $this->Html->link(
+		'', 
+		array('controller'=>'Formations', 'view'=>'search2',), 
+		array('title'=>'Rechercher', 'class'=>'icon search groupAction_1')
+	);
+	
+		if($accessLevel['edit']){
+			$actionLink .= $this->Html->link(
+				'', 
+				array('controller'=>'Formcharges', 'view'=>'index', 'params'=>array('formationid:')), 
+				array('title'=>'Ajouter les charges par participant', 'class'=>'icon sell groupAction', 'ref'=>'Formation')
+			);
+		}
+		
+		/*if($accessLevel['edit']){
+			$actionLink .= $this->Html->link(
+				'', 
+				array('controller'=>'Formations', 'view'=>'edit3', 'params'=>array('id:')), 
+				array('title'=>'Ajouter le cout de vente d\'une session de formation', 'class'=>'dollar2 groupAction', 'ref'=>'Formation')
+			);
+		}*/
+		
+		if($accessLevel['edit']){
+			$actionLink .= $this->Html->link(
+				'', 
+				array('controller'=>'Formcharges', 'view'=>'index2', 'params'=>array('formationid:')), 
+				array('title'=>'Visualiser les couts d\'une formation', 'class'=>'icon eye groupAction', 'ref'=>'Formation')
+			);
+		}
+	echo "<div class=\"actionContent\">{$actionLink}</div>";
+	echo '<table class="table trHover borderBottom">';
+	$actionCheck = $this->Form->input('Formation.check', array('type'=>'checkbox', 'class'=>'checkAll', 'id'=>'FormationCheck', 'value'=>1, 'addHidden'=>false));
+	echo $this->Paginator->tableHeaders('Formation', array($actionCheck=>false,
+	'Denomination'=>'formdenomination_id',
+	'Intitulé du thème'=>'theme',
+	'Objectif(s)'=>'objectif',
+	'Postes concernés'=>'poste',
+	'Nombre de participants'=>'nbr_participant',
+	'Modalité'=>'modalite',
+	'Durée'=>'duree',
+	'Lieu'=>'lieu',
+	'Année'=>'annee',
+	'Budget'=>'parambudget_id',
+	'Coût (FCFA)'=>'cout',
+	'Statut'=>'statut',
+	
+	));
+	$tableData = array();  //  
+	foreach($formations as $formation){
+		$formation = $formation['Formation'];
+		
+		
+		$action = $this->Form->input('Formation.check.[]', array('type'=>'checkbox', 'class'=>'FormationCheckItem', 'value'=>$formation['id'], 'addHidden'=>false));
+		$tableData[] = array($action,
+		(isset($denominations[$formation['formdenomination_id']]))?$denominations[$formation['formdenomination_id']]:'',
+		$formation['theme'],
+		$formation['objectif'],
+		$formation['poste'],
+		$formation['nbr_participant'],
+		$formation['modalite'],
+		$formation['duree'],
+		$formation['lieu'],
+		$formation['annee'],
+		(isset($budgets[$formation['parambudget_id']]))?$budgets[$formation['parambudget_id']]:'',
+		number_format($formation['cout'], 0,',', ' '),
+		$formation['statut'],
+		);
+	}
+	echo $this->Html->tableCells($tableData, array('class'=>'tr1'), array('class'=>'tr2'));
+	echo '<tr><td colspan="2">';
+	echo $this->Paginator->numbers('Formation', array(			
+			'before'=>'<div class="paginate">',
+			'after'=>'</div>',
+			'modulus'=>5,
+			'separator'=>'',
+			'tag'=>'span',
+			'ellipsis'=>'...',
+			'first'=>'<<',
+			'last'=>'>>',
+			'class'=>'',
+			'currentClass'=>'',
+			'counter'=>''
+		));
+	echo '</td></tr>';
+	echo '</table></div>';
+	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

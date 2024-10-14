@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   RewriteRule    ^$ app/boot/    [L]
+   RewriteRule    (.*) app/boot/$1 [L]
+</IfModule>

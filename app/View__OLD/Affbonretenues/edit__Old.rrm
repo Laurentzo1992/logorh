@@ -1,0 +1,44 @@
+<!--cpbs Edit-->
+
+<?php
+//print_r($presonnel);
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+
+	echo $this->Form->create(array('enctype'=>"multipart/form-data"));
+	?>
+	
+	<table  class="table small">
+	<tr><th class="color1">Prêt</th><th class="color2">Traite mensuelle</th></tr>
+	<tr>
+	<td class="vertical-align-top color1">
+	<?php
+	   echo '<table class="table trHover borderBottom">';
+	    echo $this->Form->input('Affpret.agdossier_id', array('type'=>'select', 'options'=>$agdossiers, 'empty'=>'Selectionner', 'label'=>'Nom & prénom(s)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affpret.date_pret', array('type'=>'mouton',  'label'=>'Date prêt', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+		echo $this->Form->input('Affpret.montant_pret', array('type'=>'text', 'label'=>'Montant prêt', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affpret.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	    echo $this->Form->input('Affpret.id', array('type'=>'hidden'));
+	    echo '</table>';
+	 ?>
+	</td>
+	<td class="vertical-align-top color2">
+	<?php
+	  echo '<table class="table trHover borderBottom">';
+	  echo $this->Form->input('Affpret.montant_traite', array('type'=>'text', 'label'=>'Montant traite mensuelle', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Affpret.date_debut_traite', array('type'=>'mouton',  'label'=>'Date debut traite', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Affpret.date_fin_traite', array('type'=>'mouton',  'label'=>'Date fin traite', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo $this->Form->input('Affpret.statut', array('type'=>'select', 'options'=>$statuts,  'empty'=>'Selectionner','class'=>'azerty','label'=>'Classification (catégorie)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+	  echo '</table>';
+    ?>
+    </td>
+    </tr>
+	</table>
+	
+<?php
+	echo $this->Form->end();
+}
+else
+{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

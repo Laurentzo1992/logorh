@@ -1,0 +1,20 @@
+<!--Paramindemnites Edit-->
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view'] && isset($accessLevel['edit']) && $accessLevel['edit']){
+	echo $this->Form->create();
+	echo '<table class="table trHover borderBottom">';
+	        echo $this->Form->input('Paramindemnite.code', array('type'=>'text', 'label'=>'Code', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemnite.libelle', array('type'=>'textarea', 'label'=>'Libelle (*)', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemnite.paramtypindprimavantage_id', array('type'=>'select', 'options'=>$paramtypindprimavantages, 'empty'=>'Selectionner', 'label'=>'Type', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			echo $this->Form->input('Paramindemnite.paramavoiret_id', array('type'=>'select', 'options'=>$paramavoirets, 'empty'=>'Selectionner', 'label'=>'Avoir/retenue', 'before'=>'<tr><td>', 'between'=>'</td><td>', 'after'=>'</td></tr>'));
+			
+			echo $this->Form->input('Paramindemnite.submit', array('type'=>'submit', 'value'=>'Enregistrer', 'before'=>'<tr><td colspan="2">', 'after'=>'</td></tr>'));
+	
+	echo '</table>';
+	echo $this->Form->input('Paramindemnite.id', array('type'=>'hidden'));
+	echo $this->Form->end();
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

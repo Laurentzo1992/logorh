@@ -1,0 +1,269 @@
+<?php
+
+if(isset($accessLevel['view']) && $accessLevel['view']){
+        
+	if($type == 'DG')
+    {		
+		echo'<table width="100%" cellspacing="0" border="0">';
+			echo '<thead>';
+				echo'<table width="100%" cellspacing="0" border="1">';
+						echo '<tr>';
+							echo'<td align="center" rowspan="4">'. $this->Html->image('../../boot/img/sonaturLogo.jpg', array('width'=>'250','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Manuel qualité</td>';
+							echo'<td align="center" rowspan="5">
+								  <table width="90%" cellspacing="0"border="1">
+								  <tr><td align="center" colspan="2">Code : Pr-RH-04/FO-01</td><tr>
+								  <tr><td align="center">Version : 00</td><td align="center">Page : 1/1</td><tr>
+								 </table>
+							</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Descriptif processus</td>';
+							
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Procédure</td>';
+							
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Instruction de travail</td>';
+							
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">Processus RH</td>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Formulaire</td>';
+							
+						echo '</tr>';
+				echo'</table>';	
+			echo '<thead>';
+			
+			echo '<tbody>';
+				echo'<table style="font-size:14px;font-family:arial;line-height:18px" width="100%" cellspacing="0" border="0">';
+						echo '<tr>';
+						   echo'<td colspan="2" align="center"><br><b><u>FICHE DE DEMANDE DE CONGES</b></u><br><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><b>Nom et prénom:</b> '.$agdossiers[$dossierID].'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><b>Direction:</b> '.$directions[$direction].'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><b>Matricule:</b> '.$matricule.'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td align="right">Ouagadougou, '.date("d-m-Y").'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td align="right"><h4><b>A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<br>Monsieur le Président du Conseil<br>  
+                                   d’Administration de la SONATUR</b></h4></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td><br><b>Objet : Demande de congé annuel</b><br></td>';
+							echo'<td align="right"></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center" colspan="2"><br><b>Monsieur le Président du Conseil d’Administration</b><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="justify" colspan="2"><br>
+							J’ai l’honneur de solliciter auprès de votre haute bienveillance mon congé annuel 
+							pour compter du '.date("d-m-Y",strtotime($date_debut)).' au '.date("d-m-Y",strtotime($date_fin)).' 
+							Inclus, soit '.$nbr_jour.'  Jours ouvrables.<br>
+							</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="justify" colspan="2"><br>
+							Je vous prie d’agréer, Monsieur le Président du Conseil d’Administration, l’expression de ma déférente considération.<br>
+							</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- Date de retour du dernier congé : '.date("d-m-Y",strtotime($date_ret_last)).'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- Date de départ prévu : '.date("d-m-Y",strtotime($date_dep_prev)).'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- Date de retour : '.date("d-m-Y",strtotime($date_ret_prev)).'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>-  Nombre de jours restants : '.$nbr_jour_rest.'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- L’intérim est assuré par : '.$agdossiers[$interim_id].'</td>';
+						echo '</tr>';
+			echo'</table>';
+			echo '</tbody>';
+			echo '<tfoot>';
+				echo'<table style="font-size:14px;font-family:arial;line-height:18px" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+						echo'<td align="left"><br><br><br><b><u>Avis du PCA</u></b><br></td>';
+						echo'<td align="left"></td>';
+						echo'<td align="right"><br><br><br><b><u>Signature</u></b><br></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left"><br>- Favorble</td>';
+						echo'<td align="left"></td>';
+						echo'<td align="right"></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left"><br>- Report</td>';
+						echo'<td align="left"><br></td>';
+						echo'<td align="right"></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left"><br>- Défavorable</td>';
+						echo'<td align="left"></td>';
+						echo'<td align="right"></td>';
+					echo '</tr>';
+					echo '<tr>';
+							echo'<td colspan="2" align="justify"></td>';
+					echo '</tr>';			    
+				echo '</table>';  
+			echo '</tfoot>';
+		echo '</table>';
+	}
+	else
+	{
+		echo'<table width="100%" cellspacing="0" border="0">';
+			echo '<thead>';
+				echo'<table width="100%" cellspacing="0" border="1">';
+						echo '<tr>';
+							echo'<td align="center" rowspan="4">'. $this->Html->image('../../boot/img/sonaturLogo.jpg', array('width'=>'250','height'=>'100', 'alt'=>'ONEA')) . '</td>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Manuel qualité</td>';
+							echo'<td align="center" rowspan="5">
+								  <table width="90%" cellspacing="0"border="1">
+								  <tr><td align="center" colspan="2">Code : Pr-RH-04/FO-01</td><tr>
+								  <tr><td align="center">Version : 00</td><td align="center">Page : 1/1</td><tr>
+								 </table>
+							</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Descriptif processus</td>';
+							
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Procédure</td>';
+							
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Instruction de travail</td>';
+							
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center">Processus RH</td>';
+							echo'<td align="center">&nbsp;&nbsp;</td>';
+							echo'<td align="left">Formulaire</td>';
+							
+						echo '</tr>';
+				echo'</table>';	
+			echo '<thead>';
+			
+			echo '<tbody>';
+				echo'<table style="font-size:14px;font-family:arial;line-height:18px" width="100%" cellspacing="0" border="0">';
+						echo '<tr>';
+						   echo'<td colspan="2" align="center"><br><b><u>FICHE DE DEMANDE DE CONGES</b></u><br><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><b>Nom et prénom:</b> '.$agdossiers[$dossierID].'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><b>Direction:</b> '.$directions[$direction].'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><b>Matricule:</b> '.$matricule.'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td align="right">Ouagadougou, '.date("d-m-Y").'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td></td>';
+							echo'<td align="right"><h4><b>A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<br>Monsieur le Directeur Général de la SONATUR  </b></h4></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td><br><b>Objet : Demande de congé annuel</b><br></td>';
+							echo'<td align="right"></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="center" colspan="2"><br><b>Monsieur le Directeur Général</b><br></td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="justify" colspan="2"><br>
+							J’ai l’honneur de solliciter auprès de votre haute bienveillance mon congé annuel 
+							pour compter du '.date("d-m-Y",strtotime($date_debut)).' au '.date("d-m-Y",strtotime($date_fin)).' 
+							Inclus, soit '.$nbr_jour.'  Jours ouvrables.<br>
+							</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td align="justify" colspan="2"><br>
+							Je vous prie d’agréer, Monsieur le Directeur Général, l’expression de ma déférente considération.<br>
+							</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- Date de retour du dernier congé : '.date("d-m-Y",strtotime($date_ret_last)).'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- Date de départ prévu : '.date("d-m-Y",strtotime($date_dep_prev)).'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- Date de retour : '.date("d-m-Y",strtotime($date_ret_prev)).'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>-  Nombre de jours restants : '.$nbr_jour_rest.'</td>';
+						echo '</tr>';
+						echo '<tr>';
+							echo'<td colspan="2" align="left"><br>- L’intérim est assuré par : '.$agdossiers[$interim_id].'</td>';
+						echo '</tr>';
+			echo'</table>';
+			echo '</tbody>';
+			echo '<tfoot>';
+				echo'<table style="font-size:14px;font-family:arial;line-height:18px" width="100%" cellspacing="0" border="0">';
+					echo '<tr>';
+						echo'<td align="left"><br><br><br><b><u>Avis du supérieur hiératchique direct</u></b><br></td>';
+						echo'<td align="left"><br><br><br><b><u>Avis du DAFC</u></b><br></td>';
+						echo'<td align="right"><br><br><br><b><u>Signature</u></b><br></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left"><br>- Favorble</td>';
+						echo'<td align="left"><br>Favorble</td>';
+						echo'<td align="right"></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left"><br>- Report</td>';
+						echo'<td align="left"><br>Report</td>';
+						echo'<td align="right"></td>';
+					echo '</tr>';
+					echo '<tr>';
+						echo'<td align="left"><br>- Défavorable</td>';
+						echo'<td align="left"><br>Défavorable</td>';
+						echo'<td align="right"></td>';
+					echo '</tr>';
+					echo '<tr>';
+							echo'<td colspan="2" align="justify"><br>
+							<b><u>NB:</u></b> sauf circonstance exceptionnelle, la présente demande
+							doit etre communiquée à la DAFC au moins 10 jours avant la date de départ envisagée.<br></td>';
+					echo '</tr>';			    
+				echo '</table>';  
+			echo '</tfoot>';
+		echo '</table>';
+	}
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>
