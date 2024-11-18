@@ -6715,7 +6715,7 @@ class RembulletinsController extends AppController{
 									        case $netImp<=30100;
 									            /*---------------------------------------*/
 									            //$iutsBrute = 0 * $netImp - 0;
-									            $iutsBrute = $netImp;
+									            //$iutsBrute = $netImp;
 												$iutsBrute = 0;
 							                    /*---------------------------------------*/
 									            break;
