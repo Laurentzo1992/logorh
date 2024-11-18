@@ -46,7 +46,7 @@ if($cotisation == 1)
 			 WHERE item.rembulletin_id = '".$bull_Id."' AND
 				  item.montant > 0  AND
 				  item.avoir_ret = '2' AND 
-				  item.code IN (10,23,29,98,400,402,403,1008)
+				  item.code IN (10,23,29,98,400,402,403,1008,1014)
 			 ORDER BY item.code ASC";
 }
 elseif($cotisation == 2)
@@ -62,7 +62,7 @@ elseif($cotisation == 2)
 			 WHERE item.rembulletin_id = '".$bull_Id."' AND
 				  item.montant > 0  AND
 				  item.avoir_ret = '2' AND 
-				  item.code IN (10,23,29,98,401,402,403,1008)
+				  item.code IN (10,23,29,98,401,402,403,1008,1014)
 			 ORDER BY item.code ASC";
 }
 else{$sql2 = "";}
@@ -78,7 +78,7 @@ $sql3 = "SELECT DISTINCT item.code as code,
 			 FROM  rembulitems item
 			 WHERE item.rembulletin_id = '".$bull_Id."' AND
 				   item.avoir_ret = '2' AND 
-				  item.code IN (1000,1001,501,98,29,1008,403)
+				  item.code IN (1000,1001,501,98,29,1008,403,1014)
 			 ORDER BY item.code ASC";
  
 $reponse3 = $bdd->query($sql3);
