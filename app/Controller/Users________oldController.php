@@ -970,9 +970,6 @@ class UsersController extends AppController{
 		            array('title'=>'Bulletins individuels', 'accessLevel'=>'2', 'url'=>array('controller'=>'Rembulletins', 'view'=>'index2')),
 
 		            array('title'=>'Simulateur', 'accessLevel'=>'2', 'url'=>array('controller'=>'Rembulletins', 'view'=>'simulateur')),
-				
-					array('title'=>'Situation du personnel', 'accessLevel'=>'2', 'url'=>array('controller'=>'Rembulletins', 'view'=>'index13')),
-				
 				),
 				/*'Organigramme'=>array(
 					array('title'=>'Gestion des utilisateurs', 'accessLevel'=>'2', 'url'=>array('controller'=>'Users', 'view'=>'users')),
@@ -981,7 +978,6 @@ class UsersController extends AppController{
 					array('title'=>'Filières', 'accessLevel'=>'2', 'url'=>array('controller'=>'Empfilieres', 'view'=>'index')),
 					array('title'=>'Employes', 'accessLevel'=>'2', 'url'=>array('controller'=>'Employes', 'view'=>'index')),
 					array('title'=>'Postes', 'accessLevel'=>'2', 'url'=>array('controller'=>'Empostes', 'view'=>'index')),
-				
 				),
 				'Etats'=>array(
 

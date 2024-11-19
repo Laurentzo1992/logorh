@@ -1,0 +1,370 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		$('#example').DataTable( {
+			dom: 'Bfrtip',
+			buttons: [
+				'excelHtml5',
+				'pdfHtml5',
+				
+			]
+		} );
+		
+	});
+</script>
+
+<!--------------------------------------------------------------->
+<?php
+//print_r($typesal);
+setlocale(LC_TIME, "fr_FR", "French");
+if(isset($accessLevel['view']) && $accessLevel['view']){
+
+// Connexion à la base de données
+try  
+{
+    $bdd = new PDO('mysql:host='.MYSQL_HOST.';dbname='.MYSQL_DATABASE.';charset=utf8', MYSQL_USER , MYSQL_PASS);
+}
+catch(Exception $e)
+{
+	die('Erreur : '.$e->getMessage());
+}
+/*----*/
+    $req_bul = "SELECT DISTINCT bul.id as bull_Id,
+	                    dos.ag_matricule as matricule,
+						dos.ag_nom  as nom,
+						dos.ag_prenom as prenom,
+						dos.ag_date_naiss as date_naiss,
+						dos.id as  ag_dossier,
+						cont.id as  agcontrat_id,
+						cont.id as contratid,
+						cont.num_comptebanq as num_compte,
+						cont.date_debut as date_engagement, 
+						class.code  as categorie,
+						ech.libelle as echelon,
+						fct.nom_fonction as emploi,
+						typfct.libelle as fonction,
+						class.qualification  as qualification,
+						socio.libelle as socio_pro,
+						socio.age_retraite as age_retraite
+		         FROM  rembulletins bul, agcontrats cont, agdossiers dos,
+				       agaffectmutations aff, agavencements av, paramclassifications class, 
+					   paramechelons ech, paramfonctions fct, paramtypefonctions typfct, paramsociopros socio
+			     WHERE dos.id = cont.agdossier_id AND
+			          cont.id = bul.agcontrat_id   AND 
+			          bul.date_debut  = '".$date_debut."' AND
+				      bul.date_fin    = '".$date_fin."'   AND
+					  bul.paramtypesalaire_id = '".$typesal."' AND
+					  dos.id = aff.agdossier_id AND
+					  dos.id = av.agdossier_id  AND 
+					  av.paramclassification_id = class.id AND
+					  av.paramechelon_id = ech.id AND
+					  aff.paramfonction_id     = fct.id AND
+					  aff.paramtypefonction_id = typfct.id AND
+					  class.paramsociopro_id = socio.id
+		         ORDER BY dos.ag_matricule ASC";
+	 
+	$resp_bul = $bdd->query($req_bul);
+	
+/**************************SQL***********************************/
+		echo '<table width="100%" cellspacing="0" border="0">';
+			
+				
+				echo '<tr>';
+					echo'<td colspan="2" align="left">
+						SONATUR <br>
+						03 BP 7222 OUAGA 03<br>
+						TEL: 25 30 17 73/74<br>
+						</td>';
+						
+						echo '<td colspan="10" align="center">
+						'. $this->Html->image('../../boot/img/sonatur.png', array('width'=>'150','height'=>'100', 'alt'=>'SONATUR')) . ' 
+						<h3><u>Collecte d\'informations relatives à la situation du personnel</u></h3>
+						</td>';
+						
+					echo '<td colspan="2" align="right">
+						Imprimé le '.date("d/m/Y H:m:s").'
+					   </td>';
+				echo '</tr>';
+				echo '<tr>';
+					echo'<td colspan="14" align="left">';
+						echo '<p><b><u>Période : </u> </b> '.strftime("  %m/%Y ", strtotime($date_fin)).'</p>';
+					echo'</td>';
+				echo '</tr>';
+		echo '</table>';
+		echo'<br><br>';
+		/*********/
+        echo'<table width="100%" cellspacing="0" border="1"     id="example" class="display" style="width:100%">';
+					echo '<tr style="background-color:#808080;font-weight:bold;color:white;">';
+					    echo'<td align="left"><b>N°</b></td>';
+						echo'<td align="left"><b>Matr.</b></td>';
+						echo'<td align="left"><b>Nom & Prénom(s)</b></td>';
+						echo'<td align="left"><b>Emploi</b></td>';
+						echo'<td align="left"><b>Fonction</b></td>';
+						echo'<td align="left"><b>Categorie, classe, echelon</b></td>';
+						echo'<td align="left"><b>Date d\'engagement</b></td>';
+						echo'<td align="left"><b>Date de départ à la retraite</b></td>';
+						/*==============2024================*/
+						echo'<td align="left"><b>Niveau de qualification actuelle</b></td>';
+						/*==============================*/
+						echo'<td style="width:100px" align="left"><b>Salaire de base</b></td>';
+						echo'<td style="width:100px" align="left"><b>Salaire brute</b></td>';
+						echo'<td align="left"><b>Prime d\'ancienété</b></td>';
+						echo'<td align="left"><b>Logement</b></td>';
+						echo'<td align="left"><b>Transport</b></td>';
+						echo'<td align="left"><b>Sujétion</b></td>';
+						echo'<td align="left"><b>Astreintes</b></td>';
+						echo'<td align="left"><b>Fonction</b></td>';
+						echo'<td align="left"><b>Caisse</b></td>';
+						echo'<td align="left"><b>Autres à préciser</b></td>';
+					echo '</tr>';
+		
+		$total_salbase = 0;
+		$total_alloc = 0;
+		$total_brute = 0;
+		
+		$total_cnss_sal = 0;
+		$total_cnss_pat = 0;
+		
+		$total_net_imp = 0;
+		
+		$total_heure = 0;
+		$total_ind = 0;
+		
+		$totaux_impot = 0;
+		
+		$total_anc = 0;
+		#------------------------------------------------
+		$i = 0;
+		$totaux_brute_salnet = 0;
+		$total_tpa = 0;
+		$totaux_salnet = 0;
+		$niamey = 0;
+		$total_precompte = 0;
+		$mnt_total_cnss_sal = 0;
+		$mnt_total_cnss_pat = 0;
+		$total_iuts = 0;
+		$total_avoir = 0;
+		while($rembulletin = $resp_bul->fetch())
+		{	
+			$i++;
+			$bull_Id = $rembulletin['bull_Id'];
+			$sal_base = 0;
+					 
+			$sql1 = "SELECT  DISTINCT item.code as code, 
+							 SUM(item.montant) as montant
+					 FROM  rembulitems item
+					 WHERE item.rembulletin_id = '".$bull_Id."' AND item.code = '1'";
+			 
+			$reponse1 = $bdd->query($sql1);
+			while($donnees1 = $reponse1->fetch())
+			{
+				$sal_base = $donnees1['montant'];
+				$total_salbase = $total_salbase + $sal_base;
+			
+			}
+			
+			/*=================ALLOCATION FAMILLIALE==============*/
+				$req2 = "SELECT  DISTINCT item.montant as montant
+						 FROM    rembulitems item
+						 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+								item.code  = '8'";
+				$rep2 = $bdd->query($req2);
+				$alloc = 0;
+				while($data2 = $rep2->fetch())
+				{
+					$alloc = $data2['montant'];
+					$total_alloc = $total_alloc + $alloc;
+				}
+				
+				/*=================SALLAIRE BRUT==============*/
+				$req3 = "SELECT DISTINCT item.code as code, 
+							   item.designation as designation,
+							   item.base as base,
+							   item.montant as montant,
+							   item.montant2 as montant2,
+							   item.taux as taux,
+							   item.avoir_ret as avoir_ret
+						FROM  rembulitems item
+						WHERE item.rembulletin_id = '".$bull_Id."' AND
+							  item.avoir_ret = '1' AND 
+							  item.montant > 0  AND
+							  item.code != '500'
+						ORDER BY item.code ASC";	
+						 
+				$rep3 = $bdd->query($req3);
+				$brute = 0;
+				$brute_salnet = 0;
+				$cnss_sal = 0;
+				$cnss_pat = 0;
+				$tpa = 0;
+				
+				
+				$salaireBrute = 0;
+				while($data3 = $rep3->fetch())
+				{
+					$salaireBrute = $salaireBrute + $data3['montant'];
+				}
+				
+				/*=================Indemnité==============*/
+				$req6 = "SELECT DISTINCT SUM(item.montant) as indemnite
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							  item.code in (3,4,5,6,7,31,32,33,38)";
+				$rep6 = $bdd->query($req6);
+				$indemnite = 0;
+				
+				while($data6 = $rep6->fetch())
+				{
+					$indemnite = $data6['indemnite'];
+					$total_ind = $total_ind + $indemnite;
+				}
+				
+				
+				/*=================HEURE SUP==============*/
+				$req10 = "SELECT DISTINCT item.montant as montant
+						 FROM    rembulitems item
+						 WHERE   item.rembulletin_id = '".$bull_Id."'  AND 
+								item.code  = '12'";
+				$rep10 = $bdd->query($req10);
+				$heure_sup = 0;
+				while($data10 = $rep10->fetch())
+				{
+					$heure_sup = $data10['montant'];
+					$total_heure = $total_heure + $heure_sup;
+				}
+				
+				/*=================Anciennete==============*/
+				$req12 = "SELECT item.montant as anciennete
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code  = '11'";
+				$rep12 = $bdd->query($req12);
+				$anc = 0;
+				
+				while($data12 = $rep12->fetch())
+				{
+					$anc = $data12['anciennete'];
+				}
+				/*================2024======================*/
+				/*=================Avoir ==============*/
+				$req_torodi = "SELECT SUM(item.montant) as avoir
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code in (35,36,37)";
+				$rep_torodi = $bdd->query($req_torodi);
+				$avoir = 0;
+				
+				while($data_torodi = $rep_torodi->fetch())
+				{
+					$avoir = $data_torodi['avoir'];
+				}
+				/*==========================================*/
+				#=================Cacule salaire brute 2024==================================
+				$gross_wages = $sal_base + $anc + $indemnite + $heure_sup + $alloc + $avoir;
+				# =========ancien salaire 2023 : brute $brute_salnet
+				#============================================================================
+				#============Fonction==============================================
+				$req30 = "SELECT DISTINCT item.montant as ind_fct
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code = 3";
+				$rep30 = $bdd->query($req30);
+				$ind_fct = 0;
+				
+				while($data30 = $rep30->fetch())
+				{
+					$ind_fct = $data30['ind_fct'];
+				}
+				#============Logement==============================================
+				$req40 = "SELECT DISTINCT item.montant as ind_logement
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code = 4";
+				$rep40 = $bdd->query($req40);
+				$ind_logement = 0;
+				
+				while($data40 = $rep40->fetch())
+				{
+					$ind_logement = $data40['ind_logement'];
+				}
+				#============Transport=============================================
+				$req50 = "SELECT DISTINCT item.montant as ind_trans
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code = 5";
+				$rep50 = $bdd->query($req50);
+				$ind_trans = 0;
+				
+				while($data50 = $rep50->fetch())
+				{
+					$ind_trans = $data50['ind_trans'];
+				}
+				#============Sujetion==============================================
+				$req60 = "SELECT DISTINCT item.montant as ind_suj
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code = 6";
+				$rep60 = $bdd->query($req60);
+				$ind_suj = 0;
+				
+				while($data60 = $rep60->fetch())
+				{
+					$ind_suj = $data60['ind_suj'];
+				}
+				#============Caisse================================================
+				$req70 = "SELECT DISTINCT item.montant as ind_cais
+						 FROM  rembulitems item
+						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
+							   item.code = 7";
+				$rep70 = $bdd->query($req70);
+				$ind_cais = 0;
+				
+				while($data70 = $rep70->fetch())
+				{
+					$ind_cais = $data70['ind_cais'];
+				}
+				#============Date retraite=========================================
+				$annee_naiss = date("Y", strtotime($rembulletin['date_naiss']));
+				$age_retraite = $rembulletin['age_retraite'];
+				
+				$date_retraite  = date("d", strtotime($rembulletin['date_engagement']));
+				$mois_retraite  = date("m", strtotime($rembulletin['date_engagement']));
+				$annee_retraite = $annee_naiss + $age_retraite;
+				#=====================================================
+					echo '<tr>';
+				    echo'<td align="right">'.$i.'</td>';
+					echo'<td align="right">'.$rembulletin['matricule'].'</td>';
+					echo'<td align="left">'.$agdossiers[$rembulletin['ag_dossier']].'</td>';
+					echo'<td align="left">'.$rembulletin['emploi'].'</td>';
+					echo'<td align="left">'.$rembulletin['fonction'].'</td>';
+					echo'<td align="left">'.$rembulletin['categorie'].' Ech '.$rembulletin['echelon'].'</td>';
+					echo'<td align="right">'.strftime("  %d/%m/%Y ", strtotime($rembulletin['date_engagement'])).'</td>';
+					echo'<td align="right">'.$date_retraite.'/'.$mois_retraite.'/'.$annee_retraite.'</td>';
+					echo'<td align="left">'.$rembulletin['qualification'].'</td>';
+					echo'<td style="width:100px" align="right">'.number_format($sal_base, 0,',', ' ').'</td>';
+					echo'<td style="width:100px" align="right">'.number_format($gross_wages, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($anc, 0,',', ' ').'</td>';
+					#******
+					echo'<td align="right">'.number_format($ind_logement, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($ind_trans, 0,',', ' ').'</td>';
+					echo'<td align="right">'.number_format($ind_suj, 0,',', ' ').'</td>';
+					echo'<td align="right"></td>';
+					echo'<td align="right">'.number_format($ind_fct, 0,',', ' ').'</b></td>';
+					echo'<td align="right">'.number_format($ind_cais, 0,',', ' ').'</td>';
+					echo'<td align="right"></td>';
+				echo '</tr>';	
+				
+			
+		}
+		echo '</table>';
+
+		echo '</tbody>';
+		echo '<tfoot>';
+
+		echo '</tfoot>';
+		echo '</table>';
+		echo '<p class="breakAfter"></p>';	
+}else{
+	echo $this->Html->tag('div', 'Votre niveau d\'acces ne vous permet pas de voir cette page' , array('class'=>'flash error'));
+}
+?>

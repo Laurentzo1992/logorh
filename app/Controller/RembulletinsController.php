@@ -7683,6 +7683,57 @@ class RembulletinsController extends AppController{
 	
 	
 	
+	public function index13() {
+
+		$this->requestAction('Users' ,'loggedIn');
+		$accessLevel = $this->requestAction('Users' ,'access', array('Rembulletins'));
+		if($accessLevel['view']){
+			$this->set('accessLevel', $accessLevel);
+		}
+		
+        $postData = $this->postData();
+
+        $tmp = $this->Rembulletin->find('all', array('recursive'=>0, 'order'=>'id desc'));
+		$datedebut = (isset($tmp[0]['Rembulletin']['date_debut']))?$tmp[0]['Rembulletin']['date_debut']:'2023-01-01';
+		$datefin = (isset($tmp[0]['Rembulletin']['date_fin']))?$tmp[0]['Rembulletin']['date_fin']:'2023-01-31'; 
+
+		$typesal = (isset($tmp[0]['Rembulletin']['typesal']))?$tmp[0]['Rembulletin']['typesal']:'1';
+
+        /******************************************************/
+		if(isset($postData['Rembulletin']['valider'])){
+			$datedebut = $postData['Rembulletin']['datedebut'];
+			$datefin = $postData['Rembulletin']['datefin'];
+			$typesal = $postData['Rembulletin']['typesal'];
+		    $this->data = $postData;
+		}
+		/******************************************************/
+
+		$ID = $this->Session->read('id');
+        $data = $this->User->find('all', array('conditions'=>array('User.id='.$ID), 'recursive'=>0));
+		$username = $data[0]['User']['username'];
+		$name = $data[0]['User']['name'];
+
+
+		$this->set('pageTitle', APP_DEFAULT_NAME . SEP . 'ETAT GENERAL DES SALAIRES COLLECTE D\'INFORMATIONS RELATIVES A LA SITUATION DU PERSONNEL <span class="pageTitle">'.$name . SEP . $username.'</span>');
+
+        $this->paginate['Rembulletin']['conditions'][] = array('Rembulletin.date_debut'=>$datedebut);
+        $this->paginate['Rembulletin']['conditions'][] = array('Rembulletin.date_fin'=>$datefin);
+        $this->paginate['Rembulletin']['conditions'][] = array('Rembulletin.paramtypesalaire_id'=>$typesal);
+        $this->set('rembulletins', $this->paginate('Rembulletin'));
+
+        #$this->paginate['Rembulletin']['conditions'][] = array('Rembulletin.paramtypesalaire_id'=>$typesal);
+
+		$this->set('agdossiers',$this->Agdossier->find('list',array('list'=>array('id','VirtualFields.name')
+		, 'fields'=>'id, CONCAT(ag_nom," ",ag_prenom) as name',  'order'=>'Agdossier.ag_nom ASC')));
+
+		$this->set('paramtypesalaires', $this->Paramtypesalaire->find('list', array('list'=>array('id','libelle'), 'order'=>'libelle ASC')));
+
+		$this->set('datedebut', $datedebut);
+		$this->set('datefin', $datefin);
+		$this->set('typesal', $typesal);
+
+	}
+	
 	/*------------------------------*/
 	public function del (){
 		$this->requestAction('Users' ,'loggedIn');				
@@ -8795,7 +8846,86 @@ public function etatmutuelle() {
 			
 	}
     /*--------------------------------------*/
+   //Situation du personnel mutuelle
    
+	public function situation_personnel() {
+
+		$this->requestAction('Users' ,'loggedIn');
+		include_once '../boot/params.php';	
+		$accessLevel = $this->requestAction('Users' ,'access', array('Rembulletins'));
+		if($accessLevel['view']){
+			$this->set('accessLevel', $accessLevel);
+		}
+        $this->layout = 'blank';
+
+        $datedebut = $this->getGetParam('datedebut');
+		$datefin = $this->getGetParam('datefin');
+		$typesal = $this->getGetParam('typesal');
+
+        $rembulletins = $this->Rembulletin->find('all', array('conditions'=>array("Rembulletin.date_debut ='$datedebut'","Rembulletin.date_fin ='$datefin'","Rembulletin.paramtypesalaire_id ='$typesal'"),'recursive'=>0, 'order'=>'matricule ASC'));
+
+
+
+		$this->set('date_debut',$datedebut);
+        $this->set('date_fin',$datefin);
+        $this->set('typesal',$typesal);
+
+        $this->set('rembulletins',$rembulletins);
+
+        $this->set('parammodepaies', $this->Parammodepaie->find('list', array('list'=>array('id','libelle'))));
+
+        $this->set('agdossiers',$this->Agdossier->find('list',array('list'=>array('id','VirtualFields.name')
+		, 'fields'=>'id, CONCAT(ag_nom," ",ag_prenom) as name',  'order'=>'Agdossier.ag_nom ASC')));
+
+        $this->set('charges',$this->Agdossier->find('list',array('list'=>array('id','ag_charge'))));
+        /*---------------------------*/
+       // $this->set('cotisations', $this->Agcontrat->find('list', array('list'=>array('id','num_cotisation'))));
+        $this->set('fonctid', $this->Agaffectmutation->find('list', array('list'=>array('agcontrat_id','paramfonction_id'))));
+        $this->set('directid', $this->Agaffectmutation->find('list', array('list'=>array('agcontrat_id','paramdirection_id'))));
+        $this->set('modepaieid', $this->Agcontrat->find('list', array('list'=>array('id','parammodepaie_id'))));
+        $this->set('numcomptebanq', $this->Agcontrat->find('list', array('list'=>array('id','num_comptebanq'))));
+        $this->set('banqid', $this->Agcontrat->find('list', array('list'=>array('id','parambanque_id'))));
+
+       $this->set('cotisation', $this->Agcontrat->find('list', array('list'=>array('id','paramstructurecotsocial_id'))));
+
+        $this->set('classid', $this->Agavencement->find('list', array('list'=>array('agcontrat_id','paramclassification_id'))));
+        $this->set('echeid', $this->Agavencement->find('list', array('list'=>array('agcontrat_id','paramechelon_id'))));
+        /*---------------------*/
+        $this->set('paramclassifications', $this->Paramclassification->find('list', array('list'=>array('id','code'), 'order'=>'id ASC')));
+
+       $this->set('paramechelons', $this->Paramechelon->find('list', array('list'=>array('id','libelle'), 'order'=>'id ASC')));
+
+        $this->set('directions', $this->Paramdirection->find('list', array('list'=>array('id','sigle'), 'order'=>'id ASC')));
+		
+        $this->set('fonctions', $this->Paramfonction->find('list', array('list'=>array('id','nom_fonction'), 'order'=>'id ASC')));
+
+        $this->set('parambanques', $this->Parambanque->find('list', array('list'=>array('id',' 	nom_banque'), 'order'=>'id ASC')));
+
+		$this->set('parammodepaies', $this->Parammodepaie->find('list', array('list'=>array('id',' 	libelle'), 'order'=>'id ASC')));
+
+		/****************Signataire DG******************************/
+        $signat = $this->Signataire->find('all', array('conditions'=>array("Signataire.signature='28'","Signataire.statut='1'"), 'recursive'=>0));
+
+        $sign_dg = $signat[0]['Signataire']['agdossier_id'];
+        $distinct_dg = $signat[0]['Signataire']['distinction'];
+        $this->set('sign_dg', $sign_dg);
+        $this->set('distinct_dg', $distinct_dg);
+
+        /****************Signataire DAFC******************************/
+        $sign = $this->Signataire->find('all', array('conditions'=>array("Signataire.signature='18'","Signataire.statut='1'"), 'recursive'=>0));
+
+        $sign_dafc = $sign[0]['Signataire']['agdossier_id'];
+        $distinct_dafc = $sign[0]['Signataire']['distinction'];
+        $this->set('sign_dafc', $sign_dafc);
+        $this->set('distinct_dafc', $distinct_dafc);
+
+		$this->set('style', '
+			.breakAfter{
+				page-break-after: always;
+
+			}
+		');
+	}
 
 	/*--------------------------------------*/
 
