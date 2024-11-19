@@ -9,7 +9,7 @@ class AgcontratsController extends AppController{
 	var $paginate = array(
 		'Agcontrat'=>array(
 			'model'=>'Agcontrat','sort'=>'matricule', 'agcontrat'=>'ASC',
-			'page'=>1, 'recursive'=>0, 'limit'=>18
+			'page'=>1, 'recursive'=>0, 'limit'=>200
 		),
 		
 	

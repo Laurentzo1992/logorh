@@ -9,7 +9,7 @@ class AgindemnitesController extends AppController{
 	var $paginate = array(
 		'Agindemnite'=>array(
 			'model'=>'Agindemnite','sort'=>'id', 'direction'=>'ASC',
-			'page'=>1, 'recursive'=>0, 'limit'=>18
+			'page'=>1, 'recursive'=>0, 'limit'=>100
 		)
 	);
 	/**/

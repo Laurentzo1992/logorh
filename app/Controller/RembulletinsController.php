@@ -9,7 +9,7 @@ class RembulletinsController extends AppController{
 	var $paginate = array(
 		'Rembulletin'=>array(
 			'model'=>'Rembulletin','sort'=>'num_bull', 'rembulletin'=>'DESC',
-			'page'=>1, 'recursive'=>0, 'limit'=>15
+			'page'=>1, 'recursive'=>0, 'limit'=>100
 		),
 		
 	
@@ -3489,26 +3489,45 @@ class RembulletinsController extends AppController{
 									
 									
 									
-									/*****************INDEMNITE AUTRES TOUS **********************/
+									/*****************INDEMNITE FONCIERE **********************/
 									
-									if($code == 1014)
-		                            {
-		                            	
-		    						    $mnt = $this->Paramindemitem->find('all', array('conditions'=>array("Paramindemitem.paramindemnite_id='$identifiant'","Paramindemitem. 	paramclassification_id='$classification_id'"), 'recursive'=>0));
-		                                $montant = $mnt[0]['Paramindemitem']['montant'];
-		                               
-		                            	$item = array('Rembulitem'=>array(
-								        'rembulletin_id' => $bulID,
-								        'code' => $code,
-								        'designation' => $libelle,
-									    'base' =>$montant,
-									    'taux' =>30,
-									    'montant' => $montant,
-									    'avoir_ret' =>  $avoiret
-									          )
-						                    );
-								        $this->Rembulitem->save($item);
-		                            }
+									
+									if ($code == 1014) {
+									if (in_array($typefonction, [1, 2, 3])) {
+										// Cas où typefonction est 1, 2 ou 3
+										$mnt = $this->Paramindemitem->find('all', array(
+											'conditions' => array(
+												"Paramindemitem.paramindemnite_id='$identifiant'",
+												"Paramindemitem.paramtypefonction_id='$typefonction'"
+											),
+											'recursive' => 0
+										));
+									} else {
+										// Autre cas
+										$mnt = $this->Paramindemitem->find('all', array(
+											'conditions' => array(
+												"Paramindemitem.paramindemnite_id='$identifiant'",
+												"Paramindemitem.paramclassification_id='$classification_id'"
+											),
+											'recursive' => 0
+										));
+									}
+
+									if (!empty($mnt)) {
+										$montant = $mnt[0]['Paramindemitem']['montant'];
+										$item = array('Rembulitem' => array(
+											'rembulletin_id' => $bulID,
+											'code' => $code,
+											'designation' => $libelle,
+											'base' => $montant,
+											'taux' => 30,
+											'montant' => $montant,
+											'avoir_ret' => $avoiret
+										));
+										$this->Rembulitem->save($item);
+									}
+									}
+
 									
 									
 		                            /*******************INDEMNITE TRANSPORT*************************/
@@ -3904,7 +3923,7 @@ class RembulletinsController extends AppController{
 		                             	$log = $this->Rembulitem->find('all', array('conditions'=>array("Rembulitem.rembulletin_id='$bulID'","Rembulitem.code='4'"), 'recursive'=>0));
 		                                $indLogement = $log[0]['Rembulitem']['montant'];
 										
-										/**************Indemnité generale****************************/
+										/**************Indemnité foncière ****************************/
 		                             	$gen = $this->Rembulitem->find('all', array('conditions'=>array("Rembulitem.rembulletin_id='$bulID'","Rembulitem.code='1014'"), 'recursive'=>0));
 		                                $indGen = $gen[0]['Rembulitem']['montant'];
 		                                

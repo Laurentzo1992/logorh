@@ -9,7 +9,7 @@ class AgdossiersController extends AppController{
 	var $paginate = array(
 		'Agdossier'=>array(
 			'model'=>'Agdossier','sort'=>'ag_matricule', 'agdossier'=>'ASC',
-			'page'=>1, 'recursive'=>0, 'limit'=>18
+			'page'=>1, 'recursive'=>0, 'limit'=>200
 			/*'fields'=>'Agdossier.id, 
 					   Agdossier.ag_matricule, 
 					   Agdossier.ag_nom, 
