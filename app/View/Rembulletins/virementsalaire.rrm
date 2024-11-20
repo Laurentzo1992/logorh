@@ -249,7 +249,7 @@ catch(Exception $e)
 				$req6 = "SELECT SUM(item.montant) as indemnite
 						 FROM  rembulitems item
 						 WHERE item.rembulletin_id = '".$bull_Id."'  AND 
-							  item.code in (3,4,5,6,7,31,32,33,38)";
+							  item.code in (3,4,5,6,7,31,32,33,38,1014)";
 				$rep6 = $bdd->query($req6);
 				$indemnite = 0;
 				
